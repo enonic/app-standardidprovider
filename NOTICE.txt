@@ -1,0 +1,5 @@
+Licenses used by Standard Id provider for Enonic XP Admin
+
+    JQuery
+    MIT License
+    https://jquery.org/license/

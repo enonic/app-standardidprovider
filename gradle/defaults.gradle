@@ -1,0 +1,10 @@
+// Add repositories
+repositories {
+    mavenLocal()
+    jcenter()
+    xp.enonicRepo()
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

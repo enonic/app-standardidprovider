@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'com.enonic.defaults' version '1.0.3'
+    id 'com.enonic.xp.app' version '1.0.17'
+    id "com.moowork.node" version "1.2.0"
+}
+
+apply from: "$rootDir/gradle/defaults.gradle"
+
+repositories {
+    jcenter()
+    xp.enonicRepo()
+}
+
+app {
+    name = 'com.enonic.xp.app.standardidprovider'
+    group = 'com.enonic.xp'
+    displayName = 'Standard ID Provider'
+    systemApp = true
+    systemVersion = "${xpVersion}"
+}
+
+dependencies {
+    include "${group}:lib-admin:${xpVersion}"
+    include "${group}:lib-mustache:${xpVersion}"
+    include "${group}:lib-portal:${xpVersion}"
+    include "${group}:lib-auth:${xpVersion}"
+    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
+}
+
+//──────────────────────────────────────────────────────────────────────────────
+// Gradle node plugin
+//──────────────────────────────────────────────────────────────────────────────
+node {
+    version '8.9.4'
+    download true
+}
+
+task copyjQuery (dependsOn: npmInstall, type: Copy) {
+    from "node_modules/jquery/dist/jquery.min.js"
+    into "${buildDir}/resources/main/assets/js"
+}
+
+jar.dependsOn 'copyjQuery'
+jar.outputs.dir "${buildDir}/resources/main"

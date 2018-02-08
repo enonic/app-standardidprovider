@@ -1,2 +1,2 @@
 # app-standardidprovider
-Standard Id provider for Enonic XP admin
+Standard Id provider for Enonic XP Admin
