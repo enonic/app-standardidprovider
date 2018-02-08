@@ -1,0 +1,72 @@
+@admin-font-family: "Open Sans", sans-serif;
+@admin-font-size: 12px;
+
+@admin-white: #fff;
+@admin-bg-light-gray: #eee;
+@admin-red: #cb0300;
+
+@enonic-logo-img-width: 103px;
+@enonic-logo-img-height: 137px;
+@enonic-logo-size: 0.9;
+@enonic-logo-width: @enonic-logo-img-width * @enonic-logo-size;
+@enonic-logo-height: @enonic-logo-img-height * @enonic-logo-size;
+@enonic-logo-center-left: @enonic-logo-width/2;
+
+.home-main-container-mixin() {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  .center-panel {
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.4);
+    top: 0;
+    bottom: 0;
+  }
+
+  .lazy-image {
+    width: 100%;
+    min-height: 100%;
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center;
+
+    transition: opacity 2s;
+    &.empty {
+      opacity: 0;
+    }
+  }
+}
+
+.flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.align-items(@value) {
+  align-items: @value;
+}
+
+.ellipsis() {
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+.animation (@name, @duration: 1s, @delay: 0s, @ease: ease, @iteration: infinite) {
+  -webkit-animation: @name @duration @delay @ease @iteration;
+  -moz-animation: @name @duration @delay @ease @iteration;
+  -ms-animation: @name @duration @delay @ease @iteration;
+  animation: @name @duration @delay @ease @iteration;
+}

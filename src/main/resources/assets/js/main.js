@@ -1,3 +1,8 @@
+require ('../styles/main.less');
+
+var $ = require('jquery');
+var i18n = require ('./i18n');
+
 var loginButton = $("#login-button");
 var userNameInput = $("#username-input");
 var passwordInput = $("#password-input");
@@ -38,7 +43,7 @@ function loginButtonClick() {
 }
 
 function checkFieldsEmpty() {
-    return userNameInput.trim().val() === "" || passwordInput.trim().val() === "";
+    return userNameInput.val().trim() === "" || passwordInput.val().trim() === "";
 }
 
 function onInputTyped(event) {
@@ -74,3 +79,7 @@ var checkLoginButtonInterval = setInterval(function () { //workaround to show lo
         clearInterval(checkLoginButtonInterval);
     }
 }, 100);
+
+$(".localise").html(i18n.localise('page.login.title'));
+$("#username-input").attr('placeholder', i18n.localise('page.login.userid_or_email'));
+$("#password-input").attr('placeholder', i18n.localise('page.login.password'));

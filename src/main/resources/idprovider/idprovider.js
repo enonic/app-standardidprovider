@@ -68,13 +68,11 @@ function generateRedirectUrl() {
 
 function generateLoginPage(redirectUrl) {
     var userStoreKey = portalLib.getUserStoreKey();
-    var jQueryUrl = portalLib.assetUrl({path: "js/jquery.min.js"});
-    var appLoginJsUrl = portalLib.assetUrl({path: "js/login.js"});
-    var appLoginCssUrl = portalLib.assetUrl({path: "admin/common/styles/_all.css"});
+    var appLoginJsUrl = portalLib.assetUrl({path: "js/_all.js"});
+    var appLoginCssUrl = portalLib.assetUrl({path: "styles/_all.css"});
     var appLoginBackgroundUrl = portalLib.assetUrl({path: "images/background.jpg"});
     var appLoginServiceUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
-    var i18nJsUrl = portalLib.assetUrl({path: "js/i18n.js"});
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
@@ -86,10 +84,8 @@ function generateLoginPage(redirectUrl) {
 
     var view = resolve('idprovider.html');
     var params = {
-        jQueryUrl: jQueryUrl,
         appLoginJsUrl: appLoginJsUrl,
         appLoginCssUrl: appLoginCssUrl,
-        i18nJsUrl: i18nJsUrl,
         appLoginBackgroundUrl: appLoginBackgroundUrl,
         imageUrl: imageUrl,
         config: config

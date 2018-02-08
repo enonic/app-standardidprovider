@@ -1,4 +1,4 @@
-var i18n = (function(bundle){
+exports.localise = (function(bundle){
     const messages = bundle;
 
     return function(key, element) {

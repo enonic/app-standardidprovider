@@ -26,7 +26,6 @@ dependencies {
     include "${group}:lib-mustache:${xpVersion}"
     include "${group}:lib-portal:${xpVersion}"
     include "${group}:lib-auth:${xpVersion}"
-    include "com.enonic.lib:lib-admin-ui:${libAdminUiVersion}"
 }
 
 //──────────────────────────────────────────────────────────────────────────────
@@ -37,10 +36,12 @@ node {
     download true
 }
 
-task copyjQuery (dependsOn: npmInstall, type: Copy) {
-    from "node_modules/jquery/dist/jquery.min.js"
-    into "${buildDir}/resources/main/assets/js"
+task webpack( type: NodeTask, dependsOn: npmInstall ) {
+    description = 'Bundle resources'
+    inputs.dir 'src/main'
+    outputs.dir "${buildDir}/resources/main"
+    script = file( './node_modules/webpack/bin/webpack' )
 }
 
-jar.dependsOn 'copyjQuery'
+jar.dependsOn 'webpack'
 jar.outputs.dir "${buildDir}/resources/main"
