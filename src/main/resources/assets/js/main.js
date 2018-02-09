@@ -15,7 +15,7 @@ function handleAuthenticateResponse(loginResult) {
             location.reload();
         }
     } else {
-        $("#message-container").html(i18n('notify.login.failed'));
+        $("#message-container").html(i18n.localise('notify.login.failed'));
         passwordInput.focus();
         $("#username-input, #password-input, #login-button").addClass("invalid");
     }

@@ -1,4 +1,5 @@
 @import "variables";
+@import "animations";
 
 html, body {
   height: 100%
@@ -78,7 +79,7 @@ body {
         }
 
         .input-view {
-          font-size: 13px;
+          font-size: 12px;
           box-sizing: border-box;
           margin-bottom: 10px;
           border: 1px solid @admin-bg-light-gray;
@@ -108,13 +109,14 @@ body {
           background-color: transparent;
           background: url("../icons/circle-right.svg") 0 0 no-repeat;
           position: absolute;
-          right: 3px;
-          top: 3px;
-          height: 20px;
-          width: 20px;
+          right: 2px;
+          top: 1px;
+          height: 22px;
+          width: 22px;
           background-size: 20px 20px;
           border: none;
-          opacity: 0.5;
+          opacity: 0.4;
+          margin-top: 3px;
 
           &.invalid {
             .animation(shake, .5s, 0s, linear, 1);
@@ -127,6 +129,9 @@ body {
           &:focus:not(:disabled) {
             box-shadow: none;
             border: 1px solid transparent;
+            top: 0px;
+            right: 4px;
+            margin-top: 4px;
           }
 
           &:before {
