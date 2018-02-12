@@ -1,6 +1,7 @@
 var $ = require('jquery');
 
-var loginAsSuLink = $("#login-su-link");
+var createAdminViewButton = $("#create-admin-view-button");
+var loginAsSuLink = $(".login-su-link");
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -32,6 +33,10 @@ function loginAsSuLinkClicked() {
 }
 
 loginAsSuLink.click(function () {
+    loginAsSuLinkClicked();
+    return false;
+});
+createAdminViewButton.click(function () {
     loginAsSuLinkClicked();
     return false;
 });

@@ -40,18 +40,22 @@
     <div id="background-image" style="background-image: url(&quot;{{assetUrlPrefix}}/images/background.jpg&quot;);"
          class="lazy-image empty"></div>
     <div class="center-panel">
-
         <img class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
         <div id="welcome-view" class="welcome-view" {{^adminUserCreation}}hidden{{/adminUserCreation}}>
             <span class="welcome-text">Welcome to Enonic XP</span>
-            <a id="create-admin-button" class="create-admin-button">Create Admin User...</a>
-            <a id="login-su-link" class="link">... or login without a user</a>
+            <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
+            <a class="login-su-link link">... or login without a user</a>
+        </div>
+        <div id="creation-view" class="creation-view">
+            <span class="creation-text">Create system admin user</span>
+            <a id="create-admin-button" class="create-admin-button">Create Admin User</a>
+            <a class="login-su-link link">... or login without a user</a>
         </div>
         <form id="login-form" class="login-form" {{#adminUserCreation}}hidden{{/adminUserCreation}}>
             <input id="username-input"
                    class="form-input input-view" type="text"
                    placeholder="userid or e-mail">
-
+        
             <div class="password-container">
                 <input id="password-input" class="input-view form-input password-input"
                        type="password" placeholder="password">

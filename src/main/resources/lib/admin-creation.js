@@ -2,6 +2,7 @@ var nodeLib = require('/lib/xp/node');
 var portalLib = require('/lib/xp/portal');
 
 exports.adminUserCreationEnabled = function () {
+    return true;
     return isSystemUserstore() && checkFlagFalse() && !hasRealUsers();
 };
 
