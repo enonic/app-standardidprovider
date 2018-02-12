@@ -2,6 +2,9 @@ var $ = require('jquery');
 
 var createAdminViewButton = $("#create-admin-view-button");
 var loginAsSuLink = $(".login-su-link");
+var enonicLogo = $("#enonic-logo");
+var welcomeView = $("#welcome-view");
+var creationView = $("#creation-view");
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -16,6 +19,13 @@ function handleSuLoginResponse(loginResult) {
         // passwordInput.focus();
         // $("#username-input, #password-input, #login-button").addClass("invalid");
     }
+}
+
+function displayCreationView() {
+    //TODO Refactor to use state and history
+    enonicLogo.attr('hidden', '');
+    welcomeView.attr('hidden', '');
+    creationView.attr('hidden', null);
 }
 
 function loginAsSuLinkClicked() {
@@ -37,6 +47,6 @@ loginAsSuLink.click(function () {
     return false;
 });
 createAdminViewButton.click(function () {
-    loginAsSuLinkClicked();
+    displayCreationView();
     return false;
 });
