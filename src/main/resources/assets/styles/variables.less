@@ -27,7 +27,6 @@
 @field-width: 200px;
 @field-margin: 10px;
 
-
 .home-main-container-mixin() {
   position: fixed;
   left: 0;
@@ -94,4 +93,8 @@
   -moz-animation: @name @duration @delay @ease @iteration;
   -ms-animation: @name @duration @delay @ease @iteration;
   animation: @name @duration @delay @ease @iteration;
+}
+
+*[hidden] {
+  display: none !important;
 }

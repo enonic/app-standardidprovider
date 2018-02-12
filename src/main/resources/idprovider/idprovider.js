@@ -72,16 +72,13 @@ function generateLoginPage(redirectUrl) {
     var assetUrlPrefix = portalLib.assetUrl({path: ""});
     var appLoginServiceUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
-    var adminUserCreation = adminCreationLib.adminUserCreationEnabled()
-
-    log.info('enabled: ' + adminCreationLib.adminUserCreationEnabled());
+    var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
         appLoginServiceUrl: appLoginServiceUrl,
         userStoreKey: userStoreKey,
         redirectUrl: redirectUrl,
-        adminUserCreation: adminUserCreation,
         messages: admin.getPhrases()
     });
 
@@ -89,7 +86,8 @@ function generateLoginPage(redirectUrl) {
     var params = {
         assetUrlPrefix: assetUrlPrefix,
         imageUrl: imageUrl,
-        config: config
+        config: config,
+        adminUserCreation: adminUserCreation
     };
     return mustacheLib.render(view, params);
 }
