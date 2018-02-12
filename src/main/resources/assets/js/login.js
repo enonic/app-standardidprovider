@@ -1,9 +1,10 @@
 var $ = require('jquery');
-var i18n = require ('./i18n');
+var i18n = require('./i18n');
 
 var loginButton = $("#login-button");
 var userNameInput = $("#username-input");
 var passwordInput = $("#password-input");
+var messageContainer = $("#message-container");
 
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
@@ -13,13 +14,13 @@ function handleAuthenticateResponse(loginResult) {
             location.reload();
         }
     } else {
-        $("#message-container").html(i18n.localise('notify.login.failed'));
+        messageContainer.html(i18n.localise('notify.login.failed'));
         passwordInput.focus();
         $("#username-input, #password-input, #login-button").addClass("invalid");
     }
 }
 
-function loginButtonClick() {
+function loginButtonClicked() {
     if (checkFieldsEmpty()) {
         return;
     }
@@ -61,13 +62,10 @@ function onInputTyped(event) {
 }
 
 loginButton.click(function () {
-    loginButtonClick();
+    loginButtonClicked();
     return false;
 });
-
-$("#username-input, #password-input").keyup(function (event) {
-    onInputTyped(event);
-});
+$("#username-input, #password-input").keyup(onInputTyped);
 
 userNameInput.click();// for mobile devices
 userNameInput.focus();

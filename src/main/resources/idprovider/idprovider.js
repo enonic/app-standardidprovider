@@ -37,6 +37,7 @@ exports.post = function (req) {
             password: body.password,
             userStore: userStoreKey
         });
+        result = false;
         break;
     case 'loginAsSu':
         result = adminCreationLib.adminUserCreationEnabled() && authLib.login({

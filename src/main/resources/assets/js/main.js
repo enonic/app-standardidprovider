@@ -1,4 +1,5 @@
-require ('../styles/main.less');
-require ('./login');
+require('../styles/main.less');
+require('./welcome');
+require('./login');
 
 
