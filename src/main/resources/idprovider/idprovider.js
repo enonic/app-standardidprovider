@@ -68,9 +68,7 @@ function generateRedirectUrl() {
 
 function generateLoginPage(redirectUrl) {
     var userStoreKey = portalLib.getUserStoreKey();
-    var appLoginJsUrl = portalLib.assetUrl({path: "js/_all.js"});
-    var appLoginCssUrl = portalLib.assetUrl({path: "styles/_all.css"});
-    var appLoginBackgroundUrl = portalLib.assetUrl({path: "images/background.jpg"});
+    var assetUrlPrefix = portalLib.assetUrl({path: ""});
     var appLoginServiceUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
 
@@ -84,9 +82,7 @@ function generateLoginPage(redirectUrl) {
 
     var view = resolve('idprovider.html');
     var params = {
-        appLoginJsUrl: appLoginJsUrl,
-        appLoginCssUrl: appLoginCssUrl,
-        appLoginBackgroundUrl: appLoginBackgroundUrl,
+        assetUrlPrefix: assetUrlPrefix,
         imageUrl: imageUrl,
         config: config
     };

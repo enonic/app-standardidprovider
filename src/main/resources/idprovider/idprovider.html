@@ -24,7 +24,7 @@
 
     <link rel="manifest" href="{{imageUrl}}/favicons/manifest.json">
     <link rel="mask-icon" href="{{imageUrl}}/xp-logo-black.svg" color="#5bbad5">
-    <link rel="stylesheet" type="text/css" href="{{appLoginCssUrl}}">
+    <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
 
     {{{config}}}
     <script>
@@ -36,30 +36,27 @@
 </head>
 <body style="background-color: #53585F;">
 <div class="home-main-container">
-    <img style="opacity: 0;" src="{{appLoginBackgroundUrl}}" onload="lazyFadeIn(this);">
-    <div id="background-image" style="background-image: url(&quot;{{appLoginBackgroundUrl}}&quot;);" class="lazy-image empty"></div>
+    <img style="opacity: 0;" src="{{assetUrlPrefix}}/images/background.jpg" onload="lazyFadeIn(this);">
+    <div id="background-image" style="background-image: url(&quot;{{assetUrlPrefix}}/images/background.jpg&quot;);" class="lazy-image empty"></div>
     <div class="center-panel">
-        <div id="branding" class="branding">
-            <h1 class="localise">Enonic XP - Login</h1>
-        </div>
-        <div class="login-panel">
-            <form id="login-form" class="login-form">
-                <input id="username-input"
-                       class="form-input input-view" type="text"
-                       placeholder="userid or e-mail">
 
-                <div class="password-container">
-                    <input id="password-input" class="input-view form-input password-input"
-                           type="password" placeholder="password">
-                    <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
-                </div>
-                <div id="message-container" class="message-container"></div>
-            </form>
-        </div>
+        <img class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
+        <form id="login-form" class="login-form">
+            <input id="username-input"
+                   class="form-input input-view" type="text"
+                   placeholder="userid or e-mail">
+
+            <div class="password-container">
+                <input id="password-input" class="input-view form-input password-input"
+                       type="password" placeholder="password">
+                <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
+            </div>
+            <div id="message-container" class="message-container"></div>
+        </form>
     </div>
 </div>
 
-<script type="module" type="text/javascript" src="{{appLoginJsUrl}}"></script>
+<script type="module" type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js"></script>
 
 </body>
 </html>
