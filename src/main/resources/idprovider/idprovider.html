@@ -42,12 +42,12 @@
     <div class="center-panel">
 
         <img class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
-        <div id="welcome-view" class="welcome-view">
+        <div id="welcome-view" class="welcome-view" {{#adminUserCreation}}hidden{{/adminUserCreation}}>
             <span class="welcome-text">Welcome to Enonic XP</span>
             <a id="create-admin-button" class="create-admin-button">Create Admin User...</a>
             <a id="login-su-button">... or login without a user</a>
         </div>
-        <form id="login-form" class="login-form">
+        <form id="login-form" class="login-form" {{^adminUserCreation}}hidden{{/adminUserCreation}}>
             <input id="username-input"
                    class="form-input input-view" type="text"
                    placeholder="userid or e-mail">

@@ -2,6 +2,7 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 var admin = require('/lib/xp/admin');
+var adminCreationLib = require('/lib/admin-creation');
 
 exports.handle401 = function () {
     var body = generateLoginPage();
@@ -71,12 +72,16 @@ function generateLoginPage(redirectUrl) {
     var assetUrlPrefix = portalLib.assetUrl({path: ""});
     var appLoginServiceUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
+    var adminUserCreation = adminCreationLib.adminUserCreationEnabled()
+
+    log.info('enabled: ' + adminCreationLib.adminUserCreationEnabled());
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
         appLoginServiceUrl: appLoginServiceUrl,
         userStoreKey: userStoreKey,
         redirectUrl: redirectUrl,
+        adminUserCreation: adminUserCreation,
         messages: admin.getPhrases()
     });
 
