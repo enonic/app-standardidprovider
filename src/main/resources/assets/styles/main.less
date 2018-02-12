@@ -1,5 +1,9 @@
 @import "variables";
 @import "animations";
+@import "fields";
+@import "buttons";
+@import "login";
+@import "welcome";
 
 html, body {
   height: 100%
@@ -21,101 +25,16 @@ body {
   .enonic-logo {
     height: @enonic-logo-height;
     width: @enonic-logo-width;
-    padding-bottom: 28px;
+    padding-bottom: 20px;
   }
 
   /** Common */
   .center-panel {
     .flexbox();
+    .flex-direction(column);
+    .justify-content(center);
+    .align-items(center);
     margin-top: -120px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    -webkit-align-items: center;
-
-    /** Login Form **/
-    .login-form {
-      .message-container {
-        position: absolute;
-        width: 200px;
-        height: 28px;
-        line-height: 28px;
-        margin-top: 10px;
-        color: white;
-        text-align: center;
-
-        .ellipsis();
-      }
-
-      .input-view {
-        font-size: 12px;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-        border: 1px solid @admin-bg-light-gray;
-        vertical-align: top;
-        padding: 5px 9px;
-        background: none @admin-white !important;
-        width: 200px;
-
-        &.invalid {
-          &[type=password] {
-            color: @admin-red;
-          }
-          .animation(shake, .5s, 0s, linear, 1);
-        }
-      }
-
-      #username-input {
-        min-height: initial;
-        margin-bottom: 13px;
-      }
-
-      .password-input {
-        padding-right: 35px;
-      }
-
-      .login-button {
-        background-color: transparent;
-        background: url("../icons/circle-right.svg") 0 0 no-repeat;
-        position: absolute;
-        right: 2px;
-        top: 1px;
-        height: 22px;
-        width: 22px;
-        background-size: 20px 20px;
-        border: none;
-        opacity: 0.4;
-        margin-top: 3px;
-
-        &.invalid {
-          .animation(shake, .5s, 0s, linear, 1);
-        }
-
-        &:hover {
-          cursor: pointer;
-        }
-
-        &:focus:not(:disabled) {
-          box-shadow: none;
-          border: 1px solid transparent;
-          top: 0px;
-          right: 4px;
-          margin-top: 4px;
-        }
-
-        &:before {
-          color: inherit; // updates icons color
-        }
-
-        span {
-          display: none;
-        }
-      }
-
-      .password-container {
-        position: relative;
-      }
-    }
   }
 }
 

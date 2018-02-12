@@ -37,10 +37,16 @@
 <body style="background-color: #53585F;">
 <div class="home-main-container">
     <img style="opacity: 0;" src="{{assetUrlPrefix}}/images/background.jpg" onload="lazyFadeIn(this);">
-    <div id="background-image" style="background-image: url(&quot;{{assetUrlPrefix}}/images/background.jpg&quot;);" class="lazy-image empty"></div>
+    <div id="background-image" style="background-image: url(&quot;{{assetUrlPrefix}}/images/background.jpg&quot;);"
+         class="lazy-image empty"></div>
     <div class="center-panel">
 
         <img class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
+        <div id="welcome-view" class="welcome-view">
+            <span class="welcome-text">Welcome to Enonic XP</span>
+            <a id="create-admin-button" class="create-admin-button">Create Admin User...</a>
+            <a id="login-su-button">... or login without a user</a>
+        </div>
         <form id="login-form" class="login-form">
             <input id="username-input"
                    class="form-input input-view" type="text"

@@ -23,6 +23,9 @@
 @enonic-logo-height: @enonic-logo-img-height * @enonic-logo-size;
 @enonic-logo-center-left: @enonic-logo-width/2;
 
+@field-width: 200px;
+@field-margin: 10px;
+
 .home-main-container-mixin() {
   position: fixed;
   left: 0;
@@ -65,8 +68,17 @@
   display: flex;
 }
 
+.flex-direction(@value) {
+  flex-direction: @value;
+}
+
+.justify-content(@value) {
+  justify-content: @value;
+}
+
 .align-items(@value) {
   align-items: @value;
+  -webkit-align-items: @value;
 }
 
 .ellipsis() {
