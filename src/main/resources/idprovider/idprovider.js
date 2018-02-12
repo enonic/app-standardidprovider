@@ -28,13 +28,26 @@ exports.get = function (req) {
 exports.post = function (req) {
     var userStoreKey = portalLib.getUserStoreKey();
     var body = JSON.parse(req.body);
-    var loginResult = authLib.login({
-        user: body.user,
-        password: body.password,
-        userStore: userStoreKey
-    });
+
+    var result;
+    switch (body.action) {
+    case 'login':
+        result = authLib.login({
+            user: body.user,
+            password: body.password,
+            userStore: userStoreKey
+        });
+        break;
+    case 'loginAsSu':
+        result = adminCreationLib.adminUserCreationEnabled() && authLib.login({
+            user: 'su',
+            userStore: 'system',
+            skipAuth: true
+        });
+        break;
+    }
     return {
-        body: loginResult,
+        body: result,
         contentType: 'application/json'
     };
 };
@@ -70,13 +83,13 @@ function generateRedirectUrl() {
 function generateLoginPage(redirectUrl) {
     var userStoreKey = portalLib.getUserStoreKey();
     var assetUrlPrefix = portalLib.assetUrl({path: ""});
-    var appLoginServiceUrl = portalLib.idProviderUrl();
+    var idProviderUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
     var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
-        appLoginServiceUrl: appLoginServiceUrl,
+        idProviderUrl: idProviderUrl,
         userStoreKey: userStoreKey,
         redirectUrl: redirectUrl,
         messages: admin.getPhrases()
