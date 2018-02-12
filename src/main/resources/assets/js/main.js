@@ -80,6 +80,5 @@ var checkLoginButtonInterval = setInterval(function () { //workaround to show lo
     }
 }, 100);
 
-$(".localise").html(i18n.localise('page.login.title'));
 $("#username-input").attr('placeholder', i18n.localise('page.login.userid_or_email'));
 $("#password-input").attr('placeholder', i18n.localise('page.login.password'));
