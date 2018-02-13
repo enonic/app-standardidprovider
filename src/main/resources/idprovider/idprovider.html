@@ -46,19 +46,31 @@
             <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
             <a class="login-su-link link">... or login without a user</a>
         </div>
-        <div id="creation-view" class="creation-view" hidden>
+        <form id="creation-view" class="creation-view" hidden>
             <span class="creation-text">Create system admin user</span>
+            <div class="fieldset">
+                <label for="email-creation-input">Email</label>
+                <input id="email-creation-input" class="input-field" type="email" placeholder="Email">
+            </div>
+            <div class="fieldset">
+                <label for="username-creation-input">Username</label>
+                <input id="username-creation-input" class="input-field" type="text" placeholder="Username">
+            </div>
+            <div class="fieldset">   
+                <label for="password-creation-input">Password</label>
+                <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
+            </div>
+            <div class="fieldset">
+                <label for="password-repeat-input">Password</label>
+                <input id="password-repeat-input" class="input-field" type="password" placeholder="Repeat password">
+            </div>
             <a id="create-admin-button" class="create-admin-button">Create Admin User</a>
             <a class="login-su-link link">... or login without a user</a>
-        </div>
+        </form>
         <form id="login-form" class="login-form" {{#adminUserCreation}}hidden{{/adminUserCreation}}>
-            <input id="username-input"
-                   class="form-input input-view" type="text"
-                   placeholder="userid or e-mail">
-        
+            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">        
             <div class="password-container">
-                <input id="password-input" class="input-view form-input password-input"
-                       type="password" placeholder="password">
+                <input id="password-input" class="input-field password-input" type="password" placeholder="password">
                 <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
             </div>
             <div id="message-container" class="message-container"></div>
