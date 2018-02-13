@@ -10,13 +10,19 @@
   border: 1px solid @admin-bg-light-gray;
   vertical-align: top;
   padding: 5px 9px;
-  background: none @admin-white !important;
+  background: none @admin-white;
 
   &.invalid {
-    &[type=password] {
-      color: @admin-red;
-    }
     .animation(shake, .5s, 0s, linear, 1);
+    background-image: url("../icons/problem.svg");
+    background-position: right;
+    background-repeat: no-repeat;
+  }
+
+  &.valid {
+    background-image: url("../icons/check.svg");
+    background-position: right;
+    background-repeat: no-repeat;
   }
 }
 

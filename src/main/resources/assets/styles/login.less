@@ -9,7 +9,16 @@
     text-align: center;
 
     .ellipsis();
-  }  
+  }
+
+  .input-field {
+    background: none @admin-white !important;
+    &.invalid {
+      &[type=password] {
+        color: @admin-red;
+      }
+    }
+  }
 
   #username-input {
     min-height: initial;
