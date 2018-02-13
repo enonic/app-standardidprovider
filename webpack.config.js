@@ -32,5 +32,6 @@ module.exports = {
             allChunks: true,
             disable: false
         })
-    ]
+    ],
+    devtool: 'source-map'
 };
