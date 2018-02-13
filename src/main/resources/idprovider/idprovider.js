@@ -46,6 +46,14 @@ exports.post = function (req) {
             skipAuth: true
         });
         break;
+    case 'createAdminUser':
+        result = adminCreationLib.createAdminUserCreation({
+            userStore: 'system',
+            user: body.user,
+            email: body.email,
+            password: body.password
+        });
+        break;
     }
     return {
         body: result,

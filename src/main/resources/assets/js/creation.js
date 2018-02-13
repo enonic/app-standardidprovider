@@ -5,6 +5,7 @@ var usernameRegexp = /[<>"'/\\*?|]/;
 
 var validClass = 'valid';
 var invalidClass = 'invalid';
+var disabledClass = 'disabled';
 
 var emailCreationInput = $("#email-creation-input");
 var usernameCreationInput = $("#username-creation-input");
@@ -31,19 +32,13 @@ function checkPasswords() {
 }
 
 function checkForm() {
-    var valid = true;
+    var enabled = true;
     inputs.forEach(function (input) {
         if (!input.hasClass(validClass)) {
-            valid = false;
+            enabled = false;
         }
     });
-    if (valid) {
-        createAdminButton.removeClass(invalidClass);
-        createAdminButton.addClass(validClass);
-    } else {
-        createAdminButton.removeClass(validClass);
-        createAdminButton.addClass(invalidClass);
-    }
+    enable(createAdminButton, enabled);
 }
 
 function setValidity(input, valid) {
@@ -56,6 +51,25 @@ function setValidity(input, valid) {
         input.removeClass(validClass);
         input.addClass(invalidClass);
     }
+}
+
+function enable(button, enabled) {
+    if (enabled) {
+        button.removeClass(disabledClass);
+    } else {
+        button.addClass(disabledClass);
+    }
+}
+
+function handleCreateAdminUserResponse(creationResult) {
+    if (creationResult && creationResult.authenticated) {
+        if (CONFIG.redirectUrl) {
+            location.href = CONFIG.redirectUrl;
+        } else {
+            location.reload();
+        }
+    }
+    //TODO
 }
 
 var emailCreationTimeoutId;
@@ -80,4 +94,24 @@ var passwordRepeatitionTimeoutId;
 passwordRepeatInput.keyup(function () {
     clearTimeout(passwordRepeatitionTimeoutId);
     passwordRepeatitionTimeoutId = setTimeout(checkPasswords, checkTimeout);
+});
+
+createAdminButton.click(function () {
+    if (!createAdminButton.hasClass(disabledClass)) {
+        createAdminButton.hasClass(disabledClass);
+        var data = {
+            action: 'createAdminUser',
+            user: usernameCreationInput.val(),
+            email: emailCreationInput.val(),
+            password: passwordCreationInput.val()
+        };
+        $.ajax({
+            url: CONFIG.idProviderUrl,
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: handleCreateAdminUserResponse,
+            data: JSON.stringify(data)
+        });
+    }
 });
