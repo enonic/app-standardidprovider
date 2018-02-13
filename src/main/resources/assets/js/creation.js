@@ -3,7 +3,6 @@ var $ = require('jquery');
 var emailRegexp = /^[^@]+@+[^@]+$/;
 var illegalUsernameCharactersRegexp = /[<>"'/\\*?|]/;
 var reservedUsernamesRegexp = /^(su|anonymous)$/;
-var usernameRegexp = /[<>"'/\\*?|]/;
 
 var validClass = 'valid';
 var invalidClass = 'invalid';
