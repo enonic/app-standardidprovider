@@ -8,8 +8,15 @@
   .create-admin-button {
     .button();
     margin-bottom: @field-margin;
+    margin-top: @field-margin;
     background-color: @admin-green;
     padding: 8px;
     box-sizing: border-box;
+
+    &.invalid {
+      background-color: @admin-dark-gray;
+      opacity: 0.8;
+    }    
   }
+
 }
