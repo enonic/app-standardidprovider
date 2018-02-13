@@ -1,6 +1,8 @@
 var $ = require('jquery');
 
 var emailRegexp = /^[^@]+@+[^@]+$/;
+var illegalUsernameCharactersRegexp = /[<>"'/\\*?|]/;
+var reservedUsernamesRegexp = /^(su|anonymous)$/;
 var usernameRegexp = /[<>"'/\\*?|]/;
 
 var validClass = 'valid';
@@ -21,7 +23,7 @@ function checkEmail() {
 }
 
 function checkUsername() {
-    setValidity(usernameCreationInput, !usernameRegexp.test(usernameCreationInput.val()));
+    setValidity(usernameCreationInput, !reservedUsernamesRegexp.test(usernameCreationInput.val()) && !illegalUsernameCharactersRegexp.test(usernameCreationInput.val()));
     checkForm();
 }
 

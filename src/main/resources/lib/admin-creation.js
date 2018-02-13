@@ -11,7 +11,7 @@ exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
 exports.createAdminUserCreation = function (params) {
     if (adminUserCreationEnabled()) {
-        runAsAdmin(function () {
+        return runAsAdmin(function () {
             var createdUser = authLib.createUser({
                 userStore: 'system',
                 name: params.user,
@@ -22,16 +22,23 @@ exports.createAdminUserCreation = function (params) {
             if (createdUser) {
                 authLib.changePassword({
                     userKey: createdUser.key,
-                    password: 'new-secret-password'
+                    password: params.password
                 });
 
-                setFlag();
+                authLib.addMembers('role:system.admin', [createdUser.key]);
+                authLib.addMembers('role:system.admin.login', [createdUser.key]);                
 
-                return authLib.login({
+                var loginResult = authLib.login({
                     user: params.user,
                     password: params.password,
                     userStore: 'system'
                 });
+                
+                if (loginResult && loginResult.authenticated) {
+                    setFlag();
+                }
+                
+                return loginResult;
             }
         });
     }
@@ -51,7 +58,7 @@ function setFlag() {
         key: '/identity/system',
         editor: function (systemUserStore) {
             systemUserStore.adminUserCreationEnabled = false;
-            return node;
+            return systemUserStore;
         }
     });
 }
