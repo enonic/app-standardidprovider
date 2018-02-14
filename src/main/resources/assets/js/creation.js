@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var i18n = require('./i18n');
 
 var emailRegexp = /^[^@]+@+[^@]+$/;
 var illegalUsernameCharactersRegexp = /[<>"'/\\*?|]/;
@@ -13,6 +14,7 @@ var usernameCreationInput = $("#username-creation-input");
 var passwordCreationInput = $("#password-creation-input");
 var passwordRepeatInput = $("#password-repeat-input");
 var createAdminButton = $("#create-admin-button");
+var messageContainer = $("#message-container");
 var inputs = [emailCreationInput, usernameCreationInput, passwordCreationInput, passwordRepeatInput];
 var checkTimeout = 500;
 
@@ -69,8 +71,14 @@ function handleCreateAdminUserResponse(creationResult) {
         } else {
             location.reload();
         }
+    } else {
+        handleCreateAdminUserError();
     }
-    //TODO
+}
+
+function handleCreateAdminUserError() {
+    checkForm();
+    messageContainer.html(i18n.localise('notify.creation.failed'));
 }
 
 var emailCreationTimeoutId;
@@ -99,7 +107,8 @@ passwordRepeatInput.keyup(function () {
 
 createAdminButton.click(function () {
     if (!createAdminButton.hasClass(disabledClass)) {
-        createAdminButton.hasClass(disabledClass);
+        messageContainer.html("");
+        createAdminButton.addClass(disabledClass);
         var data = {
             action: 'createAdminUser',
             user: usernameCreationInput.val(),
@@ -112,6 +121,7 @@ createAdminButton.click(function () {
             dataType: 'json',
             contentType: 'application/json',
             success: handleCreateAdminUserResponse,
+            error: handleCreateAdminUserError,
             data: JSON.stringify(data)
         });
     }
