@@ -48,15 +48,16 @@ function isSystemUserstore() {
 }
 
 function checkFlag() {
-    var systemUserStore = connect().get('/identity/system');
-    return systemUserStore && systemUserStore.adminUserCreationEnabled === true;
+    var idProviderConfig = authLib.getIdProviderConfig();
+    return idProviderConfig && idProviderConfig.adminUserCreationEnabled === true;
 }
 
 function setFlag() {
     connect().modify({
         key: '/identity/system',
         editor: function (systemUserStore) {
-            delete systemUserStore.adminUserCreationEnabled;
+            if (systemUserStore.idProvider && systemUserStore.idProvider.config)
+            delete systemUserStore.idProvider.config.adminUserCreationEnabled;
             return systemUserStore;
         }
     });
