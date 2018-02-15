@@ -1,11 +1,7 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
-var loginButton = $("#login-button");
-var userNameInput = $("#username-input");
-var passwordInput = $("#password-input");
-var messageContainer = $("#message-container");
-var loginForm = $("#login-form");
+var loginButton, userNameInput, passwordInput, messageContainer, loginForm;
 
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
@@ -62,23 +58,33 @@ function onInputTyped(event) {
     }
 }
 
-if (loginForm.attr('hidden') === undefined) {
-    loginButton.click(function () {
-        loginButtonClicked();
-        return false;
-    });
-    $("#username-input, #password-input").keyup(onInputTyped);
+$(function () {
+    loginForm = $("#login-form");
+    if (loginForm.attr('hidden') === undefined) {
+        
+        loginButton = $("#login-button");
+        userNameInput = $("#username-input");
+        passwordInput = $("#password-input");
+        messageContainer = $("#message-container");
 
-    userNameInput.click();// for mobile devices
-    userNameInput.focus();
-    var checkLoginButtonInterval = setInterval(function () { //workaround to show login button when browser autofills inputs
-        var fieldsEmpty = checkFieldsEmpty();
-        if (!fieldsEmpty) {
-            loginButton.show();
-            clearInterval(checkLoginButtonInterval);
-        }
-    }, 100);
+        loginButton.click(function () {
+            loginButtonClicked();
+            return false;
+        });
+        $("#username-input, #password-input").keyup(onInputTyped);
 
-    $("#username-input").attr('placeholder', i18n.localise('page.login.userid_or_email'));
-    $("#password-input").attr('placeholder', i18n.localise('page.login.password'));    
-}
+        userNameInput.click();// for mobile devices
+        userNameInput.focus();
+        var checkLoginButtonInterval = setInterval(function () { //workaround to show login button when browser autofills inputs
+            var fieldsEmpty = checkFieldsEmpty();
+            if (!fieldsEmpty) {
+                loginButton.show();
+                clearInterval(checkLoginButtonInterval);
+            }
+        }, 100);
+
+        $("#username-input").attr('placeholder', i18n.localise('page.login.userid_or_email'));
+        $("#password-input").attr('placeholder', i18n.localise('page.login.password'));
+    }
+});
+

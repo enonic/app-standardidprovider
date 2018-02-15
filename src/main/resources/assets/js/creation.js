@@ -8,21 +8,11 @@ var reservedUsernamesRegexp = /^(su|anonymous)$/;
 var validClass = 'valid';
 var invalidClass = 'invalid';
 var disabledClass = 'disabled';
-
-var creationText = $("#creation-text");
-var emailCreationLabel = $("#email-creation-label");
-var emailCreationInput = $("#email-creation-input");
-var usernameCreationLabel = $("#username-creation-label");
-var usernameCreationInput = $("#username-creation-input");
-var passwordCreationLabel = $("#password-creation-label");
-var passwordCreationInput = $("#password-creation-input");
-var passwordRepeatLabel = $("#password-repeat-label");
-var passwordRepeatInput = $("#password-repeat-input");
-var createAdminButton = $("#create-admin-button");
-var messageContainer = $("#message-container");
-var loginForm = $("#login-form");
-var inputs = [emailCreationInput, usernameCreationInput, passwordCreationInput, passwordRepeatInput];
 var checkTimeout = 500;
+
+var creationText, emailCreationLabel, emailCreationInput, usernameCreationLabel,
+    usernameCreationInput, passwordCreationLabel, passwordCreationInput, passwordRepeatLabel,
+    passwordRepeatInput, createAdminButton, messageContainer, loginForm, inputs;
 
 function checkEmail() {
     setValidity(emailCreationInput, emailRegexp.test(emailCreationInput.val()));
@@ -30,7 +20,8 @@ function checkEmail() {
 }
 
 function checkUsername() {
-    setValidity(usernameCreationInput, !reservedUsernamesRegexp.test(usernameCreationInput.val()) && !illegalUsernameCharactersRegexp.test(usernameCreationInput.val()));
+    setValidity(usernameCreationInput, !reservedUsernamesRegexp.test(usernameCreationInput.val()) &&
+                                       !illegalUsernameCharactersRegexp.test(usernameCreationInput.val()));
     checkForm();
 }
 
@@ -88,63 +79,82 @@ function handleCreateAdminUserError() {
 }
 
 
-if (loginForm.attr('hidden') !== undefined) {
-    var emailCreationTimeoutId;
-    emailCreationInput.keyup(function () {
-        clearTimeout(emailCreationTimeoutId);
-        emailCreationTimeoutId = setTimeout(checkEmail, checkTimeout);
-    });
+$(function () {
+    loginForm = $("#login-form");
+    if (loginForm.attr('hidden') !== undefined) {
 
-    var usernameCreationTimeoutId;
-    usernameCreationInput.keyup(function () {
-        clearTimeout(usernameCreationTimeoutId);
-        usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
-    });
+        creationText = $("#creation-text");
+        emailCreationLabel = $("#email-creation-label");
+        emailCreationInput = $("#email-creation-input");
+        usernameCreationLabel = $("#username-creation-label");
+        usernameCreationInput = $("#username-creation-input");
+        passwordCreationLabel = $("#password-creation-label");
+        passwordCreationInput = $("#password-creation-input");
+        passwordRepeatLabel = $("#password-repeat-label");
+        passwordRepeatInput = $("#password-repeat-input");
+        createAdminButton = $("#create-admin-button");
+        messageContainer = $("#message-container");
+        inputs = [emailCreationInput, usernameCreationInput, passwordCreationInput, passwordRepeatInput];
 
-    var passwordCreationTimeoutId;
-    passwordCreationInput.keyup(function () {
-        clearTimeout(passwordCreationTimeoutId);
-        passwordCreationTimeoutId = setTimeout(checkPasswords, checkTimeout);
-    });
+        var emailCreationTimeoutId;
+        emailCreationInput.keyup(function () {
+            clearTimeout(emailCreationTimeoutId);
+            emailCreationTimeoutId = setTimeout(checkEmail, checkTimeout);
+        });
 
-    var passwordRepeatitionTimeoutId;
-    passwordRepeatInput.keyup(function () {
-        clearTimeout(passwordRepeatitionTimeoutId);
-        passwordRepeatitionTimeoutId = setTimeout(checkPasswords, checkTimeout);
-    });
+        var usernameCreationTimeoutId;
+        usernameCreationInput.keyup(function () {
+            clearTimeout(usernameCreationTimeoutId);
+            usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
+        });
 
-    createAdminButton.click(function () {
-        if (!createAdminButton.hasClass(disabledClass)) {
-            messageContainer.html("");
-            createAdminButton.addClass(disabledClass);
-            var data = {
-                action: 'createAdminUser',
-                user: usernameCreationInput.val(),
-                email: emailCreationInput.val(),
-                password: passwordCreationInput.val()
-            };
-            $.ajax({
-                url: CONFIG.idProviderUrl,
-                type: 'post',
-                dataType: 'json',
-                contentType: 'application/json',
-                success: handleCreateAdminUserResponse,
-                error: handleCreateAdminUserError,
-                data: JSON.stringify(data)
-            });
-        }
-    });
+        var passwordCreationTimeoutId;
+        passwordCreationInput.keyup(function () {
+            clearTimeout(passwordCreationTimeoutId);
+            passwordCreationTimeoutId = setTimeout(checkPasswords, checkTimeout);
+        });
 
-    creationText.html(i18n.localise('page.creation.text'));
-    emailCreationLabel.html(i18n.localise('page.creation.email'));
-    emailCreationInput.attr('placeholder', i18n.localise('page.creation.email'));
-    usernameCreationLabel.html(i18n.localise('page.creation.username'));
-    usernameCreationInput.attr('placeholder', i18n.localise('page.creation.username'));
-    passwordCreationLabel.html(i18n.localise('page.creation.password'));
-    passwordCreationInput.attr('placeholder', i18n.localise('page.creation.password.placeholder'));
-    passwordRepeatLabel.html(i18n.localise('page.creation.password_repeat'));
-    passwordRepeatInput.attr('placeholder', i18n.localise('page.creation.password_repeat'));
-    createAdminButton.html(i18n.localise('page.creation.button'));
-}
+        var passwordRepeatitionTimeoutId;
+        passwordRepeatInput.keyup(function () {
+            clearTimeout(passwordRepeatitionTimeoutId);
+            passwordRepeatitionTimeoutId = setTimeout(checkPasswords, checkTimeout);
+        });
+
+        createAdminButton.click(function () {
+            if (!createAdminButton.hasClass(disabledClass)) {
+                messageContainer.html("");
+                createAdminButton.addClass(disabledClass);
+                var data = {
+                    action: 'createAdminUser',
+                    user: usernameCreationInput.val(),
+                    email: emailCreationInput.val(),
+                    password: passwordCreationInput.val()
+                };
+                $.ajax({
+                    url: CONFIG.idProviderUrl,
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: handleCreateAdminUserResponse,
+                    error: handleCreateAdminUserError,
+                    data: JSON.stringify(data)
+                });
+            }
+        });
+
+        creationText.html(i18n.localise('page.creation.text'));
+        emailCreationLabel.html(i18n.localise('page.creation.email'));
+        emailCreationInput.attr('placeholder', i18n.localise('page.creation.email'));
+        usernameCreationLabel.html(i18n.localise('page.creation.username'));
+        usernameCreationInput.attr('placeholder', i18n.localise('page.creation.username'));
+        passwordCreationLabel.html(i18n.localise('page.creation.password'));
+        passwordCreationInput.attr('placeholder', i18n.localise('page.creation.password.placeholder'));
+        passwordRepeatLabel.html(i18n.localise('page.creation.password_repeat'));
+        passwordRepeatInput.attr('placeholder', i18n.localise('page.creation.password_repeat'));
+        createAdminButton.html(i18n.localise('page.creation.button'));
+    }
+});
+
+
 
  

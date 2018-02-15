@@ -1,14 +1,8 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
-var welcomeText = $("#welcome-text");
-var enonicLogo = $("#enonic-logo");
-var createAdminViewButton = $("#create-admin-view-button");
-var loginAsSuLink = $(".login-su-link");
-var messageContainer = $("#message-container");
-var welcomeView = $("#welcome-view");
-var creationView = $("#creation-view");
-var loginForm = $("#login-form");
+var welcomeText, enonicLogo, createAdminViewButton, loginAsSuLink,
+    messageContainer, welcomeView, creationView, loginForm;
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -50,17 +44,30 @@ function loginAsSuLinkClicked() {
     });
 }
 
-if (loginForm.attr('hidden') !== undefined) {
-    loginAsSuLink.click(function () {
-        loginAsSuLinkClicked();
-        return false;
-    });
-    createAdminViewButton.click(function () {
-        displayCreationView();
-        return false;
-    });
+$(function () {
+    loginForm = $("#login-form");
+    if (loginForm.attr('hidden') !== undefined) {
 
-    welcomeText.html(i18n.localise('page.welcome.text'));
-    createAdminViewButton.html(i18n.localise('page.welcome.button'));
-    loginAsSuLink.html(i18n.localise('page.welcome.login'));
-}
+        welcomeText = $("#welcome-text");
+        enonicLogo = $("#enonic-logo");
+        createAdminViewButton = $("#create-admin-view-button");
+        loginAsSuLink = $(".login-su-link");
+        messageContainer = $("#message-container");
+        welcomeView = $("#welcome-view");
+        creationView = $("#creation-view");
+
+        loginAsSuLink.click(function () {
+            loginAsSuLinkClicked();
+            return false;
+        });
+        createAdminViewButton.click(function () {
+            displayCreationView();
+            return false;
+        });
+
+        welcomeText.html(i18n.localise('page.welcome.text'));
+        createAdminViewButton.html(i18n.localise('page.welcome.button'));
+        loginAsSuLink.html(i18n.localise('page.welcome.login'));
+    }
+});
+
