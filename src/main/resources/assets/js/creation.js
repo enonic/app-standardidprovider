@@ -10,6 +10,8 @@ var invalidClass = 'invalid';
 var disabledClass = 'disabled';
 var checkTimeout = 500;
 
+var fillUsername = true;
+
 var creationText, emailCreationLabel, emailCreationInput, usernameCreationLabel,
     usernameCreationInput, passwordCreationLabel, passwordCreationInput, passwordRepeatLabel,
     passwordRepeatInput, createAdminButton, messageContainer, loginForm, inputs;
@@ -98,12 +100,25 @@ $(function () {
 
         var emailCreationTimeoutId;
         emailCreationInput.keyup(function () {
+            if (fillUsername) {
+                var emailValue = emailCreationInput.val();
+                if (emailValue) {
+                    var atIndex = emailValue.indexOf('@');
+                    usernameCreationInput.val(atIndex === -1 ? emailValue : emailValue.substr(0, atIndex));
+                }
+            }
             clearTimeout(emailCreationTimeoutId);
-            emailCreationTimeoutId = setTimeout(checkEmail, checkTimeout);
+            emailCreationTimeoutId = setTimeout(checkEmail, function() {
+                checkEmail();
+                if (fillUsername) {
+                    checkUsername()
+                }
+            });
         });
 
         var usernameCreationTimeoutId;
         usernameCreationInput.keyup(function () {
+            fillUsername=false;
             clearTimeout(usernameCreationTimeoutId);
             usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
         });
