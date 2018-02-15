@@ -42,26 +42,26 @@
     <div class="center-panel">
         <img id="enonic-logo" class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
         <div id="welcome-view" class="welcome-view" {{^adminUserCreation}}hidden{{/adminUserCreation}}>
-            <span class="welcome-text">Welcome to Enonic XP</span>
+            <span id="welcome-text" class="welcome-text">Welcome to Enonic XP</span>
             <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
             <a class="login-su-link link">... or login without a user</a>
         </div>
         <form id="creation-view" class="creation-view" hidden>
-            <span class="creation-text">Create system admin user</span>
+            <span id="creation-text" class="creation-text">Create system admin user</span>
             <div class="fieldset">
-                <label for="email-creation-input">Email</label>
+                <label id="email-creation-label" for="email-creation-input">Email</label>
                 <input id="email-creation-input" class="input-field" type="email" placeholder="Email">
             </div>
             <div class="fieldset">
-                <label for="username-creation-input">Username</label>
+                <label id="username-creation-label" for="username-creation-input">Username</label>
                 <input id="username-creation-input" class="input-field" type="text" placeholder="Username">
             </div>
             <div class="fieldset">   
-                <label for="password-creation-input">Password</label>
+                <label id="password-creation-label" for="password-creation-input">Password</label>
                 <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
             </div>
             <div class="fieldset">
-                <label for="password-repeat-input">Repeat password</label>
+                <label id="password-repeat-label"  for="password-repeat-input">Repeat password</label>
                 <input id="password-repeat-input" class="input-field" type="password" placeholder="Repeat password">
             </div>
             <a id="create-admin-button" class="create-admin-button disabled">Create Admin User</a>

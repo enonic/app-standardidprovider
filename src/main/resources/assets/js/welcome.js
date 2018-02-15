@@ -1,12 +1,14 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
+var welcomeText = $("#welcome-text");
+var enonicLogo = $("#enonic-logo");
 var createAdminViewButton = $("#create-admin-view-button");
 var loginAsSuLink = $(".login-su-link");
-var enonicLogo = $("#enonic-logo");
 var messageContainer = $("#message-container");
 var welcomeView = $("#welcome-view");
 var creationView = $("#creation-view");
+var loginForm = $("#login-form");
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -48,11 +50,17 @@ function loginAsSuLinkClicked() {
     });
 }
 
-loginAsSuLink.click(function () {
-    loginAsSuLinkClicked();
-    return false;
-});
-createAdminViewButton.click(function () {
-    displayCreationView();
-    return false;
-});
+if (loginForm.attr('hidden') !== undefined) {
+    loginAsSuLink.click(function () {
+        loginAsSuLinkClicked();
+        return false;
+    });
+    createAdminViewButton.click(function () {
+        displayCreationView();
+        return false;
+    });
+
+    welcomeText.html(i18n.localise('page.welcome.text'));
+    createAdminViewButton.html(i18n.localise('page.welcome.button'));
+    loginAsSuLink.html(i18n.localise('page.welcome.login'));
+}
