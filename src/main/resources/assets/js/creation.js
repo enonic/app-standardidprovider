@@ -108,12 +108,12 @@ $(function () {
                 }
             }
             clearTimeout(emailCreationTimeoutId);
-            emailCreationTimeoutId = setTimeout(checkEmail, function() {
+            emailCreationTimeoutId = setTimeout(function() {
                 checkEmail();
                 if (fillUsername) {
-                    checkUsername()
+                    checkUsername();
                 }
-            });
+            }, checkTimeout);
         });
 
         var usernameCreationTimeoutId;
