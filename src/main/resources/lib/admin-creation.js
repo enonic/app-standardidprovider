@@ -49,7 +49,6 @@ function isSystemUserstore() {
 
 function checkFlag() {
     var idProviderConfig = authLib.getIdProviderConfig();
-    log.info(JSON.stringify(idProviderConfig));
     return idProviderConfig && idProviderConfig.adminUserCreationEnabled === true;
 }
 
