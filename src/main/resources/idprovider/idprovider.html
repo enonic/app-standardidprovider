@@ -43,7 +43,8 @@
          class="lazy-image empty"></div>
     <div class="center-panel">
         <img id="enonic-logo" class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
-        <div id="welcome-view" class="welcome-view" {{^adminUserCreation}}hidden{{/adminUserCreation}}>
+        {{#adminUserCreation}}
+        <div id="welcome-view" class="welcome-view">
             <span id="welcome-text" class="welcome-text">Welcome to Enonic XP</span>
             <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
             <a class="login-su-link link">... or login without a user</a>
@@ -61,6 +62,7 @@
             <div class="fieldset">   
                 <label id="password-creation-label" for="password-creation-input">Password</label>
                 <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
+                <div id="invalid-password-message">Password is too short!</div>
             </div>
             <div class="fieldset">
                 <label id="password-repeat-label"  for="password-repeat-input">Repeat password</label>
@@ -69,13 +71,16 @@
             <a id="create-admin-button" class="create-admin-button disabled">Create Admin User</a>
             <a class="login-su-link link">... or login without a user</a>
         </form>
-        <form id="login-form" class="login-form" {{#adminUserCreation}}hidden{{/adminUserCreation}}>
+        {{/adminUserCreation}}
+        {{^adminUserCreation}}
+        <form id="login-form" class="login-form">
             <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">        
             <div class="password-container">
                 <input id="password-input" class="input-field password-input" type="password" placeholder="password">
                 <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
             </div>
         </form>
+        {{/adminUserCreation}}
         <div id="message-container" class="message-container"></div>
     </div>
 </div>

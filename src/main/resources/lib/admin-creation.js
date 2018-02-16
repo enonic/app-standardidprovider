@@ -49,6 +49,7 @@ function isSystemUserstore() {
 
 function checkFlag() {
     var idProviderConfig = authLib.getIdProviderConfig();
+    log.info(JSON.stringify(idProviderConfig));
     return idProviderConfig && idProviderConfig.adminUserCreationEnabled === true;
 }
 
@@ -69,6 +70,7 @@ function hasRealUsers() {
             count: 0,
             query: '_path NOT IN (\'/identity/system/users/su\',\'/identity/system/users/anonymous\')'
         }).total;
+
         return usersCount > 0;
     });    
 }

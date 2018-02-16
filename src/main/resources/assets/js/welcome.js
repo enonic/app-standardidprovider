@@ -26,6 +26,7 @@ function displayCreationView() {
     enonicLogo.attr('hidden', '');
     welcomeView.attr('hidden', '');
     creationView.attr('hidden', null);
+    $("#email-creation-input").focus();
 }
 
 function loginAsSuLinkClicked() {
@@ -46,28 +47,30 @@ function loginAsSuLinkClicked() {
 
 $(function () {
     loginForm = $("#login-form");
-    if (loginForm.attr('hidden') !== undefined) {
 
-        welcomeText = $("#welcome-text");
-        enonicLogo = $("#enonic-logo");
-        createAdminViewButton = $("#create-admin-view-button");
-        loginAsSuLink = $(".login-su-link");
-        messageContainer = $("#message-container");
-        welcomeView = $("#welcome-view");
-        creationView = $("#creation-view");
-
-        loginAsSuLink.click(function () {
-            loginAsSuLinkClicked();
-            return false;
-        });
-        createAdminViewButton.click(function () {
-            displayCreationView();
-            return false;
-        });
-
-        welcomeText.html(i18n.localise('page.welcome.text'));
-        createAdminViewButton.html(i18n.localise('page.welcome.button'));
-        loginAsSuLink.html(i18n.localise('page.welcome.login'));
+    if (loginForm.length) {
+        return;
     }
+
+    welcomeText = $("#welcome-text");
+    enonicLogo = $("#enonic-logo");
+    createAdminViewButton = $("#create-admin-view-button");
+    loginAsSuLink = $(".login-su-link");
+    messageContainer = $("#message-container");
+    welcomeView = $("#welcome-view");
+    creationView = $("#creation-view");
+
+    loginAsSuLink.click(function () {
+        loginAsSuLinkClicked();
+        return false;
+    });
+    createAdminViewButton.click(function () {
+        displayCreationView();
+        return false;
+    });
+
+    welcomeText.html(i18n.localise('page.welcome.text'));
+    createAdminViewButton.html(i18n.localise('page.welcome.button'));
+    loginAsSuLink.html(i18n.localise('page.welcome.login'));
 });
 
