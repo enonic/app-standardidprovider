@@ -1,0 +1,23 @@
+.creation-view {
+  .view();
+
+  .creation-text {
+    .view-text();
+  }
+
+  .create-admin-button {
+    .button();
+    font-size: 14px;
+    margin: 20px 0;
+    background-color: @admin-green;
+    padding: 8px;
+    box-sizing: border-box;
+
+    &.disabled {
+      background-color: @admin-dark-gray;
+      opacity: 0.8;
+      pointer-events: none;
+    }    
+  }
+
+}

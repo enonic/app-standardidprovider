@@ -14,7 +14,10 @@
 
 @admin-white: #fff;
 @admin-bg-light-gray: #eee;
+@admin-dark-gray: #53585F;
 @admin-red: #cb0300;
+@admin-green: #609e24;
+@admin-blue: #4294de;
 
 @enonic-logo-img-width: 103px;
 @enonic-logo-img-height: 137px;
@@ -22,6 +25,9 @@
 @enonic-logo-width: @enonic-logo-img-width * @enonic-logo-size;
 @enonic-logo-height: @enonic-logo-img-height * @enonic-logo-size;
 @enonic-logo-center-left: @enonic-logo-width/2;
+
+@field-width: 200px;
+@field-margin: 10px;
 
 .home-main-container-mixin() {
   position: fixed;
@@ -65,8 +71,17 @@
   display: flex;
 }
 
+.flex-direction(@value) {
+  flex-direction: @value;
+}
+
+.justify-content(@value) {
+  justify-content: @value;
+}
+
 .align-items(@value) {
   align-items: @value;
+  -webkit-align-items: @value;
 }
 
 .ellipsis() {
@@ -80,4 +95,8 @@
   -moz-animation: @name @duration @delay @ease @iteration;
   -ms-animation: @name @duration @delay @ease @iteration;
   animation: @name @duration @delay @ease @iteration;
+}
+
+*[hidden] {
+  display: none !important;
 }

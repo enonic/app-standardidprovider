@@ -24,11 +24,11 @@
 
     <link rel="manifest" href="{{imageUrl}}/favicons/manifest.json">
     <link rel="mask-icon" href="{{imageUrl}}/xp-logo-black.svg" color="#5bbad5">
-    <link rel="stylesheet" type="text/css" href="{{appLoginCssUrl}}">
+    <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
 
     {{{config}}}
 
-    <script type="text/javascript" src="{{appLoginJsUrl}}"></script>
+    <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js"></script>
     <script>
         function lazyFadeIn(imgEl) {
             imgEl.parentNode.removeChild(imgEl);
@@ -38,26 +38,50 @@
 </head>
 <body style="background-color: #53585F;">
 <div class="home-main-container">
-    <img style="opacity: 0;" src="{{appLoginBackgroundUrl}}" onload="lazyFadeIn(this);">
-    <div id="background-image" style="background-image: url(&quot;{{appLoginBackgroundUrl}}&quot;);" class="lazy-image empty"></div>
+    <img style="opacity: 0;" src="{{assetUrlPrefix}}/images/background.jpg" onload="lazyFadeIn(this);">
+    <div id="background-image" style="background-image: url(&quot;{{assetUrlPrefix}}/images/background.jpg&quot;);"
+         class="lazy-image empty"></div>
     <div class="center-panel">
-        <div id="branding" class="branding">
-            <h1 class="localise">Enonic XP - Login</h1>
+        <img id="enonic-logo" class="enonic-logo" src="{{assetUrlPrefix}}/images/enonic.svg"/>
+        {{#adminUserCreation}}
+        <div id="welcome-view" class="welcome-view">
+            <span id="welcome-text" class="welcome-text">Welcome to Enonic XP</span>
+            <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
+            <a class="login-su-link link">... or login without a user</a>
         </div>
-        <div class="login-panel">
-            <form id="login-form" class="login-form">
-                <input id="username-input"
-                       class="form-input input-view" type="text"
-                       placeholder="userid or e-mail">
-
-                <div class="password-container">
-                    <input id="password-input" class="input-view form-input password-input"
-                           type="password" placeholder="password">
-                    <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
-                </div>
-                <div id="message-container" class="message-container"></div>
-            </form>
-        </div>
+        <form id="creation-view" class="creation-view" hidden>
+            <span id="creation-text" class="creation-text">Create system admin user</span>
+            <div class="fieldset">
+                <label id="email-creation-label" for="email-creation-input">Email</label>
+                <input id="email-creation-input" class="input-field" type="email" placeholder="Email">
+            </div>
+            <div class="fieldset">
+                <label id="username-creation-label" for="username-creation-input">Username</label>
+                <input id="username-creation-input" class="input-field" type="text" placeholder="Username">
+            </div>
+            <div class="fieldset">   
+                <label id="password-creation-label" for="password-creation-input">Password</label>
+                <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
+                <div id="invalid-password-message">Password is too short!</div>
+            </div>
+            <div class="fieldset">
+                <label id="password-repeat-label"  for="password-repeat-input">Repeat password</label>
+                <input id="password-repeat-input" class="input-field" type="password" placeholder="Repeat password">
+            </div>
+            <a id="create-admin-button" class="create-admin-button disabled">Create Admin User</a>
+            <a class="login-su-link link">... or login without a user</a>
+        </form>
+        {{/adminUserCreation}}
+        {{^adminUserCreation}}
+        <form id="login-form" class="login-form">
+            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">        
+            <div class="password-container">
+                <input id="password-input" class="input-field password-input" type="password" placeholder="password">
+                <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
+            </div>
+        </form>
+        {{/adminUserCreation}}
+        <div id="message-container" class="message-container"></div>
     </div>
 </div>
 

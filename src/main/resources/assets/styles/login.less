@@ -1,0 +1,61 @@
+.login-form {
+  .input-field {
+    background: none @admin-white !important;
+    &.invalid {
+      &[type=password] {
+        color: @admin-red;
+      }
+    }
+  }
+
+  #username-input {
+    min-height: initial;
+    margin-bottom: 13px;
+  }
+
+  .password-input {
+    padding-right: 35px;
+  }
+
+  .login-button {
+    background-color: transparent;
+    background: url("../icons/circle-right.svg") 0 0 no-repeat;
+    position: absolute;
+    right: 2px;
+    top: 1px;
+    height: 22px;
+    width: 22px;
+    background-size: 20px 20px;
+    border: none;
+    opacity: 0.4;
+    margin-top: 3px;
+
+    &.invalid {
+      .animation(shake, .5s, 0s, linear, 1);
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:focus:not(:disabled) {
+      box-shadow: none;
+      border: 1px solid transparent;
+      top: 0px;
+      right: 4px;
+      margin-top: 4px;
+    }
+
+    &:before {
+      color: inherit; // updates icons color
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  .password-container {
+    position: relative;
+  }
+}

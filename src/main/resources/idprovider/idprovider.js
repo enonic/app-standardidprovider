@@ -2,6 +2,7 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 var admin = require('/lib/xp/admin');
+var adminCreationLib = require('/lib/admin-creation');
 
 exports.handle401 = function () {
     var body = generateLoginPage();
@@ -27,13 +28,34 @@ exports.get = function (req) {
 exports.post = function (req) {
     var userStoreKey = portalLib.getUserStoreKey();
     var body = JSON.parse(req.body);
-    var loginResult = authLib.login({
-        user: body.user,
-        password: body.password,
-        userStore: userStoreKey
-    });
+
+    var result;
+    switch (body.action) {
+    case 'login':
+        result = authLib.login({
+            user: body.user,
+            password: body.password,
+            userStore: userStoreKey
+        });
+        break;
+    case 'loginAsSu':
+        result = adminCreationLib.adminUserCreationEnabled() && authLib.login({
+            user: 'su',
+            userStore: 'system',
+            skipAuth: true
+        });
+        break;
+    case 'createAdminUser':
+        result = adminCreationLib.createAdminUserCreation({
+            userStore: 'system',
+            user: body.user,
+            email: body.email,
+            password: body.password
+        });
+        break;
+    }
     return {
-        body: loginResult,
+        body: result,
         contentType: 'application/json'
     };
 };
@@ -68,15 +90,14 @@ function generateRedirectUrl() {
 
 function generateLoginPage(redirectUrl) {
     var userStoreKey = portalLib.getUserStoreKey();
-    var appLoginJsUrl = portalLib.assetUrl({path: "js/_all.js"});
-    var appLoginCssUrl = portalLib.assetUrl({path: "styles/_all.css"});
-    var appLoginBackgroundUrl = portalLib.assetUrl({path: "images/background.jpg"});
-    var appLoginServiceUrl = portalLib.idProviderUrl();
+    var assetUrlPrefix = portalLib.assetUrl({path: ""});
+    var idProviderUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
+    var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
-        appLoginServiceUrl: appLoginServiceUrl,
+        idProviderUrl: idProviderUrl,
         userStoreKey: userStoreKey,
         redirectUrl: redirectUrl,
         messages: admin.getPhrases()
@@ -84,11 +105,10 @@ function generateLoginPage(redirectUrl) {
 
     var view = resolve('idprovider.html');
     var params = {
-        appLoginJsUrl: appLoginJsUrl,
-        appLoginCssUrl: appLoginCssUrl,
-        appLoginBackgroundUrl: appLoginBackgroundUrl,
+        assetUrlPrefix: assetUrlPrefix,
         imageUrl: imageUrl,
-        config: config
+        config: config,
+        adminUserCreation: adminUserCreation
     };
     return mustacheLib.render(view, params);
 }

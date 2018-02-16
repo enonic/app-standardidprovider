@@ -1,5 +1,12 @@
 @import "variables";
 @import "animations";
+@import "fields";
+@import "buttons";
+@import "views";
+@import "errors";
+@import "login";
+@import "welcome";
+@import "creation";
 
 html, body {
   height: 100%
@@ -11,145 +18,29 @@ body {
   overflow-y: hidden;
   font-family: @admin-font-family;
   font-size: @admin-font-size;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: bold;
   margin: 0;
   padding: 0
 }
+
 .home-main-container {
   .home-main-container-mixin();
 
-  h3,
-  .installation-info {
-    font-size: 24px;
-    color: @admin-white;
-  }
-
-  /** Branding */
-  .branding {
-    .flexbox();
-    align-items: center;
-    -webkit-align-items: center;
-    width: 200px;
-    height: 100%;
-    left: calc(~"50% - @{enonic-logo-center-left}");
-    margin-top: -120px;
-    position: absolute;
-    text-align: center;
-    z-index: 0;
-
-    h1 {
-      color: white;
-      background: url("../images/enonic.svg") 0 0 no-repeat;
-      background-size: 100%;
-      height: @enonic-logo-height;
-      width: @enonic-logo-width;
-      text-indent: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      padding-bottom: 20px;
-    }
+  .enonic-logo {
+    height: @enonic-logo-height;
+    width: @enonic-logo-width;
+    padding-bottom: 20px;
   }
 
   /** Common */
-
   .center-panel {
-    .login-panel {
-      .flexbox();
-      .align-items(center);
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-
-
-      /** Login Form **/
-      .login-form {
-        position: static;
-        margin: -4px auto 0;
-
-        .message-container {
-          position: absolute;
-          width: 200px;
-          height: 28px;
-          line-height: 28px;
-          margin-top: 10px;
-          color: white;
-          text-align: center;
-
-          .ellipsis();
-        }
-
-        .input-view {
-          font-size: 12px;
-          box-sizing: border-box;
-          margin-bottom: 10px;
-          border: 1px solid @admin-bg-light-gray;
-          vertical-align: top;
-          padding: 5px 9px;
-          background: none @admin-white !important;
-          width: 200px;
-
-          &.invalid {
-            &[type=password] {
-              color: @admin-red;
-            }
-            .animation(shake, .5s, 0s, linear, 1);
-          }
-        }
-
-        #username-input {
-          min-height: initial;
-          margin-bottom: 13px;
-        }
-
-        .password-input {
-          padding-right: 35px;
-        }
-
-        .login-button {
-          background-color: transparent;
-          background: url("../icons/circle-right.svg") 0 0 no-repeat;
-          position: absolute;
-          right: 2px;
-          top: 1px;
-          height: 22px;
-          width: 22px;
-          background-size: 20px 20px;
-          border: none;
-          opacity: 0.4;
-          margin-top: 3px;
-
-          &.invalid {
-            .animation(shake, .5s, 0s, linear, 1);
-          }
-
-          &:hover {
-            cursor: pointer;
-          }
-
-          &:focus:not(:disabled) {
-            box-shadow: none;
-            border: 1px solid transparent;
-            top: 0px;
-            right: 4px;
-            margin-top: 4px;
-          }
-
-          &:before {
-            color: inherit; // updates icons color
-          }
-
-          span {
-            display: none;
-          }
-        }
-
-        .password-container {
-          position: relative;
-        }
-      }
-
-    }
+    .flexbox();
+    .flex-direction(column);
+    .justify-content(center);
+    .align-items(center);
+    margin-top: -120px;
   }
-
 }
 
