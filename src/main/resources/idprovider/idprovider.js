@@ -39,7 +39,7 @@ exports.post = function (req) {
         });
         break;
     case 'loginAsSu':
-        result = adminCreationLib.adminUserCreationEnabled() && authLib.login({
+        result = adminCreationLib.adminUserCreationEnabled() && adminCreationLib.loginWithoutUserEnabled() && authLib.login({
             user: 'su',
             userStore: 'system',
             skipAuth: true
@@ -94,6 +94,7 @@ function generateLoginPage(redirectUrl) {
     var idProviderUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({path: "icons/"});
     var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
+    var loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
 
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
@@ -108,7 +109,8 @@ function generateLoginPage(redirectUrl) {
         assetUrlPrefix: assetUrlPrefix,
         imageUrl: imageUrl,
         config: config,
-        adminUserCreation: adminUserCreation
+        adminUserCreation: adminUserCreation,
+        loginWithoutUser: loginWithoutUser
     };
     return mustacheLib.render(view, params);
 }

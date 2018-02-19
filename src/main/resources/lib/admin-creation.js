@@ -2,11 +2,16 @@ var authLib = require('/lib/xp/auth');
 var nodeLib = require('/lib/xp/node');
 var portalLib = require('/lib/xp/portal');
 var contextLib = require('/lib/xp/context');
+var config = require('./config');
 
 function adminUserCreationEnabled() {
-    return isSystemUserstore() && checkFlag() && !hasRealUsers();
+    return config.isAdminUserCreationEnabled() && isSystemUserstore() && checkFlag() && !hasRealUsers();
 };
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
+
+exports.loginWithoutUserEnabled = function() {
+    return config.isLoginWithoutUserEnabled();
+};
 
 exports.createAdminUserCreation = function (params) {
     if (adminUserCreationEnabled()) {
