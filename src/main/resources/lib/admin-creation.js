@@ -5,7 +5,7 @@ var contextLib = require('/lib/xp/context');
 var config = require('./config');
 
 function adminUserCreationEnabled() {
-    return config.isAdminUserCreationEnabled() && isSystemUserstore() && checkFlag() && !hasRealUsers();
+    return isSystemUserstore() && checkFlag() && !hasRealUsers();
 };
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
 

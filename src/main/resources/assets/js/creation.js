@@ -1,14 +1,14 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
-var emailRegexp = /^[^@]+@+[^@]+$/;
-var illegalUsernameCharactersRegexp = /[<>"'/\\*?|]/;
+var emailRegexp = /^[^@\s]+@+[^@\s]+$/;
+var nodeIdRegexp = /^[a-z0-9A-Z_\-\.:]+$/;
 var reservedUsernamesRegexp = /^(su|anonymous)$/;
 
 var validClass = 'valid';
 var invalidClass = 'invalid';
 var disabledClass = 'disabled';
-var checkTimeout = 500;
+var checkTimeout = 1000;
 
 var fillUsername = true;
 
@@ -23,7 +23,7 @@ function checkEmail() {
 
 function checkUsername() {
     setValidity(usernameCreationInput, !reservedUsernamesRegexp.test(usernameCreationInput.val()) &&
-                                       !illegalUsernameCharactersRegexp.test(usernameCreationInput.val()));
+                                       nodeIdRegexp.test(usernameCreationInput.val()));
     checkForm();
 }
 
@@ -106,11 +106,9 @@ $(function () {
     var emailCreationTimeoutId;
     emailCreationInput.keyup(function () {
         if (fillUsername) {
-            var emailValue = emailCreationInput.val();
-            if (emailValue) {
-                var atIndex = emailValue.indexOf('@');
-                usernameCreationInput.val(atIndex === -1 ? emailValue : emailValue.substr(0, atIndex));
-            }
+            var emailValue = emailCreationInput.val() || '';
+            var atIndex = emailValue.indexOf('@');
+            usernameCreationInput.val(atIndex === -1 ? emailValue : emailValue.substr(0, atIndex));
         }
         clearTimeout(emailCreationTimeoutId);
         emailCreationTimeoutId = setTimeout(function() {
