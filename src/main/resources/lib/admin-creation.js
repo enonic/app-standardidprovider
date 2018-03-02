@@ -5,7 +5,7 @@ var contextLib = require('/lib/xp/context');
 var config = require('./config');
 
 function adminUserCreationEnabled() {
-    return isSystemUserstore() && checkFlag() && !hasRealUsers();
+    return isSystemUserstore() && checkFlag();
 };
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
@@ -66,17 +66,6 @@ function setFlag() {
             return systemUserStore;
         }
     });
-}
-
-function hasRealUsers() {
-    return runAsAdmin(function (){
-        var usersCount = authLib.findUsers({
-            count: 0,
-            query: '_path NOT IN (\'/identity/system/users/su\',\'/identity/system/users/anonymous\')'
-        }).total;
-
-        return usersCount > 0;
-    });    
 }
 
 function runAsAdmin(callback) {
