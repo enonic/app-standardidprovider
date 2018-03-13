@@ -22,5 +22,10 @@ module.exports = {
     env: {
         browser: true,
         node: true
+    },
+    globals: {
+        app: false,
+        CONFIG: false,
+        resolve: false
     }
 };

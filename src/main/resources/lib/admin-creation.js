@@ -6,16 +6,16 @@ var config = require('./config');
 
 function adminUserCreationEnabled() {
     return isSystemUserstore() && checkFlag();
-};
+}
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
 exports.loginWithoutUserEnabled = function() {
     return config.isLoginWithoutUserEnabled();
 };
 
-exports.createAdminUserCreation = function (params) {
+exports.createAdminUserCreation = function(params) {
     if (adminUserCreationEnabled()) {
-        return runAsAdmin(function () {
+        return runAsAdmin(function() {
             var createdUser = authLib.createUser({
                 userStore: 'system',
                 name: params.user,
@@ -30,7 +30,9 @@ exports.createAdminUserCreation = function (params) {
                 });
 
                 authLib.addMembers('role:system.admin', [createdUser.key]);
-                authLib.addMembers('role:system.admin.login', [createdUser.key]);
+                authLib.addMembers('role:system.admin.login', [
+                    createdUser.key
+                ]);
 
                 var loginResult = authLib.login({
                     user: params.user,
@@ -44,8 +46,10 @@ exports.createAdminUserCreation = function (params) {
 
                 return loginResult;
             }
+            return undefined;
         });
     }
+    return undefined;
 };
 
 function isSystemUserstore() {
@@ -54,32 +58,42 @@ function isSystemUserstore() {
 
 function checkFlag() {
     var idProviderConfig = authLib.getIdProviderConfig();
-    return idProviderConfig && idProviderConfig.adminUserCreationEnabled === true;
+    return (
+        idProviderConfig && idProviderConfig.adminUserCreationEnabled === true
+    );
 }
 
 function setFlag() {
     connect().modify({
         key: '/identity/system',
-        editor: function (systemUserStore) {
-            if (systemUserStore.idProvider && systemUserStore.idProvider.config)
-            delete systemUserStore.idProvider.config.adminUserCreationEnabled;
+        editor: function(systemUserStore) {
+            if (
+                systemUserStore.idProvider &&
+                systemUserStore.idProvider.config
+            ) {
+                var cfg = systemUserStore.idProvider.config;
+                delete cfg.adminUserCreationEnabled;
+            }
             return systemUserStore;
         }
     });
 }
 
 function runAsAdmin(callback) {
-    return contextLib.run({
-        repoId: 'system-repo',
-        branch: 'master',
-        principals: ["role:system.admin"]
-    }, callback);
+    return contextLib.run(
+        {
+            repoId: 'system-repo',
+            branch: 'master',
+            principals: ['role:system.admin']
+        },
+        callback
+    );
 }
 
 function connect() {
     return nodeLib.connect({
         repoId: 'system-repo',
         branch: 'master',
-        principals: ["role:system.admin"]
+        principals: ['role:system.admin']
     });
 }

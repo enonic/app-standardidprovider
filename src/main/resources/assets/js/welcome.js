@@ -1,15 +1,21 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
-var welcomeText, enonicLogo, createAdminViewButton, loginAsSuLink,
-    messageContainer, welcomeView, creationView, loginForm;
+var welcomeText;
+var enonicLogo;
+var createAdminViewButton;
+var loginAsSuLink;
+var messageContainer;
+var welcomeView;
+var creationView;
+var loginForm;
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
         if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+            window.location.href = CONFIG.redirectUrl;
         } else {
-            location.reload();
+            window.location.reload();
         }
     } else {
         handleSuLoginError();
@@ -21,16 +27,16 @@ function handleSuLoginError() {
 }
 
 function displayCreationView() {
-    messageContainer.html("");
-    //TODO Refactor to use state and history
+    messageContainer.html('');
+    // TODO Refactor to use state and history
     enonicLogo.attr('hidden', '');
     welcomeView.attr('hidden', '');
     creationView.attr('hidden', null);
-    $("#email-creation-input").focus();
+    $('#email-creation-input').focus();
 }
 
 function loginAsSuLinkClicked() {
-    messageContainer.html("");
+    messageContainer.html('');
     var data = {
         action: 'loginAsSu'
     };
@@ -45,26 +51,26 @@ function loginAsSuLinkClicked() {
     });
 }
 
-$(function () {
-    loginForm = $("#login-form");
+$(function() {
+    loginForm = $('#login-form');
 
     if (loginForm.length) {
         return;
     }
 
-    welcomeText = $("#welcome-text");
-    enonicLogo = $("#enonic-logo");
-    createAdminViewButton = $("#create-admin-view-button");
-    loginAsSuLink = $(".login-su-link");
-    messageContainer = $("#message-container");
-    welcomeView = $("#welcome-view");
-    creationView = $("#creation-view");
+    welcomeText = $('#welcome-text');
+    enonicLogo = $('#enonic-logo');
+    createAdminViewButton = $('#create-admin-view-button');
+    loginAsSuLink = $('.login-su-link');
+    messageContainer = $('#message-container');
+    welcomeView = $('#welcome-view');
+    creationView = $('#creation-view');
 
-    loginAsSuLink.click(function () {
+    loginAsSuLink.click(function() {
         loginAsSuLinkClicked();
         return false;
     });
-    createAdminViewButton.click(function () {
+    createAdminViewButton.click(function() {
         displayCreationView();
         return false;
     });
@@ -73,4 +79,3 @@ $(function () {
     createAdminViewButton.html(i18n.localise('page.welcome.button'));
     loginAsSuLink.html(i18n.localise('page.welcome.login'));
 });
-
