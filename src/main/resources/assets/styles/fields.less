@@ -1,12 +1,12 @@
 .field {
-  width: @field-width;
+  width: 200px;
 }
 
 .input-field {
   .field();
   font-size: 12px;
   box-sizing: border-box;
-  margin-bottom: @field-margin;
+  margin-bottom: 10px;
   border: 1px solid @admin-bg-light-gray;
   vertical-align: top;
   padding: 5px 9px;
@@ -27,8 +27,8 @@
 }
 
 .fieldset {
-  .flexbox();
-  .flex-direction(column);
+  display: flex;
+  flex-direction: column;
   margin-bottom: 10px;
 
   label {

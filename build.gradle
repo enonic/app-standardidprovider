@@ -3,22 +3,17 @@ plugins {
     id 'maven'
     id 'com.enonic.defaults' version '1.0.3'
     id 'com.enonic.xp.app' version '1.1.0'
-    id "com.moowork.node" version "1.2.0"
+    id 'com.moowork.node' version '1.2.0'
 }
 
 apply from: "$rootDir/gradle/defaults.gradle"
-
-repositories {
-    jcenter()
-    xp.enonicRepo()
-}
 
 app {
     name = 'com.enonic.xp.app.standardidprovider'
     group = 'com.enonic.xp'
     displayName = 'Standard ID Provider'
-    systemApp = true
     systemVersion = "${xpVersion}"
+    systemApp = true
 }
 
 dependencies {
@@ -30,20 +25,80 @@ dependencies {
     include "${group}:lib-node:${xpVersion}"
 }
 
-//──────────────────────────────────────────────────────────────────────────────
-// Gradle node plugin
-//──────────────────────────────────────────────────────────────────────────────
 node {
-    version '8.9.4'
-    download true
+    version = '8.10.0'
+    download = true
 }
 
-task webpack( type: NodeTask, dependsOn: npmInstall ) {
-    description = 'Bundle resources'
+task flush( type: Delete, dependsOn: clean ) {
+    description = 'Clean the project from built sources and dependencies'
+    delete '.xp'
+}
+
+task npmInstallForce( type: NpmTask ) {
+    description = 'Update all project node dependencies'
+    args = [ 'install', '--force' ]
+}
+
+task lint( type: NpmTask, dependsOn: npmInstall ) {
+    args = [ 'run', 'lint' ]
+    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
+    outputs.dir file('gradle')
+    outputs.upToDateWhen { false }
+}
+
+task webpack( type: NodeTask, dependsOn: lint ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
+    description = 'Build UI resources (js, css, etc).'
     inputs.dir 'src/main'
-    outputs.dir "${buildDir}/resources/main"
+    outputs.dir "$buildDir/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
 }
 
-jar.dependsOn 'webpack'
+task cleanNode( type: Delete ) {
+    delete 'node_modules'
+}
+
+jar {
+    exclude 'assets/**/*.less'
+    // exclude js sources
+    def mainDir = file('build/resources/main')
+    println "$mainDir/assets/js"
+    fileTree("$mainDir/assets/js") {
+        exclude '_all.js'
+    }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
+
+    dependsOn += webpack
+}
+
 jar.outputs.dir "${buildDir}/resources/main"
+
+if ( hasProperty( 'env' ) )
+{
+    addBuildDependency()
+    applyExcludedTasks()
+}
+
+def applyExcludedTasks() {
+    def libAdminUi = gradle.includedBuild( 'lib-admin-ui' )
+    Closure permittedTasks = { it == 'lint' || it == 'test' }
+    def excludedTasks = gradle.startParameter.getExcludedTaskNames().findAll( permittedTasks )
+    libAdminUi.getLoadedSettings().getStartParameter().setExcludedTaskNames( excludedTasks )
+}
+
+def addBuildDependency() {
+    def buildTask = gradle.includedBuild( 'lib-admin-ui' ).task( ':build' )
+    def unpackDevResources = tasks.findByPath( ":unpackDevResources" )
+
+    build.dependsOn += buildTask
+    clean.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':clean' )
+    flush.dependsOn += gradle.includedBuild( 'lib-admin-ui' ).task( ':flush' )
+    webpack.dependsOn += unpackDevResources
+    unpackDevResources.dependsOn += buildTask
+}
+
+def nodeEnvironment() {
+    def environments = [ prod : 'production', dev: 'development' ]
+    def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
+    return nodeEnv != null ? nodeEnv : 'production'
+}

@@ -2,6 +2,37 @@
   "name": "app-standardidprovider",
   "version": "1.0.0",
   "description": "Standard Id provider for Enonic XP Admin",
+  "scripts": {
+    "build": "webpack --hide-modules",
+    "lint": "eslint .",
+    "fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.1.0",
+    "browserslist": "^3.1.2",
+    "browserslist-config-enonic": "^1.0.3",
+    "circular-dependency-plugin": "^4.2.1",
+    "css-loader": "^0.28.10",
+    "css-mqpacker": "^6.0.2",
+    "cssnano": "^4.0.0-rc.2",
+    "enonic-admin-artifacts": "^1.4.0",
+    "error-logger-webpack-plugin": "^1.0.1",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.11",
+    "less": "^3.0.1",
+    "less-loader": "^4.1.0",
+    "postcss-loader": "^2.1.1",
+    "postcss-normalize": "^4.0.0",
+    "prettier": "^1.11.1",
+    "style-loader": "^0.20.3",
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "webpack": "^3.11.0"
+  },
   "dependencies": {
     "jquery": "^3.3.1"
   },
@@ -9,22 +40,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 6.9.2",
-    "npm": ">= 3.10.9"
-  },
-  "devDependencies": {
-    "autoprefixer": "^7.1.6",
-    "browserslist": "^2.5.1",
-    "browserslist-config-enonic": "^1.0.0",
-    "css-loader": "^0.28.7",
-    "css-mqpacker": "^6.0.1",
-    "error-logger-webpack-plugin": "0.0.1",
-    "extract-text-webpack-plugin": "^3.0.1",
-    "less": "^2.7.2",
-    "less-loader": "^4.0.5",
-    "postcss-loader": "^2.0.8",
-    "postcss-normalize": "^4.0.0",
-    "style-loader": "^0.18.2",
-    "webpack": "^3.10.0"
+    "node": ">= 8.10.0",
+    "npm": ">= 5.6.0"
   }
 }

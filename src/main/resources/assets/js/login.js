@@ -1,19 +1,25 @@
 var $ = require('jquery');
 var i18n = require('./i18n');
 
-var loginButton, userNameInput, passwordInput, messageContainer, loginForm;
+var loginButton;
+var userNameInput;
+var passwordInput;
+var messageContainer;
+var loginForm;
 
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
         if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+            window.location.href = CONFIG.redirectUrl;
         } else {
-            location.reload();
+            window.location.reload();
         }
     } else {
         messageContainer.html(i18n.localise('notify.login.failed'));
         passwordInput.focus();
-        $("#username-input, #password-input, #login-button").addClass("invalid");
+        $('#username-input, #password-input, #login-button').addClass(
+            'invalid'
+        );
     }
 }
 
@@ -22,7 +28,7 @@ function loginButtonClicked() {
         return;
     }
 
-    $("#username-input, #password-input, #login-button").removeClass("invalid");
+    $('#username-input, #password-input, #login-button').removeClass('invalid');
 
     var data = {
         action: 'login',
@@ -40,45 +46,48 @@ function loginButtonClicked() {
 }
 
 function checkFieldsEmpty() {
-    return userNameInput.val().trim() === "" || passwordInput.val().trim() === "";
+    return (
+        userNameInput.val().trim() === '' || passwordInput.val().trim() === ''
+    );
 }
 
 function onInputTyped(event) {
-    $("#username-input, #password-input, #login-button").removeClass("invalid");
+    $('#username-input, #password-input, #login-button').removeClass('invalid');
 
     var fieldsEmpty = checkFieldsEmpty();
     if (fieldsEmpty) {
         loginButton.hide();
-        messageContainer.html("");
+        messageContainer.html('');
     } else {
         loginButton.show();
         if (event.which !== 13) {
-            messageContainer.html("");
+            messageContainer.html('');
         }
     }
 }
 
-$(function () {
-    loginForm = $("#login-form");
+$(function() {
+    loginForm = $('#login-form');
 
     if (!loginForm.length) {
         return;
     }
 
-    loginButton = $("#login-button");
-    userNameInput = $("#username-input");
-    passwordInput = $("#password-input");
-    messageContainer = $("#message-container");
+    loginButton = $('#login-button');
+    userNameInput = $('#username-input');
+    passwordInput = $('#password-input');
+    messageContainer = $('#message-container');
 
-    loginButton.click(function () {
+    loginButton.click(function() {
         loginButtonClicked();
         return false;
     });
-    $("#username-input, #password-input").keyup(onInputTyped);
+    $('#username-input, #password-input').keyup(onInputTyped);
 
-    userNameInput.click();// for mobile devices
+    userNameInput.click(); // for mobile devices
     userNameInput.focus();
-    var checkLoginButtonInterval = setInterval(function () { //workaround to show login button when browser autofills inputs
+    var checkLoginButtonInterval = setInterval(function() {
+        // workaround to show login button when browser autofills inputs
         var fieldsEmpty = checkFieldsEmpty();
         if (!fieldsEmpty) {
             loginButton.show();
@@ -86,7 +95,12 @@ $(function () {
         }
     }, 100);
 
-    $("#username-input").attr('placeholder', i18n.localise('page.login.userid_or_email'));
-    $("#password-input").attr('placeholder', i18n.localise('page.login.password'));
+    $('#username-input').attr(
+        'placeholder',
+        i18n.localise('page.login.userid_or_email')
+    );
+    $('#password-input').attr(
+        'placeholder',
+        i18n.localise('page.login.password')
+    );
 });
-

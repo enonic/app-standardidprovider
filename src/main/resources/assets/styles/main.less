@@ -1,12 +1,21 @@
-@import "variables";
-@import "animations";
-@import "fields";
+@import "~enonic-admin-artifacts";
+
+@import "font";
+
+@enonic-logo-width: 103px * 0.9;
+@enonic-logo-height: 137px * 0.9;
+
 @import "buttons";
-@import "views";
-@import "errors";
-@import "login";
-@import "welcome";
 @import "creation";
+@import "errors";
+@import "fields";
+@import "login";
+@import "views";
+@import "welcome";
+
+*[hidden] {
+  display: none !important;
+}
 
 html, body {
   height: 100%
@@ -36,11 +45,10 @@ body {
 
   /** Common */
   .center-panel {
-    .flexbox();
-    .flex-direction(column);
-    .justify-content(center);
-    .align-items(center);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-top: -120px;
   }
 }
-

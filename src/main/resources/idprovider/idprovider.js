@@ -4,7 +4,7 @@ var authLib = require('/lib/xp/auth');
 var admin = require('/lib/xp/admin');
 var adminCreationLib = require('/lib/admin-creation');
 
-exports.handle401 = function () {
+exports.handle401 = function() {
     var body = generateLoginPage();
 
     return {
@@ -14,7 +14,7 @@ exports.handle401 = function () {
     };
 };
 
-exports.get = function (req) {
+exports.get = function() {
     var redirectUrl = generateRedirectUrl();
     var body = generateLoginPage(redirectUrl);
 
@@ -25,43 +25,49 @@ exports.get = function (req) {
     };
 };
 
-exports.post = function (req) {
+exports.post = function(req) {
     var userStoreKey = portalLib.getUserStoreKey();
     var body = JSON.parse(req.body);
 
     var result;
+    /* eslint-disable default-case */
     switch (body.action) {
-    case 'login':
-        result = authLib.login({
-            user: body.user,
-            password: body.password,
-            userStore: userStoreKey
-        });
-        break;
-    case 'loginAsSu':
-        result = adminCreationLib.adminUserCreationEnabled() && adminCreationLib.loginWithoutUserEnabled() && authLib.login({
-            user: 'su',
-            userStore: 'system',
-            skipAuth: true
-        });
-        break;
-    case 'createAdminUser':
-        result = adminCreationLib.createAdminUserCreation({
-            userStore: 'system',
-            user: body.user,
-            email: body.email,
-            password: body.password
-        });
-        break;
+        case 'login':
+            result = authLib.login({
+                user: body.user,
+                password: body.password,
+                userStore: userStoreKey
+            });
+            break;
+        case 'loginAsSu':
+            result =
+                adminCreationLib.adminUserCreationEnabled() &&
+                adminCreationLib.loginWithoutUserEnabled() &&
+                authLib.login({
+                    user: 'su',
+                    userStore: 'system',
+                    skipAuth: true
+                });
+            break;
+        case 'createAdminUser':
+            result = adminCreationLib.createAdminUserCreation({
+                userStore: 'system',
+                user: body.user,
+                email: body.email,
+                password: body.password
+            });
+            break;
     }
+    /* eslint-enable default-case */
     return {
         body: result,
         contentType: 'application/json'
     };
 };
 
-exports.login = function (req) {
-    var redirectUrl = (req.validTicket && req.params.redirect) || generateRedirectUrl();
+exports.login = function(req) {
+    var redirectUrl =
+        (req.validTicket && req.params.redirect) || generateRedirectUrl();
     var body = generateLoginPage(redirectUrl);
 
     return {
@@ -71,9 +77,10 @@ exports.login = function (req) {
     };
 };
 
-exports.logout = function (req) {
+exports.logout = function(req) {
     authLib.logout();
-    var redirectUrl = (req.validTicket && req.params.redirect) || generateRedirectUrl();
+    var redirectUrl =
+        (req.validTicket && req.params.redirect) || generateRedirectUrl();
 
     return {
         redirect: redirectUrl
@@ -83,16 +90,16 @@ exports.logout = function (req) {
 function generateRedirectUrl() {
     var site = portalLib.getSite();
     if (site) {
-        return portalLib.pageUrl({id: site._id});
+        return portalLib.pageUrl({ id: site._id });
     }
     return '/';
 }
 
 function generateLoginPage(redirectUrl) {
     var userStoreKey = portalLib.getUserStoreKey();
-    var assetUrlPrefix = portalLib.assetUrl({path: ""});
+    var assetUrlPrefix = portalLib.assetUrl({ path: '' });
     var idProviderUrl = portalLib.idProviderUrl();
-    var imageUrl = portalLib.assetUrl({path: "icons/"});
+    var imageUrl = portalLib.assetUrl({ path: 'icons/' });
     var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     var loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
 
