@@ -1,7 +1,3 @@
-app {
-    devSourcePaths += file("$rootDir/../lib-admin-ui/src/main/resources")
-}
-
 repositories {
     mavenLocal()
     jcenter()
