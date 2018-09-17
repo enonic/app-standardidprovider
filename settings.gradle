@@ -1,1 +1,3 @@
 rootProject.name ='app-standardidprovider'
+
+enableFeaturePreview('STABLE_PUBLISHING')
