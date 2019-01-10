@@ -5,7 +5,7 @@ var contextLib = require('/lib/xp/context');
 var config = require('./config');
 
 function adminUserCreationEnabled() {
-    return isSystemUserstore() && checkFlag();
+    return isSystemIdProvider() && checkFlag();
 }
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
@@ -17,7 +17,7 @@ exports.createAdminUserCreation = function(params) {
     if (adminUserCreationEnabled()) {
         return runAsAdmin(function() {
             var createdUser = authLib.createUser({
-                userStore: 'system',
+                idProvider: 'system',
                 name: params.user,
                 displayName: params.user,
                 email: params.email
@@ -37,7 +37,7 @@ exports.createAdminUserCreation = function(params) {
                 var loginResult = authLib.login({
                     user: params.user,
                     password: params.password,
-                    userStore: 'system'
+                    idProvider: 'system'
                 });
 
                 if (loginResult && loginResult.authenticated) {
@@ -52,8 +52,8 @@ exports.createAdminUserCreation = function(params) {
     return undefined;
 };
 
-function isSystemUserstore() {
-    return portalLib.getUserStoreKey() === 'system';
+function isSystemIdProvider() {
+    return portalLib.getIdProviderKey() === 'system';
 }
 
 function checkFlag() {
@@ -66,15 +66,15 @@ function checkFlag() {
 function setFlag() {
     connect().modify({
         key: '/identity/system',
-        editor: function(systemUserStore) {
+        editor: function(systemIdProvider) {
             if (
-                systemUserStore.idProvider &&
-                systemUserStore.idProvider.config
+                systemIdProvider.idProvider &&
+                systemIdProvider.idProvider.config
             ) {
-                var cfg = systemUserStore.idProvider.config;
+                var cfg = systemIdProvider.idProvider.config;
                 delete cfg.adminUserCreationEnabled;
             }
-            return systemUserStore;
+            return systemIdProvider;
         }
     });
 }
