@@ -26,7 +26,7 @@ exports.get = function() {
 };
 
 exports.post = function(req) {
-    var userStoreKey = portalLib.getUserStoreKey();
+    var idProviderKey = portalLib.getIdProviderKey();
     var body = JSON.parse(req.body);
 
     var result;
@@ -36,7 +36,7 @@ exports.post = function(req) {
             result = authLib.login({
                 user: body.user,
                 password: body.password,
-                userStore: userStoreKey
+                idProvider: idProviderKey
             });
             break;
         case 'loginAsSu':
@@ -45,13 +45,13 @@ exports.post = function(req) {
                 adminCreationLib.loginWithoutUserEnabled() &&
                 authLib.login({
                     user: 'su',
-                    userStore: 'system',
+                    idProvider: 'system',
                     skipAuth: true
                 });
             break;
         case 'createAdminUser':
             result = adminCreationLib.createAdminUserCreation({
-                userStore: 'system',
+                idProvider: 'system',
                 user: body.user,
                 email: body.email,
                 password: body.password
@@ -96,7 +96,7 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(redirectUrl) {
-    var userStoreKey = portalLib.getUserStoreKey();
+    var idProviderKey = portalLib.getIdProviderKey();
     var assetUrlPrefix = portalLib.assetUrl({ path: '' });
     var idProviderUrl = portalLib.idProviderUrl();
     var imageUrl = portalLib.assetUrl({ path: 'icons/' });
@@ -106,7 +106,7 @@ function generateLoginPage(redirectUrl) {
     var configView = resolve('idprovider-config.txt');
     var config = mustacheLib.render(configView, {
         idProviderUrl: idProviderUrl,
-        userStoreKey: userStoreKey,
+        idProviderKey: idProviderKey,
         redirectUrl: redirectUrl,
         messages: admin.getPhrases()
     });
