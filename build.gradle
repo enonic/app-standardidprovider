@@ -27,7 +27,7 @@ dependencies {
     include "${group}:lib-auth:${xpVersion}"
     include "${group}:lib-context:${xpVersion}"
     include "${group}:lib-node:${xpVersion}"
-    include "com.enonic.lib:lib-mustache:2.0.0-A1"
+    include "com.enonic.lib:lib-mustache:2.0.0-SNAPSHOT"
 }
 
 node {
