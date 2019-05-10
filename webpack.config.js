@@ -1,6 +1,6 @@
 const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const path = require('path');
 
@@ -19,23 +19,20 @@ module.exports = {
         rules: [
             {
                 test: /\.less$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        { loader: 'css-loader', options: { sourceMap: !isProd, importLoaders: 1, url: false } },
-                        { loader: 'postcss-loader', options: { sourceMap: !isProd, config: { path: 'postcss.config.js' } } },
-                        { loader: 'less-loader', options: { sourceMap: !isProd } }
-                    ]
-                })
+                use: [
+                    {loader: MiniCssExtractPlugin.loader, options: {publicPath: '../', hmr: !isProd}},
+                    {loader: 'css-loader', options: {sourceMap: !isProd, importLoaders: 1, url: false}},
+                    {loader: 'postcss-loader', options: { sourceMap: !isProd, config: { path: 'postcss.config.js' } } },
+                    {loader: 'less-loader', options: {sourceMap: !isProd}},
+                ]
             }
         ]
     },
     plugins: [
         new ErrorLoggerPlugin(),
-        new ExtractTextPlugin({
+        new MiniCssExtractPlugin({
             filename: './styles/_all.css',
-            allChunks: true,
-            disable: false
+            chunkFilename: './styles/_all.css'
         }),
         ...(isProd ? [
             new UglifyJsPlugin({
@@ -49,5 +46,6 @@ module.exports = {
             })
         ] : [])
     ],
+    mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map'
 };
