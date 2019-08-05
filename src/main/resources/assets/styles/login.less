@@ -18,32 +18,25 @@
   }
 
   .login-button {
-    background-color: transparent;
-    background: url("../icons/circle-right.svg") 0 0 no-repeat;
     position: absolute;
     right: 2px;
-    top: 1px;
+    top: 2px;
     height: 22px;
     width: 22px;
+    background: transparent url(../icons/circle-right.svg) center no-repeat;
     background-size: 20px 20px;
     border: none;
-    opacity: 0.4;
-    margin-top: 3px;
 
     &.invalid {
       .animation(shake, .5s, 0s, linear, 1);
     }
 
-    &:hover {
-      cursor: pointer;
+    &:disabled {
+      opacity: 0.75;
     }
 
-    &:focus:not(:disabled) {
-      box-shadow: none;
-      border: 1px solid transparent;
-      top: 0px;
-      right: 4px;
-      margin-top: 4px;
+    &:hover:not(:disabled) {
+      cursor: pointer;
     }
 
     &:before {
