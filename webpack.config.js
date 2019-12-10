@@ -1,5 +1,5 @@
 const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const path = require('path');
@@ -26,6 +26,20 @@ module.exports = {
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
                 ]
             }
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new TerserPlugin({
+                sourceMap: !isProd,
+                terserOptions: {
+                    compress: {
+                        drop_console: false
+                    },
+                    keep_classnames: true,
+                    keep_fnames: true
+                }
+            })
         ]
     },
     plugins: [

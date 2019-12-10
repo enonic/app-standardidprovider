@@ -10,29 +10,29 @@
   "devDependencies": {
     "autoprefixer": "^8.1.0",
     "browserslist": "^3.1.2",
-    "browserslist-config-enonic": "^1.0.3",
-    "circular-dependency-plugin": "^5.0.2",
+    "browserslist-config-enonic": "^1.0.5",
+    "circular-dependency-plugin": "^5.2.0",
     "css-loader": "^2.1.1",
     "css-mqpacker": "^6.0.2",
     "cssnano": "^4.1.10",
-    "enonic-admin-artifacts": "^1.4.0",
-    "error-logger-webpack-plugin": "^1.0.1",
+    "enonic-admin-artifacts": "^1.5.5",
+    "error-logger-webpack-plugin": "^1.1.0",
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-prettier": "^2.3.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-prettier": "^2.6.0",
     "file-loader": "^1.1.11",
-    "less": "^3.9.0",
+    "less": "^3.10.3",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.6.0",
     "postcss-loader": "^2.1.1",
     "postcss-normalize": "^4.0.0",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "style-loader": "^0.20.3",
-    "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2"
+    "terser-webpack-plugin": "^2.2.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "jquery": "^3.4.1"
@@ -42,6 +42,6 @@
   ],
   "engines": {
     "node": ">= 11.9.0",
-    "npm": ">= 6.5.0"
+    "npm": ">= 6.13.0"
   }
 }
