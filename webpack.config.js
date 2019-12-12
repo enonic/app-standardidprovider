@@ -47,18 +47,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: './styles/_all.css',
             chunkFilename: './styles/_all.css'
-        }),
-        ...(isProd ? [
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                uglifyOptions: {
-                    mangle: false,
-                    keep_classnames: true,
-                    keep_fnames: true
-                }
-            })
-        ] : [])
+        })
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map'
