@@ -1,4 +1,4 @@
-'use strict';
+'use strict' // eslint-disable-line
 
 exports.localise = (function(bundle) {
     var messages = bundle;

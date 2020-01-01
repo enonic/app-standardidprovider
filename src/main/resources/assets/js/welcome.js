@@ -1,4 +1,4 @@
-'use strict';
+'use strict' // eslint-disable-line
 
 var $ = require('jquery');
 var i18n = require('./i18n');
