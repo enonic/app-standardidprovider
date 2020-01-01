@@ -1,3 +1,5 @@
+'use strict';
+
 exports.localise = (function(bundle) {
     var messages = bundle;
 

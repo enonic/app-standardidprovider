@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery');
 var i18n = require('./i18n');
 
