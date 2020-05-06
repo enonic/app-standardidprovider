@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
     id 'com.enonic.xp.app' version '2.0.0'
-    id 'com.moowork.node' version '1.2.0'
+    id "com.github.node-gradle.node" version '2.2.3'
 }
 
 apply from: "$rootDir/gradle/defaults.gradle"
@@ -31,7 +31,7 @@ dependencies {
 }
 
 node {
-    version = '8.10.0'
+    version = '12.13.1'
     download = true
 }
 
@@ -47,12 +47,13 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
     outputs.upToDateWhen { false }
 }
 
-task webpack( type: NodeTask, dependsOn: lint ) {
+task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (js, css, etc).'
+    args = [ 'run', 'build' ]
     inputs.dir 'src/main'
-    outputs.dir "$buildDir/resources/main"
-    script = file( './node_modules/webpack/bin/webpack' )
+    inputs.file 'webpack.config.js'
+    outputs.dir "${buildDir}/resources/main"
 }
 
 task cleanNode( type: Delete ) {
