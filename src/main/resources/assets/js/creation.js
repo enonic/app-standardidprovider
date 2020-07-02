@@ -60,7 +60,7 @@ function checkPasswords() {
 
 function checkForm() {
     var enabled = true;
-    inputs.forEach(function(input) {
+    inputs.forEach(function (input) {
         if (!input.hasClass(validClass)) {
             enabled = false;
         }
@@ -101,7 +101,7 @@ function handleCreateAdminUserError() {
     messageContainer.html(i18n.localise('notify.creation.failed'));
 }
 
-$(function() {
+$(function () {
     loginForm = $('#login-form');
     if (loginForm.length) {
         return;
@@ -129,7 +129,7 @@ $(function() {
     passwordInvalidText.hide();
 
     var emailCreationTimeoutId;
-    emailCreationInput.keyup(function() {
+    emailCreationInput.keyup(function () {
         if (fillUsername) {
             var emailValue = emailCreationInput.val() || '';
             var atIndex = emailValue.indexOf('@');
@@ -138,7 +138,7 @@ $(function() {
             );
         }
         clearTimeout(emailCreationTimeoutId);
-        emailCreationTimeoutId = setTimeout(function() {
+        emailCreationTimeoutId = setTimeout(function () {
             checkEmail();
             if (fillUsername) {
                 checkUsername();
@@ -147,25 +147,25 @@ $(function() {
     });
 
     var usernameCreationTimeoutId;
-    usernameCreationInput.keyup(function() {
+    usernameCreationInput.keyup(function () {
         fillUsername = false;
         clearTimeout(usernameCreationTimeoutId);
         usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
     });
 
     var passwordCreationTimeoutId;
-    passwordCreationInput.keyup(function() {
+    passwordCreationInput.keyup(function () {
         clearTimeout(passwordCreationTimeoutId);
         passwordCreationTimeoutId = setTimeout(checkPasswords, checkTimeout);
     });
 
     var passwordRepeatitionTimeoutId;
-    passwordRepeatInput.keyup(function() {
+    passwordRepeatInput.keyup(function () {
         clearTimeout(passwordRepeatitionTimeoutId);
         passwordRepeatitionTimeoutId = setTimeout(checkPasswords, checkTimeout);
     });
 
-    createAdminButton.click(function() {
+    createAdminButton.click(function () {
         if (!createAdminButton.hasClass(disabledClass)) {
             messageContainer.html('');
             createAdminButton.addClass(disabledClass);
