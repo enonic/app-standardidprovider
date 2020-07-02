@@ -53,7 +53,7 @@ function loginAsSuLinkClicked() {
     });
 }
 
-$(function() {
+$(function () {
     loginForm = $('#login-form');
 
     if (loginForm.length) {
@@ -68,11 +68,11 @@ $(function() {
     welcomeView = $('#welcome-view');
     creationView = $('#creation-view');
 
-    loginAsSuLink.click(function() {
+    loginAsSuLink.click(function () {
         loginAsSuLinkClicked();
         return false;
     });
-    createAdminViewButton.click(function() {
+    createAdminViewButton.click(function () {
         displayCreationView();
         return false;
     });

@@ -68,7 +68,7 @@ function onInputTyped(event) {
     }
 }
 
-$(function() {
+$(function () {
     loginForm = $('#login-form');
 
     if (!loginForm.length) {
@@ -80,7 +80,7 @@ $(function() {
     passwordInput = $('#password-input');
     messageContainer = $('#message-container');
 
-    loginButton.click(function() {
+    loginButton.click(function () {
         loginButtonClicked();
         return false;
     });
@@ -88,7 +88,7 @@ $(function() {
 
     userNameInput.click(); // for mobile devices
     userNameInput.focus();
-    var checkLoginButtonInterval = setInterval(function() {
+    var checkLoginButtonInterval = setInterval(function () {
         // workaround to show login button when browser autofills inputs
         var fieldsEmpty = checkFieldsEmpty();
         if (!fieldsEmpty) {
