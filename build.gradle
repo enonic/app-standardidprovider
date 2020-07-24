@@ -8,6 +8,8 @@ plugins {
 
 apply from: "$rootDir/gradle/defaults.gradle"
 
+def xpVersion=version
+
 app {
     name = 'com.enonic.xp.app.standardidprovider'
     group = 'com.enonic.xp'
