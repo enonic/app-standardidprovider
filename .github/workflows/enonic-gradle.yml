@@ -103,3 +103,19 @@ jobs:
         with:
           name: changelog
           path: changelog.md
+
+  dispatch:
+    needs: build
+    strategy:
+      matrix:
+        repo: ["enonic/xp-distro" ]
+    runs-on: ubuntu-latest
+    if: "(github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/7.'))"
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: app-standardidprovider
+          client-payload: '{"ref": "${{ github.ref }}"}'
