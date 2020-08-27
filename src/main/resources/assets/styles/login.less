@@ -1,6 +1,7 @@
 .login-form {
   .input-field {
     background: none @admin-white !important;
+
     &.invalid {
       &[type=password] {
         color: @admin-red;
@@ -28,7 +29,7 @@
     border: none;
 
     &.invalid {
-      .animation(shake, .5s, 0s, linear, 1);
+      .animation(shake, 0.5s, 0s, linear, 1);
     }
 
     &:disabled {
@@ -39,7 +40,7 @@
       cursor: pointer;
     }
 
-    &:before {
+    &::before {
       color: inherit; // updates icons color
     }
 

@@ -4,6 +4,7 @@
 
 .input-field {
   .field();
+
   font-size: 12px;
   box-sizing: border-box;
   margin-bottom: 10px;
@@ -13,7 +14,8 @@
   background: none @admin-white;
 
   &.invalid {
-    .animation(shake, .5s, 0s, linear, 1);
+    .animation(shake, 0.5s, 0s, linear, 1);
+
     background-image: url("../icons/problem.svg");
     background-position: right;
     background-repeat: no-repeat;
