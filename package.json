@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.8.6",
-    "browserslist": "^4.14.0",
+    "browserslist": "^4.14.1",
     "browserslist-config-enonic": "^1.0.5",
     "circular-dependency-plugin": "^5.2.0",
     "css-loader": "^4.2.2",
