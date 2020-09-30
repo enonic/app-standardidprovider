@@ -26,8 +26,16 @@ exports.get = function() {
 };
 
 exports.post = function(req) {
-    var idProviderKey = portalLib.getIdProviderKey();
     var body = JSON.parse(req.body);
+    if (req.contentType !== 'application/json') {
+        return {
+            status: 400,
+            contentType: 'text/html',
+            body: body
+        };
+    }
+
+    var idProviderKey = portalLib.getIdProviderKey();
 
     var result;
     /* eslint-disable default-case */
