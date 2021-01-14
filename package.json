@@ -19,7 +19,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^5.0.1",
     "cssnano": "^4.1.10",
-    "enonic-admin-artifacts": "^1.7.13",
+    "enonic-admin-artifacts": "^1.8.0",
     "error-logger-webpack-plugin": "^1.1.0",
     "eslint": "^7.17.0",
     "eslint-config-airbnb-base": "^14.2.1",
