@@ -29,7 +29,7 @@
     "less": "^4.1.1",
     "less-loader": "^8.0.0",
     "mini-css-extract-plugin": "^1.4.0",
-    "postcss": "^8.2.9",
+    "postcss": "^8.2.13",
     "postcss-loader": "^5.2.0",
     "postcss-normalize": "^9.0.0",
     "postcss-sort-media-queries": "^3.4.3",
