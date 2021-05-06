@@ -31,6 +31,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+            
+      - run: ./gradlew build -Pcom.enonic.xp.app.production=true
 
       - uses: codecov/codecov-action@v1
 
