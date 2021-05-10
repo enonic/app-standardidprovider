@@ -33,7 +33,7 @@ dependencies {
 }
 
 node {
-    version = '14.15.0'
+    version = '15.8.0'
     download = true
 }
 
