@@ -18,7 +18,7 @@
     "browserslist-config-enonic": "^1.0.6",
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^5.2.6",
-    "cssnano": "^5.0.5",
+    "cssnano": "^5.0.6",
     "enonic-admin-artifacts": "^1.8.1",
     "error-logger-webpack-plugin": "^1.1.0",
     "eslint": "^7.29.0",
