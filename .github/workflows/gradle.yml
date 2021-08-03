@@ -5,7 +5,7 @@ on:
   repository_dispatch:
     types: [ xp ]
 
-concurrency: ${{ github.ref }}
+concurrency: build-${{ github.event.client_payload.ref || github.ref }}
 
 jobs:
   publish_vars:
@@ -14,17 +14,16 @@ jobs:
     outputs:
       publish: ${{ steps.publish_vars.outputs.release != 'true' && (env.ACTUAL_GITHUB_REF == 'refs/heads/master' || startsWith(env.ACTUAL_GITHUB_REF, 'refs/heads/7.')) }}
       repo: ${{ steps.publish_vars.outputs.repo }}
-      ref: ${{ env.ACTUAL_GITHUB_REF }}
 
     steps:
       - name: Extract actual github.ref
-        run: echo "ACTUAL_GITHUB_REF=${CLIENT_PAYLOAD_REF:-$GITHUB_REF}" >> $GITHUB_ENV
+        run: echo "ACTUAL_GITHUB_REF=${ACTUAL_REF}" >> $GITHUB_ENV
         env:
-          CLIENT_PAYLOAD_REF: ${{ github.event.client_payload.ref }}
+          ACTUAL_REF: ${{ github.event.client_payload.ref || github.ref }}
 
       - uses: actions/checkout@v2
         with:
-          ref: ${{ env.ACTUAL_GITHUB_REF }}
+          ref: ${{ github.event.client_payload.ref || github.ref }}
 
       - name: Get publishing variables
         id: publish_vars
@@ -40,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.publish_vars.outputs.ref }}
+          ref: ${{ github.event.client_payload.ref || github.ref }}
 
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -80,4 +79,5 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: app-standardidprovider
-          client-payload: '{"ref": "${{ github.ref }}"}'
+          client-payload: >
+            {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
