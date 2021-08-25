@@ -37,7 +37,7 @@
     "style-loader": "^3.2.1",
     "terser-webpack-plugin": "^5.1.4",
     "webpack": "^5.47.1",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.8.0"
   },
   "dependencies": {
     "jquery": "^3.6.0"
