@@ -13,7 +13,7 @@
     "fix": "eslint . --fix"
   },
   "devDependencies": {
-    "autoprefixer": "^10.3.7",
+    "autoprefixer": "^10.4.0",
     "browserslist": "^4.17.5",
     "browserslist-config-enonic": "^1.0.6",
     "circular-dependency-plugin": "^5.2.2",
