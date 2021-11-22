@@ -33,7 +33,7 @@ dependencies {
 }
 
 node {
-    version = '15.8.0'
+    version = '16.0.0'
     download = true
 }
 
@@ -66,6 +66,7 @@ jar {
     def mainDir = file('build/resources/main')
 
     exclude 'assets/**/*.less'
+    exclude 'assets/images/background.jpg'
 
     fileTree("$mainDir/assets/js") {
         exclude '_all.js'
