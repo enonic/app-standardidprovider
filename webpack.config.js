@@ -1,7 +1,6 @@
-const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
+const TerserPlugin = require('terser-webpack-plugin');
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -12,8 +11,9 @@ module.exports = {
         main: './js/main.js'
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets/'),
-        filename: './js/_all.js'
+        path: path.join(__dirname, '/build/resources/main/assets'),
+        filename: './js/_all.js',
+        assetModuleFilename: './[file]'
     },
     module: {
         rules: [
@@ -21,9 +21,25 @@ module.exports = {
                 test: /\.less$/,
                 use: [
                     {loader: MiniCssExtractPlugin.loader, options: {publicPath: '../'}},
-                    {loader: 'css-loader', options: {sourceMap: !isProd, importLoaders: 1, url: false}},
-                    {loader: 'postcss-loader', options: { sourceMap: !isProd} },
+                    {loader: 'css-loader', options: {sourceMap: !isProd, importLoaders: 1}},
+                    {loader: 'postcss-loader', options: {sourceMap: !isProd}},
                     {loader: 'less-loader', options: {sourceMap: !isProd}},
+                ]
+            },
+            {
+                test: /background.jpg$/,
+                type: "asset",
+                use: [
+                    {
+                        loader: ImageMinimizerPlugin.loader,
+                        options: {
+                            deleteOriginalAssets: true,
+                            filename: "[path][name].webp",
+                            minimizerOptions: {
+                                plugins: ["imagemin-webp"],
+                            },
+                        },
+                    }
                 ]
             }
         ]
@@ -31,6 +47,7 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
+                extractComments: false,
                 terserOptions: {
                     compress: {
                         drop_console: false
@@ -42,7 +59,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new ErrorLoggerPlugin(),
         new MiniCssExtractPlugin({
             filename: './styles/_all.css',
             chunkFilename: './styles/_all.css'

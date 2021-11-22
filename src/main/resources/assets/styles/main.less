@@ -1,9 +1,5 @@
 @import "~enonic-admin-artifacts";
 @import "font";
-
-@enonic-logo-width: 103px * 0.9;
-@enonic-logo-height: 137px * 0.9;
-
 @import "buttons";
 @import "creation";
 @import "errors";
@@ -11,6 +7,9 @@
 @import "login";
 @import "views";
 @import "welcome";
+
+@enonic-logo-width: 103px * 0.9;
+@enonic-logo-height: 137px * 0.9;
 
 *[hidden] {
   display: none !important;
@@ -35,7 +34,11 @@ body {
 }
 
 .home-main-container {
-  .home-main-container-mixin();
+  .home-main-container-mixin(1, top);
+
+  #non-existing {
+    background-image: url("../images/background.jpg");
+  }
 
   .enonic-logo {
     height: @enonic-logo-height;
