@@ -122,6 +122,9 @@ function generateLoginPage(redirectUrl) {
     var view = resolve('idprovider.html');
     var params = {
         assetUrlPrefix: assetUrlPrefix,
+        backgroundUrl: portalLib.assetUrl({
+            path: 'images/background.webp'
+        }),
         imageUrl: imageUrl,
         config: config,
         adminUserCreation: adminUserCreation,
