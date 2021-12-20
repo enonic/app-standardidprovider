@@ -25,7 +25,7 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
     "image-minimizer-webpack-plugin": "^2.2.0",
-    "imagemin-webp": "^6.0.0",
+    "imagemin-webp": "^7.0.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.5",
