@@ -33,10 +33,16 @@ module.exports = {
                     {
                         loader: ImageMinimizerPlugin.loader,
                         options: {
-                            deleteOriginalAssets: true,
-                            filename: "[path][name].webp",
-                            minimizerOptions: {
-                                plugins: ["imagemin-webp"],
+                            minimizer: {
+                                filename: "[path][name].webp",
+                                implementation: ImageMinimizerPlugin.squooshGenerate,
+                                options: {
+                                    encodeOptions: {
+                                        webp: {
+                                            quality: 75,
+                                        },
+                                    },
+                                },
                             },
                         },
                     }
