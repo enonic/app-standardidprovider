@@ -20,7 +20,7 @@
     "css-loader": "^6.7.1",
     "cssnano": "^5.1.10",
     "enonic-admin-artifacts": "^1.8.2",
-    "eslint": "^8.16.0",
+    "eslint": "^8.17.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
