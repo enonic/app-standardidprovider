@@ -19,16 +19,12 @@ app {
 }
 
 dependencies {
-    compile("com.enonic.xp:core-api:${xpVersion}") {
-        force = true
-    }
-    compile ("com.enonic.xp:portal-api:${xpVersion}") {
-        force = true
-    }
-    include "${group}:lib-admin:${xpVersion}"
-    include "${group}:lib-auth:${xpVersion}"
-    include "${group}:lib-context:${xpVersion}"
-    include "${group}:lib-node:${xpVersion}"
+    implementation "com.enonic.xp:core-api:${xpVersion}"
+    implementation "com.enonic.xp:portal-api:${xpVersion}"
+    include "com.enonic.xp:lib-admin:${xpVersion}"
+    include "com.enonic.xp:lib-auth:${xpVersion}"
+    include "com.enonic.xp:lib-context:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.0"
 }
 
