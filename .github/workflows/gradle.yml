@@ -45,9 +45,9 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
 
-      - uses: actions/cache@v3.0.3
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -59,7 +59,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -Pcom.enonic.xp.app.production=true
 
-      - uses: codecov/codecov-action@v3.1.0
+      - uses: codecov/codecov-action@v3
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
