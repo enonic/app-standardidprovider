@@ -22,7 +22,11 @@ module.exports = {
     },
     env: {
         browser: true,
-        node: true
+        node: true,
+        es6: true
+    },
+    parserOptions: {
+        ecmaVersion: 2019
     },
     globals: {
         app: false,

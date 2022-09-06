@@ -1,7 +1,0 @@
-<script>
-    var CONFIG = {
-        {{#redirectUrl}}redirectUrl: "{{{.}}}",{{/redirectUrl}}
-        idProviderUrl: "{{idProviderUrl}}",
-        messages: {{{messages}}}
-    };
-</script>

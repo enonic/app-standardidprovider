@@ -1,11 +1,10 @@
-var mustacheLib = require('/lib/mustache');
-var portalLib = require('/lib/xp/portal');
-var authLib = require('/lib/xp/auth');
-var admin = require('/lib/xp/admin');
-var adminCreationLib = require('/lib/admin-creation');
+const mustacheLib = require('/lib/mustache');
+const portalLib = require('/lib/xp/portal');
+const authLib = require('/lib/xp/auth');
+const adminCreationLib = require('/lib/admin-creation');
 
 exports.handle401 = function() {
-    var body = generateLoginPage();
+    const body = generateLoginPage();
 
     return {
         status: 401,
@@ -15,8 +14,8 @@ exports.handle401 = function() {
 };
 
 exports.get = function() {
-    var redirectUrl = generateRedirectUrl();
-    var body = generateLoginPage(redirectUrl);
+    const redirectUrl = generateRedirectUrl();
+    const body = generateLoginPage(redirectUrl);
 
     return {
         status: 200,
@@ -26,7 +25,7 @@ exports.get = function() {
 };
 
 exports.post = function(req) {
-    var body = JSON.parse(req.body);
+    const body = JSON.parse(req.body);
     if (req.contentType !== 'application/json') {
         return {
             status: 400,
@@ -35,7 +34,7 @@ exports.post = function(req) {
         };
     }
 
-    var idProviderKey = portalLib.getIdProviderKey();
+    const idProviderKey = portalLib.getIdProviderKey();
 
     var result;
     /* eslint-disable default-case */
@@ -74,9 +73,9 @@ exports.post = function(req) {
 };
 
 exports.login = function(req) {
-    var redirectUrl =
+    const redirectUrl =
         (req.validTicket && req.params.redirect) || generateRedirectUrl();
-    var body = generateLoginPage(redirectUrl);
+    const body = generateLoginPage(redirectUrl);
 
     return {
         status: 200,
@@ -87,7 +86,7 @@ exports.login = function(req) {
 
 exports.logout = function(req) {
     authLib.logout();
-    var redirectUrl =
+    const redirectUrl =
         (req.validTicket && req.params.redirect) || generateRedirectUrl();
 
     return {
@@ -96,39 +95,40 @@ exports.logout = function(req) {
 };
 
 function generateRedirectUrl() {
-    var site = portalLib.getSite();
+    const site = portalLib.getSite();
+
     if (site) {
         return portalLib.pageUrl({ id: site._id });
     }
     return '/';
 }
 
-function generateLoginPage(redirectUrl) {
-    var idProviderKey = portalLib.getIdProviderKey();
-    var assetUrlPrefix = portalLib.assetUrl({ path: '' });
-    var idProviderUrl = portalLib.idProviderUrl();
-    var imageUrl = portalLib.assetUrl({ path: 'icons/' });
-    var adminUserCreation = adminCreationLib.adminUserCreationEnabled();
-    var loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
-
-    var configView = resolve('idprovider-config.txt');
-    var config = mustacheLib.render(configView, {
-        idProviderUrl: idProviderUrl,
-        idProviderKey: idProviderKey,
-        redirectUrl: redirectUrl,
-        messages: admin.getPhrases()
+function getServiceUrl(redirectUrl) {
+    const url = portalLib.serviceUrl({
+        service: 'config',
+        params: {
+            redirectUrl: redirectUrl
+        }
     });
+    return url.substring(url.indexOf('/_/service'));
+}
 
-    var view = resolve('idprovider.html');
-    var params = {
+function generateLoginPage(redirectUrl) {
+    const assetUrlPrefix = portalLib.assetUrl({ path: '' });
+    const imageUrl = portalLib.assetUrl({ path: 'icons/' });
+    const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
+    const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
+
+    const view = resolve('idprovider.html');
+    const params = {
         assetUrlPrefix: assetUrlPrefix,
         backgroundUrl: portalLib.assetUrl({
             path: 'images/background.webp'
         }),
         imageUrl: imageUrl,
-        config: config,
         adminUserCreation: adminUserCreation,
-        loginWithoutUser: loginWithoutUser
+        loginWithoutUser: loginWithoutUser,
+        configServiceUrl: getServiceUrl(redirectUrl)
     };
     return mustacheLib.render(view, params);
 }

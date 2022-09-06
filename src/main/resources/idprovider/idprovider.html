@@ -26,9 +26,7 @@
     <link rel="mask-icon" href="{{imageUrl}}/xp-logo-black.svg" color="#5bbad5">
     <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
 
-    {{{config}}}
-
-    <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js"></script>
+    <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js" data-config-service-url="{{configServiceUrl}}"></script>
 </head>
 <body style="background-color: #53585F;">
 <div class="home-main-container">
@@ -54,7 +52,7 @@
                 <label id="username-creation-label" for="username-creation-input">Username</label>
                 <input id="username-creation-input" class="input-field" type="text" placeholder="Username">
             </div>
-            <div class="fieldset">   
+            <div class="fieldset">
                 <label id="password-creation-label" for="password-creation-input">Password</label>
                 <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
                 <div id="invalid-password-message">Password is too short!</div>
@@ -71,7 +69,7 @@
         {{/adminUserCreation}}
         {{^adminUserCreation}}
         <form id="login-form" class="login-form">
-            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">        
+            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">
             <div class="password-container">
                 <input id="password-input" class="input-field password-input" type="password" placeholder="password">
                 <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
@@ -81,14 +79,6 @@
         <div id="message-container" class="message-container"></div>
     </div>
 </div>
-
-<script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() =>
-                document.getElementById("background-image").classList.remove("empty")
-            , 100);
-    });
-</script>
 
 </body>
 </html>
