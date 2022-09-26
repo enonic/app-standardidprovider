@@ -104,13 +104,12 @@ function generateRedirectUrl() {
 }
 
 function getServiceUrl(redirectUrl) {
-    const url = portalLib.serviceUrl({
+    return portalLib.serviceUrl({
         service: 'config',
         params: {
             redirectUrl: redirectUrl
         }
     });
-    return url.substring(url.indexOf('/_/service'));
 }
 
 function generateLoginPage(redirectUrl) {
