@@ -1,5 +1,20 @@
 'use strict' // eslint-disable-line
 
+function getConfigServiceUrl() {
+    const fullConfigServiceUrl = document.currentScript.getAttribute(
+        'data-config-service-url'
+    );
+    const relativeServiceUrl = fullConfigServiceUrl.replace(
+        document.location.pathname,
+        ''
+    );
+    const baseAdminUri = document.currentScript.getAttribute(
+        'data-base-admin-uri'
+    );
+
+    return document.location.origin + baseAdminUri + relativeServiceUrl;
+}
+
 async function loadConfig() {
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
@@ -11,9 +26,7 @@ async function loadConfig() {
         }, 100);
     });
 
-    const attr = 'data-config-service-url';
-    const configServiceUrl = document.currentScript.getAttribute(attr);
-    const response = await fetch(configServiceUrl);
+    const response = await fetch(getConfigServiceUrl());
 
     if (!response.ok) {
         const msg = 'Could not fetch required app config:';
