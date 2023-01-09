@@ -13,7 +13,7 @@
     "fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@squoosh/lib": "^0.4.0",
+    "@squoosh/lib": "^0.5.3",
     "autoprefixer": "^10.4.13",
     "browserslist": "^4.21.4",
     "browserslist-config-enonic": "^1.0.7",
