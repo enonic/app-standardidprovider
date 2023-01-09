@@ -1,7 +1,6 @@
 const mustacheLib = require('/lib/mustache');
 const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
-const adminLib = require('/lib/xp/admin');
 const adminCreationLib = require('/lib/admin-creation');
 
 exports.handle401 = function() {
@@ -128,8 +127,7 @@ function generateLoginPage(redirectUrl) {
         imageUrl: imageUrl,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
-        configServiceUrl: getServiceUrl(redirectUrl),
-        baseAdminUri: adminLib.getBaseUri()
+        configServiceUrl: getServiceUrl(redirectUrl)
     };
     return mustacheLib.render(view, params);
 }
