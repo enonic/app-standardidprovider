@@ -34,13 +34,21 @@ module.exports = {
                         loader: ImageMinimizerPlugin.loader,
                         options: {
                             minimizer: {
-                                filename: "[path][name].webp",
-                                implementation: ImageMinimizerPlugin.squooshGenerate,
+                                implementation: ImageMinimizerPlugin.sharpMinify,
                                 options: {
                                     encodeOptions: {
-                                        webp: {
-                                            quality: 75,
+                                        jpeg: {
+                                            quality: 38,
+                                            progressive: true,
+                                            compressionLevel: 9,
+                                            adaptiveFiltering: true,
+                                            effort: 10,
+                                            mozjpeg: true,
+                                            quantisationTable: 8,
                                         },
+                                        webp: {
+                                            quality: 10,
+                                        }
                                     },
                                 },
                             },
@@ -55,9 +63,6 @@ module.exports = {
             new TerserPlugin({
                 extractComments: false,
                 terserOptions: {
-                    compress: {
-                        drop_console: false
-                    },
                     keep_classnames: true,
                     keep_fnames: true
                 }
@@ -71,5 +76,6 @@ module.exports = {
         })
     ],
     mode: isProd ? 'production' : 'development',
-    devtool: isProd ? false : 'source-map'
+    devtool: isProd ? false : 'source-map',
+    performance: {hints: false}
 };
