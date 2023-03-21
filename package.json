@@ -13,7 +13,6 @@
     "fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@squoosh/lib": "^0.5.3",
     "autoprefixer": "^10.4.13",
     "browserslist": "^4.21.4",
     "browserslist-config-enonic": "^1.0.7",
@@ -34,6 +33,7 @@
     "postcss-normalize": "^10.0.1",
     "postcss-sort-media-queries": "^4.3.0",
     "prettier": "^2.8.3",
+    "sharp": "^0.31.3",
     "terser-webpack-plugin": "^5.3.6",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
