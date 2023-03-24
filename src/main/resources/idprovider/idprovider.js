@@ -3,6 +3,7 @@ const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
 const adminLib = require('/lib/xp/admin');
+const jwtLib = require('/lib/jwt');
 
 exports.handle401 = function() {
     const body = generateLoginPage();
@@ -93,6 +94,14 @@ exports.logout = function(req) {
     return {
         redirect: redirectUrl
     };
+};
+
+exports.autoLogin = function (req) {
+    const jwtToken = jwtLib.extractJwtToken(req);
+    if (!jwtToken) {
+        return;
+    }
+    __.newBean('com.enonic.app.standartidprovider.JwtHandler').verifyAndLogin(jwtToken);
 };
 
 function generateRedirectUrl() {

@@ -26,6 +26,8 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.0"
+
+    include 'com.auth0:java-jwt:4.3.0'
 }
 
 node {
@@ -52,6 +54,8 @@ task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
     inputs.dir 'src/main'
     inputs.file 'webpack.config.js'
     outputs.dir "${buildDir}/resources/main"
+
+    dependsOn += javadoc
 }
 
 task cleanNode( type: Delete ) {
