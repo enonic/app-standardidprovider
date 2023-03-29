@@ -30,16 +30,14 @@ async function exportPrivateKey(key) {
     const exported = await self.crypto.subtle.exportKey("pkcs8", key);
     const exportedAsString = arrayBufferToString(exported);
     const exportedAsBase64 = self.btoa(exportedAsString);
-    // return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
-    return exportedAsBase64;
+    return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
 }
 
 async function exportPublicKey(key) {
     const exported = await self.crypto.subtle.exportKey("spki", key);
     const exportedAsString = arrayBufferToString(exported);
     const exportedAsBase64 = self.btoa(exportedAsString);
-    // return `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`;
-    return exportedAsBase64;
+    return `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`;
 }
 
 function generateKid() {
