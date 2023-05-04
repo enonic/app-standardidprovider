@@ -28,7 +28,7 @@
 
     <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js" data-config-service-url="{{configServiceUrl}}"></script>
 </head>
-<body style="background-color: #53585F;">
+<body>
 <div class="home-main-container">
     <div id="background-image" style="background-image: url(&quot;{{backgroundUrl}}&quot;);"
          class="lazy-image empty"></div>
@@ -37,9 +37,9 @@
         {{#adminUserCreation}}
         <div id="welcome-view" class="welcome-view">
             <span id="welcome-text" class="welcome-text">Welcome to Enonic XP</span>
-            <a id="create-admin-view-button" class="create-admin-view-button">Create Admin User...</a>
+            <a id="login-as-guest-button" class="login-as-guest button">Log In As Guest...</a>
             {{#loginWithoutUser}}
-            <a class="login-su-link link">... or login without a user</a>
+            <a id="create-admin-link" class="create-admin-link link">... or create Admin user</a>
             {{/loginWithoutUser}}
         </div>
         <form id="creation-view" class="creation-view" hidden>
@@ -47,23 +47,26 @@
             <div class="fieldset">
                 <label id="email-creation-label" for="email-creation-input">Email</label>
                 <input id="email-creation-input" class="input-field" type="email" placeholder="Email">
+                <div id="invalid-email-message" class="field-error">Invalid format of email address!</div>
             </div>
             <div class="fieldset">
                 <label id="username-creation-label" for="username-creation-input">Username</label>
                 <input id="username-creation-input" class="input-field" type="text" placeholder="Username">
+                <div id="invalid-username-message" class="field-error">Invalid or forbidden username!</div>
             </div>
             <div class="fieldset">
                 <label id="password-creation-label" for="password-creation-input">Password</label>
                 <input id="password-creation-input" class="input-field" type="password" placeholder="Min. 10 characters">
-                <div id="invalid-password-message">Password is too short!</div>
+                <div id="invalid-password-message" class="field-error">Password is too short!</div>
             </div>
             <div class="fieldset">
                 <label id="password-repeat-label"  for="password-repeat-input">Repeat password</label>
                 <input id="password-repeat-input" class="input-field" type="password" placeholder="Repeat password">
+                <div id="invalid-confirm-password-message" class="field-error">Passwords don't match!</div>
             </div>
             <a id="create-admin-button" class="create-admin-button disabled">Create Admin User</a>
             {{#loginWithoutUser}}
-            <a class="login-su-link link">... or login without a user</a>
+            <a id="login-as-guest-link" class="login-as-guest link">... or log in as Guest</a>
             {{/loginWithoutUser}}
         </form>
         {{/adminUserCreation}}
