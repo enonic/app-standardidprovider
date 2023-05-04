@@ -6,6 +6,13 @@
   color: white;
   text-align: center;
 
+  &:empty {
+    display: none;
+  }
+
   .ellipsis();
 }
 
+#login-form + #message-container:empty {
+  display: block;
+}

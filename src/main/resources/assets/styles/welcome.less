@@ -5,19 +5,17 @@
     .view-text();
   }
 
-  .create-admin-view-button {
+  .login-as-guest.button {
     .button();
 
     width: auto;
-    margin-bottom: 20px;
-    background-color: @admin-blue;
+    background-color: darken(@admin-blue, 10%);
     padding: 10px 25px;
     box-sizing: border-box;
-    font-size: 14px;
-  }
-}
+    letter-spacing: 0.05rem;
 
-.login-su-link {
-  color: @admin-font-gray;
-  opacity: 0.8;
+    &:hover:not(:disabled) {
+      background-color: @admin-blue;
+    }
+  }
 }

@@ -2,12 +2,17 @@
   width: 200px;
 }
 
+.field-error {
+  color: @admin-input-red;
+  white-space: nowrap;
+}
+
 .input-field {
   .field();
 
   font-size: 12px;
+  margin-bottom: 21px;
   box-sizing: border-box;
-  margin-bottom: 10px;
   border: 1px solid @admin-bg-light-gray;
   vertical-align: top;
   padding: 5px 9px;
@@ -15,20 +20,21 @@
 
   &.invalid {
     .animation(shake, 0.5s, 0s, linear, 1);
-
-    background-image: url("../icons/problem.svg");
-    background-position: right;
-    background-repeat: no-repeat;
+    background-color: @admin-input-red;
+    border-color: @admin-input-red;
+    margin-bottom: 5px;
+    outline-color: @admin-red;
   }
 
   &.valid {
-    background-image: url("../icons/check.svg");
-    background-position: right;
-    background-repeat: no-repeat;
+    background-color: #ddffdd;
+    border-color: #ddffdd;
   }
 }
 
 .fieldset {
+  .field();
+
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;

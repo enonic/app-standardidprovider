@@ -5,8 +5,8 @@ var i18n = require('./i18n');
 
 var welcomeText;
 var enonicLogo;
-var createAdminViewButton;
-var loginAsSuLink;
+var createAdminLink;
+var loginAsGuestButton;
 var messageContainer;
 var welcomeView;
 var creationView;
@@ -62,22 +62,24 @@ $(function () {
 
     welcomeText = $('#welcome-text');
     enonicLogo = $('#enonic-logo');
-    createAdminViewButton = $('#create-admin-view-button');
-    loginAsSuLink = $('.login-su-link');
+    createAdminLink = $('.create-admin-link');
+    loginAsGuestButton = $('.login-as-guest');
     messageContainer = $('#message-container');
     welcomeView = $('#welcome-view');
     creationView = $('#creation-view');
 
-    loginAsSuLink.click(function () {
+    loginAsGuestButton.click(function () {
         loginAsSuLinkClicked();
         return false;
     });
-    createAdminViewButton.click(function () {
+    createAdminLink.click(function () {
         displayCreationView();
         return false;
     });
 
     welcomeText.html(i18n.localise('page.welcome.text'));
-    createAdminViewButton.html(i18n.localise('page.welcome.button'));
-    loginAsSuLink.html(i18n.localise('page.welcome.login'));
+    $('#login-as-guest-button').html(
+        i18n.localise('page.welcome.loginAsGuest')
+    );
+    createAdminLink.html(i18n.localise('page.welcome.createAdmin'));
 });
