@@ -39,7 +39,7 @@
     "webpack-cli": "^5.1.0"
   },
   "dependencies": {
-    "jquery": "^3.6.4"
+    "jquery": "^3.7.0"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
