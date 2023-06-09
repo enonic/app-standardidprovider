@@ -9,8 +9,13 @@ function adminUserCreationEnabled() {
 }
 exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
-exports.loginWithoutUserEnabled = function() {
+function loginWithoutUserEnabled() {
     return config.isLoginWithoutUserEnabled();
+}
+exports.loginWithoutUserEnabled = loginWithoutUserEnabled;
+
+exports.canLoginAsSu = function canLoginAsSu() {
+    return adminUserCreationEnabled() && loginWithoutUserEnabled();
 };
 
 exports.createAdminUserCreation = function(params) {
