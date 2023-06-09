@@ -57,9 +57,6 @@ exports.post = function(req) {
                     skipAuth: true
                 });
             break;
-        case 'checkCanLoginAsSu':
-                result = {canLoginAsSu: adminCreationLib.canLoginAsSu()};
-                break;
         case 'createAdminUser':
             result = adminCreationLib.createAdminUserCreation({
                 idProvider: 'system',

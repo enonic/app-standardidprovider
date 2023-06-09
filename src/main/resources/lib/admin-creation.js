@@ -7,9 +7,15 @@ var config = require('./config');
 function adminUserCreationEnabled() {
     return isSystemIdProvider() && checkFlag();
 }
+exports.adminUserCreationEnabled = adminUserCreationEnabled;
+
+function loginWithoutUserEnabled() {
+    return config.isLoginWithoutUserEnabled();
+}
+exports.loginWithoutUserEnabled = loginWithoutUserEnabled;
 
 exports.canLoginAsSu = function canLoginAsSu() {
-    return adminUserCreationEnabled() && config.isLoginWithoutUserEnabled();
+    return adminUserCreationEnabled() && loginWithoutUserEnabled();
 };
 
 exports.createAdminUserCreation = function(params) {
