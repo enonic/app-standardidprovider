@@ -39,6 +39,7 @@ exports.post = function(req) {
 
     var result;
     /* eslint-disable default-case */
+
     switch (body.action) {
         case 'login':
             result = authLib.login({
@@ -49,14 +50,16 @@ exports.post = function(req) {
             break;
         case 'loginAsSu':
             result =
-                adminCreationLib.adminUserCreationEnabled() &&
-                adminCreationLib.loginWithoutUserEnabled() &&
+                adminCreationLib.canLoginAsSu() &&
                 authLib.login({
                     user: 'su',
                     idProvider: 'system',
                     skipAuth: true
                 });
             break;
+        case 'checkCanLoginAsSu':
+                result = {canLoginAsSu: adminCreationLib.canLoginAsSu()};
+                break;
         case 'createAdminUser':
             result = adminCreationLib.createAdminUserCreation({
                 idProvider: 'system',
