@@ -3,6 +3,7 @@ const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
 const configLib = require('/lib/config');
+const autoLoginLib = require('/lib/autologin');
 
 exports.handle401 = function() {
     const body = generateLoginPage();
@@ -93,6 +94,12 @@ exports.logout = function(req) {
     return {
         redirect: redirectUrl
     };
+};
+
+exports.autoLogin = function (req) {
+    return {
+        status: autoLoginLib.autoLogin(req) ? 200 : 401,
+    }
 };
 
 function generateRedirectUrl() {

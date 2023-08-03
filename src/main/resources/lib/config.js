@@ -7,6 +7,10 @@ exports.isLoginWithoutUserEnabled = function() {
         : app.config.loginWithoutUser;
 };
 
+exports.isServiceAccountsEnabled = function () {
+    return app.config.serviceAccountsEnabled == null ? true : app.config.serviceAccountsEnabled === 'true';
+};
+
 exports.getConfig = () => {
     return {
         idProviderKey: portalLib.getIdProviderKey(),
