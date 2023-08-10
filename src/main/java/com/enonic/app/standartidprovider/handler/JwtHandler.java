@@ -96,8 +96,8 @@ public class JwtHandler
 
     private String extractPublicKey( final String rawPublicKey )
     {
-        return Objects.requireNonNull( rawPublicKey ).replace( "-----BEGIN RSA PUBLIC KEY-----", "" ).replace(
-            "-----END RSA PUBLIC KEY-----", "" ).replaceAll( "[\\t\\n\\r]+", "" );
+        return Objects.requireNonNull( rawPublicKey ).replace( "-----BEGIN PUBLIC KEY-----", "" ).replace(
+            "-----END PUBLIC KEY-----", "" ).replaceAll( "[\\t\\n\\r]+", "" );
     }
 
     private AuthenticationInfo authenticate( final User serviceAccount )
