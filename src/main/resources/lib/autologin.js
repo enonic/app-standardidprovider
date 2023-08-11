@@ -15,7 +15,7 @@ exports.autoLogin = function (req) {
             return true;
         }
     } catch (e) {
-        log.info(`Auto login failed: ${e.message}`);
+        log.debug(`Auto login failed: ${e.message}`);
         return false;
     }
 };

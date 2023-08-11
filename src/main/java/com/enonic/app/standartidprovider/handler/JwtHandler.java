@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import com.enonic.xp.context.Context;
@@ -29,7 +27,7 @@ import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
-import com.enonic.xp.security.auth.VerifiedEmailAuthToken;
+import com.enonic.xp.security.auth.VerifiedUsernameAuthToken;
 
 public class JwtHandler
     implements ScriptBean
@@ -46,10 +44,6 @@ public class JwtHandler
     public void verifyAndLogin( final String jwtToken )
     {
         final DecodedJWT decodedJwt = JWT.decode( jwtToken );
-        if ( decodedJwt.getExpiresAtAsInstant().isBefore( Instant.now() ) )
-        {
-            throw new IllegalArgumentException( "JWT token is expired" );
-        }
 
         final String kid = Objects.requireNonNull( decodedJwt.getKeyId() );
         final String serviceAccountKey = Objects.requireNonNull( decodedJwt.getSubject() );
@@ -80,42 +74,38 @@ public class JwtHandler
 
     private void verifyJwtToken( final String publicKey, final DecodedJWT decodedJwt )
     {
-        try
-        {
             JWT.require( Algorithm.RSA256( getPublicKey( publicKey ) ) ).acceptLeeway( 1 ).build().verify( decodedJwt );
-        }
-        catch ( JWTVerificationException e )
-        {
-            LOG.error( "Verification is failed", e );
-        }
-        catch ( NoSuchAlgorithmException | InvalidKeySpecException e )
-        {
-            LOG.error( "Invalid publicKey", e );
-        }
     }
 
-    private String extractPublicKey( final String rawPublicKey )
+    private byte[] extractPublicKey( final String rawPublicKey )
     {
-        return Objects.requireNonNull( rawPublicKey ).replace( "-----BEGIN PUBLIC KEY-----", "" ).replace(
-            "-----END PUBLIC KEY-----", "" ).replaceAll( "[\\t\\n\\r]+", "" );
+        return Base64.getDecoder()
+            .decode( Objects.requireNonNull( rawPublicKey )
+                         .replace( "-----BEGIN PUBLIC KEY-----", "" )
+                         .replace( "-----END PUBLIC KEY-----", "" )
+                         .replaceAll( "[\\t\\n\\r]+", "" ) );
     }
 
     private AuthenticationInfo authenticate( final User serviceAccount )
     {
-        VerifiedEmailAuthToken authenticationToken = new VerifiedEmailAuthToken();
-        authenticationToken.setEmail( serviceAccount.getEmail() );
+        VerifiedUsernameAuthToken authenticationToken = new VerifiedUsernameAuthToken();
+        authenticationToken.setUsername( serviceAccount.getLogin() );
 
         return securityServiceSupplier.get().authenticate( authenticationToken );
     }
 
     private RSAPublicKey getPublicKey( final String publicKey )
-        throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        String encodedPublicKey = extractPublicKey( publicKey );
-
-        X509EncodedKeySpec ks = new X509EncodedKeySpec( Base64.getDecoder().decode( encodedPublicKey ) );
-        KeyFactory kf = KeyFactory.getInstance( "RSA" );
-        return (RSAPublicKey) kf.generatePublic( ks );
+        try
+        {
+            X509EncodedKeySpec ks = new X509EncodedKeySpec( extractPublicKey( publicKey ) );
+            KeyFactory kf = KeyFactory.getInstance( "RSA" );
+            return (RSAPublicKey) kf.generatePublic( ks );
+        }
+        catch ( NoSuchAlgorithmException | InvalidKeySpecException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 
     private static Context createContext()
