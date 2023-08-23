@@ -1,13 +1,25 @@
 package com.enonic.app.standartidprovider.handler;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.data.PropertyTree;
+import com.enonic.xp.portal.PortalRequest;
+import com.enonic.xp.portal.PortalRequestAccessor;
 import com.enonic.xp.script.ScriptValue;
+import com.enonic.xp.security.IdProvider;
+import com.enonic.xp.security.IdProviderKey;
 import com.enonic.xp.security.Principal;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.SecurityService;
@@ -22,11 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JwtHandlerTest
     extends ScriptTestSupport
 {
+    private final Map<String, String> configurations = new HashMap<>();
 
-    private static final String ENCODED_PUBLIC_KEY =
-        "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2GYdAGzE+u05pbAIfmLstb2tp57kDgk1rdEcuKZsFEy63/PI1RdzLATVkPoJgBgmQkXYsz+Qy74TsWe2JeurfRT+YKdGKvyZebn9xJFMfh54op8A9cr/GU43F/vVI1Qs+DC74ZugkG4GMrBtFZEiBQmMZmOMPAvZSFg4/j7b4Vo+Fo5kpXYMIGTvugoPQX0quRai04xOscYc7JGTiHgq2DLPuFyaN/Wpnb97HUQB65V0BvyQoF1TZpwdgMlQzAQ2jPVd71MqxizQlk7Z2YmSlrPsO2A3qb/BbvXpGRFoMB5+FURcxwSLG5Dhl8AmyVlHoA2THTeDWG/OfdDjtMpVUQIDAQAB\n-----END PUBLIC KEY-----\n";
-
-    private SecurityService securityService;
+    private StandardProviderConfigServiceImpl standardProviderConfig;
 
     @Override
     protected void initialize()
@@ -34,16 +44,23 @@ public class JwtHandlerTest
     {
         super.initialize();
 
-        this.securityService = Mockito.mock( SecurityService.class );
-        addService( SecurityService.class, securityService );
-    }
+        SecurityService securityService = Mockito.mock( SecurityService.class );
 
-    @Test
-    public void testAutoLogin()
-    {
+        this.standardProviderConfig = new StandardProviderConfigServiceImpl();
+        this.standardProviderConfig.activate( configurations );
+
+        DecodedJWT decodedJWT = Mockito.mock( DecodedJWT.class );
+
+        JwtVerifierService jwtVerifierService = Mockito.mock( JwtVerifierService.class );
+        Mockito.when( jwtVerifierService.verify( Mockito.any(), Mockito.any() ) ).thenReturn( decodedJWT );
+
+        addService( SecurityService.class, securityService );
+        addService( StandardProviderConfigService.class, standardProviderConfig );
+        addService( JwtVerifierService.class, jwtVerifierService );
+
         PropertySet publicKeySet = new PropertySet();
-        publicKeySet.setString( "kid", "a46340a4-9d2c-4558-9524-df7f79cf2e36" );
-        publicKeySet.setString( "publicKey", ENCODED_PUBLIC_KEY );
+        publicKeySet.setString( "kid", TestHelper.KID );
+        publicKeySet.setString( "publicKey", TestHelper.ENCODED_PUBLIC_KEY );
 
         PropertyTree profile = new PropertyTree();
         profile.addSet( "publicKeys", publicKeySet );
@@ -56,15 +73,34 @@ public class JwtHandlerTest
 
         Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) ).thenReturn(
             AuthenticationInfo.create().user( user ).build() );
+    }
 
-        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLogin" );
+    @BeforeEach
+    public void setUp()
+    {
+        PortalRequest portalRequest = Mockito.mock( PortalRequest.class );
+        Mockito.when( portalRequest.getIdProvider() ).thenReturn( IdProvider.create().key( IdProviderKey.system() ).build() );
+        PortalRequestAccessor.set( portalRequest );
+    }
+
+    @Test
+    public void testAutoLogin()
+        throws Exception
+    {
+        Clock clock = Clock.fixed( Instant.now(), ZoneId.of( "UTC" ) );
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLogin", TestHelper.generateJwtToken( 10, clock ) );
         assertTrue( result.getValue( Boolean.class ) );
     }
 
     @Test
-    public void testAutoLoginWithInvalidToken()
+    public void testAutoLoginDisabled()
+        throws Exception
     {
-        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginWithInvalidToken" );
+        this.configurations.put( "idprovider.system.autologin.jwt.enabled", "false" );
+        this.standardProviderConfig.activate( configurations );
+
+        Clock clock = Clock.fixed( Instant.now(), ZoneId.of( "UTC" ) );
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLogin", TestHelper.generateJwtToken( 10, clock ) );
         assertFalse( result.getValue( Boolean.class ) );
     }
 }
