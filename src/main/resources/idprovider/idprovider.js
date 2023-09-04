@@ -105,7 +105,11 @@ function generateRedirectUrl() {
 }
 
 function getServiceUrl(redirectUrl) {
-    let serviceUrl = `${adminLib.getBaseUri()}/tool/_/service/${app.name}/config`;
+    let baseUri = adminLib.getBaseUri();
+    if (baseUri.slice(-1) !== '/') {
+        baseUri += '/';
+    }
+    let serviceUrl = `${baseUri}tool/_/service/${app.name}/config`;
     if (redirectUrl) {
         serviceUrl += `?redirectUrl=${redirectUrl}`;
     }
