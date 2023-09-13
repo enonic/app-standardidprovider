@@ -35,23 +35,25 @@ dependencies {
 }
 
 node {
-    version = '18.12.1'
+    version = '18.17.1'
     download = true
 }
 
-task npmInstallForce( type: NpmTask ) {
+tasks.register('npmInstallForce', NpmTask) {
     description = 'Update all project node dependencies'
     args = [ 'install', '--force' ]
 }
 
-task lint( type: NpmTask, dependsOn: npmInstall ) {
+tasks.register('lint', NpmTask) {
+    dependsOn( 'npmInstall' )
     args = [ 'run', 'lint' ]
     inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
     outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
-task webpack( type: NpmTask, dependsOn: [npmInstall, lint, javadoc] ) {
+tasks.register('webpack', NpmTask) {
+    dependsOn( 'npmInstall', 'lint', 'javadoc' )
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (js, css, etc).'
     args = [ 'run', 'build' ]
@@ -60,7 +62,7 @@ task webpack( type: NpmTask, dependsOn: [npmInstall, lint, javadoc] ) {
     outputs.dir "${buildDir}/resources/main"
 }
 
-task cleanNode( type: Delete ) {
+tasks.register('cleanNode', Delete) {
     delete 'node_modules'
 }
 
@@ -73,10 +75,10 @@ jar {
         exclude '_all.js'
     }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 
+    outputs.dir "$buildDir/resources/main"
+
     dependsOn += webpack
 }
-
-jar.outputs.dir "${buildDir}/resources/main"
 
 def nodeEnvironment() {
     def environments = [ prod : 'production', dev: 'development' ]
@@ -84,8 +86,8 @@ def nodeEnvironment() {
     return nodeEnv != null ? nodeEnv : 'production'
 }
 
-compileTestJava {
-    dependsOn += jar
+compileTestJava.configure {
+    dependsOn( 'jar' )
 }
 
 test {
