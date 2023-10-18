@@ -4,8 +4,23 @@ const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
 const adminLib = require('/lib/xp/admin');
 const autoLoginLib = require('/lib/autologin');
+const staticLib = require('/lib/enonic/static');
 
-exports.handle401 = function() {
+const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
+const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
+
+const getStatic = staticLib.buildGetter(
+    {
+        root: 'static',
+        getCleanPath: req => {
+            return req.rawPath.split('/_static/')[1];
+        },
+        cacheControl: 'no-cache',
+        etag: true,
+    }
+);
+
+exports.handle401 = function () {
     const body = generateLoginPage();
 
     return {
@@ -15,7 +30,20 @@ exports.handle401 = function() {
     };
 };
 
-exports.get = function() {
+exports.get = function (req) {
+    const rawPath = req.rawPath;
+    if (!rawPath.startsWith('/api/idprovider/')) {
+        const indexOf = rawPath.indexOf('/_/');
+        if (indexOf !== -1) {
+            const endpointPath = rawPath.substring(indexOf);
+            if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
+                return getStatic(req);
+            }
+        }
+    } else if (STATIC_ASSETS_SLASH_API_REGEXP.test(rawPath)) {
+        return getStatic(req);
+    }
+
     const redirectUrl = generateRedirectUrl();
     const body = generateLoginPage(redirectUrl);
 
@@ -124,18 +152,15 @@ function getServiceUrl(redirectUrl) {
 }
 
 function generateLoginPage(redirectUrl) {
-    const assetUrlPrefix = portalLib.assetUrl({ path: '' });
-    const imageUrl = portalLib.assetUrl({ path: 'icons/' });
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
+    const baseUrlPrefix = `${portalLib.idProviderUrl({type: 'absolute'})}/_static`;
 
     const view = resolve('idprovider.html');
     const params = {
-        assetUrlPrefix: assetUrlPrefix,
-        backgroundUrl: portalLib.assetUrl({
-            path: 'images/background.jpg'
-        }),
-        imageUrl: imageUrl,
+        assetUrlPrefix: baseUrlPrefix,
+        backgroundUrl: `${baseUrlPrefix}/images/background.jpg`,
+        imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
         configServiceUrl: getServiceUrl(redirectUrl)

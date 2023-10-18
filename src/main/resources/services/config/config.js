@@ -10,7 +10,9 @@ function handleGet(req) {
         body: {
             redirectUrl: redirectUrl,
             idProviderKey: portalLib.getIdProviderKey(),
-            idProviderUrl: portalLib.idProviderUrl(),
+            idProviderUrl: portalLib.idProviderUrl({
+                type: 'absolute',
+            }),
             messages: admin.getPhrases()
         }
     };

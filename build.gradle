@@ -26,6 +26,7 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
+    include "com.enonic.lib:lib-static:1.0.3"
     include "com.auth0:java-jwt:4.4.0"
 
     testImplementation 'org.mockito:mockito-core:5.6.0'
@@ -69,9 +70,9 @@ tasks.register('cleanNode', Delete) {
 jar {
     def mainDir = file('build/resources/main')
 
-    exclude 'assets/**/*.less'
+    exclude 'static/**/*.less'
 
-    fileTree("$mainDir/assets/js") {
+    fileTree("$mainDir/static/js") {
         exclude '_all.js'
     }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 

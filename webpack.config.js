@@ -6,12 +6,12 @@ const path = require('path');
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-    context: path.join(__dirname, '/src/main/resources/assets'),
+    context: path.join(__dirname, '/src/main/resources/static'),
     entry: {
         main: './js/main.js'
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets'),
+        path: path.join(__dirname, '/build/resources/main/static'),
         filename: './js/_all.js',
         assetModuleFilename: './[file]'
     },
