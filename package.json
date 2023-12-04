@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
-    "browserslist": "^4.22.1",
+    "browserslist": "^4.22.2",
     "browserslist-config-enonic": "^1.0.8",
     "css-loader": "^6.8.1",
     "cssnano": "^6.0.1",
