@@ -2,7 +2,6 @@ const mustacheLib = require('/lib/mustache');
 const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
-const adminLib = require('/lib/xp/admin');
 const autoLoginLib = require('/lib/autologin');
 const staticLib = require('/lib/enonic/static');
 
@@ -140,15 +139,12 @@ function generateRedirectUrl() {
 }
 
 function getServiceUrl(redirectUrl) {
-    let baseUri = adminLib.getBaseUri();
-    if (baseUri.slice(-1) !== '/') {
-        baseUri += '/';
-    }
-    let serviceUrl = `${baseUri}tool/_/service/${app.name}/config`;
-    if (redirectUrl) {
-        serviceUrl += `?redirectUrl=${redirectUrl}`;
-    }
-    return serviceUrl;
+    return portalLib.serviceUrl({
+        service: 'config',
+        params: {
+            redirectUrl: redirectUrl
+        }
+    });
 }
 
 function generateLoginPage(redirectUrl) {
