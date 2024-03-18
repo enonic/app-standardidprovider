@@ -158,7 +158,7 @@ function generateLoginPage(redirectUrl) {
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
         configScriptId: Math.random().toString(36).substring(2, 15),
-        configJson: JSON.stringify(config, null, 4)
+        configJson: JSON.stringify(config, null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
     return mustacheLib.render(view, params);
 }
