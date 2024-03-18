@@ -26,7 +26,8 @@
     <link rel="mask-icon" href="{{imageUrlPrefix}}/xp-logo-black.svg" color="#5bbad5">
     <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
 
-    <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js" data-config-service-url="{{configServiceUrl}}"></script>
+    <script type="application/json" id="config-json-{{configScriptId}}">{{{configJson}}}</script>
+    <script type="text/javascript" src="{{assetUrlPrefix}}/js/_all.js" data-config-script-id="{{configScriptId}}"></script>
 </head>
 <body>
 <div class="home-main-container">
@@ -72,9 +73,9 @@
         {{/adminUserCreation}}
         {{^adminUserCreation}}
         <form id="login-form" class="login-form">
-            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail">
+            <input id="username-input" class="input-field" type="text" placeholder="userid or e-mail" autocomplete="username">
             <div class="password-container">
-                <input id="password-input" class="input-field password-input" type="password" placeholder="password">
+                <input id="password-input" class="input-field password-input" type="password" placeholder="password" autocomplete="current-password">
                 <button id="login-button" class="xp-admin-common-button login-button" style="display: none;"></button>
             </div>
         </form>

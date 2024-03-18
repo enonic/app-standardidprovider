@@ -4,6 +4,7 @@ const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
 const adminLib = require('/lib/xp/admin');
 const autoLoginLib = require('/lib/autologin');
+const configLib = require('/lib/config');
 const staticLib = require('/lib/enonic/static');
 
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
@@ -139,31 +140,25 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function getServiceUrl(redirectUrl) {
-    let baseUri = adminLib.getBaseUri();
-    if (baseUri.slice(-1) !== '/') {
-        baseUri += '/';
-    }
-    let serviceUrl = `${baseUri}tool/_/service/${app.name}/config`;
-    if (redirectUrl) {
-        serviceUrl += `?redirectUrl=${redirectUrl}`;
-    }
-    return serviceUrl;
-}
-
 function generateLoginPage(redirectUrl) {
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
     const baseUrlPrefix = `${portalLib.idProviderUrl({type: 'absolute'})}/_static`;
 
     const view = resolve('idprovider.html');
+    const config = configLib.getConfig();
+    if (redirectUrl) {
+        config.redirectUrl = redirectUrl;
+    }
+
     const params = {
         assetUrlPrefix: baseUrlPrefix,
         backgroundUrl: `${baseUrlPrefix}/images/background.jpg`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
-        configServiceUrl: getServiceUrl(redirectUrl)
+        configScriptId: Math.random().toString(36).substring(2, 15),
+        configJson: JSON.stringify(config, null, 4)
     };
     return mustacheLib.render(view, params);
 }
