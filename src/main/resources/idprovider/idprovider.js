@@ -2,7 +2,7 @@ const mustacheLib = require('/lib/mustache');
 const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
-const adminLib = require('/lib/xp/admin');
+const configLib = require('/lib/config');
 
 exports.handle401 = function() {
     const body = generateLoginPage();
@@ -104,18 +104,6 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function getServiceUrl(redirectUrl) {
-    let baseUri = adminLib.getBaseUri();
-    if (baseUri.slice(-1) !== '/') {
-        baseUri += '/';
-    }
-    let serviceUrl = `${baseUri}tool/_/service/${app.name}/config`;
-    if (redirectUrl) {
-        serviceUrl += `?redirectUrl=${redirectUrl}`;
-    }
-    return serviceUrl;
-}
-
 function generateLoginPage(redirectUrl) {
     const assetUrlPrefix = portalLib.assetUrl({ path: '' });
     const imageUrl = portalLib.assetUrl({ path: 'icons/' });
@@ -123,6 +111,11 @@ function generateLoginPage(redirectUrl) {
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
 
     const view = resolve('idprovider.html');
+    const config = configLib.getConfig();
+    if (redirectUrl) {
+        config.redirectUrl = redirectUrl;
+    }
+
     const params = {
         assetUrlPrefix: assetUrlPrefix,
         backgroundUrl: portalLib.assetUrl({
@@ -131,7 +124,8 @@ function generateLoginPage(redirectUrl) {
         imageUrl: imageUrl,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
-        configServiceUrl: getServiceUrl(redirectUrl)
+        configScriptId: Math.random().toString(36).substring(2, 15),
+        configJson: JSON.stringify(config, null, 4).replace(/<(\/?script|!--)/gi, "\\u003C$1")
     };
     return mustacheLib.render(view, params);
 }

@@ -1,33 +1,34 @@
 'use strict' // eslint-disable-line
 
 async function loadConfig() {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            const backImage = document.getElementById('background-image');
+    setTimeout(() => {
+        const backImage = document.getElementById('background-image');
 
-            if (backImage) {
-                backImage.classList.remove('empty');
-            }
-        }, 100);
-    });
+        if (backImage) {
+            backImage.classList.remove('empty');
+        }
+    }, 100);
 
-    const attr = 'data-config-service-url';
-    const configServiceUrl = document.currentScript.getAttribute(attr);
-    const response = await fetch(configServiceUrl);
+    const attr = 'data-config-script-id';
+    const configScriptId = document.currentScript.getAttribute(attr);
 
-    if (!response.ok) {
-        const msg = 'Could not fetch required app config:';
-        throw new Error(`${msg} ${response.status}`);
+    const config = document.getElementById(`config-json-${configScriptId}`);
+    if (!config) {
+        throw Error('Could not find app config');
     }
 
-    const data = await response.json();
-    data.messages = JSON.parse(data.messages);
-    window.CONFIG = data;
+    try {
+        window.CONFIG = JSON.parse(config.innerText);
+    } catch (e) {
+        throw Error('Could not parse app config');
+    }
 }
 
-loadConfig().finally(() => {
-    require('../styles/main.less');
-    require('./welcome');
-    require('./login');
-    require('./creation');
-});
+(() => {
+    loadConfig().finally(() => {
+        require('../styles/main.less');
+        require('./welcome');
+        require('./login');
+        require('./creation');
+    });
+})();
