@@ -33,7 +33,7 @@
     "postcss-normalize": "^10.0.1",
     "postcss-sort-media-queries": "^5.2.0",
     "prettier": "^3.2.5",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.3",
     "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
