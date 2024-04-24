@@ -50,21 +50,18 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
-        run: ./gradlew build -Pcom.enonic.xp.app.production=true
+        run: ./gradlew --refresh-dependencies build publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=ci -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
 
       - uses: codecov/codecov-action@v4
+        continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Publish
-        if: needs.publish_vars.outputs.publish == 'true'
-        run: ./gradlew publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=ci -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
-
   dispatch:
-    needs: [publish_vars, build]
+    needs: [ publish_vars, build ]
     strategy:
       matrix:
-        repo: ["enonic/xp-distro" ]
+        repo: [ "enonic/xp-distro" ]
     runs-on: ubuntu-latest
     if: needs.publish_vars.outputs.publish == 'true'
     steps:
