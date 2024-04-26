@@ -49,8 +49,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Prepare Gradle Arguments
+        run: |
+          BASE_ARGS="--refresh-dependencies build"
+          PUBLISH_ARGS="publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=ci -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}"
+          if [ "${{ needs.publish_vars.outputs.publish }}" == "true" ]; then
+            GRADLE_ARGS="$BASE_ARGS $PUBLISH_ARGS"
+          else
+            GRADLE_ARGS="$BASE_ARGS"
+          fi
+          echo "GRADLE_ARGS=$GRADLE_ARGS" >> $GITHUB_ENV
+
       - name: Build with Gradle
-        run: ./gradlew --refresh-dependencies build publish -Pcom.enonic.xp.app.production=true -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=ci -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
+        run: ./gradlew $GRADLE_ARGS
 
       - uses: codecov/codecov-action@v4
         continue-on-error: true
