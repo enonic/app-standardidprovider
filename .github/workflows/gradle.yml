@@ -2,10 +2,9 @@ name: Gradle Build
 
 on:
   push:
-  repository_dispatch:
-    types: [ xp ]
+  workflow_dispatch:
 
-concurrency: build-${{ github.event.client_payload.ref || github.ref }}
+concurrency: build-${{ github.ref }}
 
 jobs:
   publish_vars:
@@ -19,11 +18,9 @@ jobs:
       - name: Extract actual github.ref
         run: echo "ACTUAL_GITHUB_REF=${ACTUAL_REF}" >> $GITHUB_ENV
         env:
-          ACTUAL_REF: ${{ github.event.client_payload.ref || github.ref }}
+          ACTUAL_REF: ${{ github.ref }}
 
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.client_payload.ref || github.ref }}
 
       - name: Get publishing variables
         id: publish_vars
@@ -38,8 +35,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.client_payload.ref || github.ref }}
 
       - uses: actions/setup-java@v4
         with:
@@ -76,11 +71,9 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.publish_vars.outputs.publish == 'true'
     steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
-          event-type: app-standardidprovider
-          client-payload: >
-            {"ref": "${{ github.event.client_payload.ref || github.ref }}"}
+          repo: ${{ matrix.repo }}
+          workflow: gradle.yml
