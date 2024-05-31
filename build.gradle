@@ -1,12 +1,11 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.5'
     id 'com.enonic.xp.app' version '3.4.0'
     id "com.github.node-gradle.node" version '7.0.2'
 }
-
-apply from: "$rootDir/gradle/defaults.gradle"
 
 def xpVersion=version
 
@@ -16,6 +15,22 @@ app {
     displayName = 'Standard ID Provider'
     systemVersion = "${xpVersion}"
     systemApp = true
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    xp.enonicRepo('dev')
 }
 
 dependencies {
@@ -93,4 +108,15 @@ compileTestJava.configure {
 
 test {
     useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+    jvmArgs '-XX:TieredStopAtLevel=1'
 }
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+check.dependsOn jacocoTestReport

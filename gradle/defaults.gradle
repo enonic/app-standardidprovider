@@ -1,9 +1,0 @@
-repositories {
-    mavenLocal()
-    mavenCentral()
-    xp.enonicRepo('dev')
-}
-
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
