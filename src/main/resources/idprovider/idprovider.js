@@ -143,7 +143,7 @@ function generateRedirectUrl() {
 function generateLoginPage(redirectUrl) {
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
-    const baseUrlPrefix = `${portalLib.idProviderUrl({type: 'absolute'})}/_static`;
+    const baseUrlPrefix = `${portalLib.idProviderUrl()}/_static`;
 
     const view = resolve('idprovider.html');
     const config = configLib.getConfig();
