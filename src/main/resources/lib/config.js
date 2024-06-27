@@ -9,9 +9,7 @@ exports.isLoginWithoutUserEnabled = function () {
 exports.getConfig = () => {
     return {
         idProviderKey: portalLib.getIdProviderKey(),
-        idProviderUrl: portalLib.idProviderUrl({
-            type: 'absolute',
-        }),
+        idProviderUrl: portalLib.idProviderUrl(),
         messages: JSON.parse(adminLib.getPhrases())
     }
 }
