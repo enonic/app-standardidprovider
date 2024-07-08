@@ -1,36 +1,36 @@
 'use strict' // eslint-disable-line
 
-var $ = require('jquery');
-var i18n = require('./i18n');
+const $ = require('jquery');
+const i18n = require('./i18n');
 
-var emailRegexp = /^[^@\s]+@+[^@\s]+$/;
-var nodeIdRegexp = /^[\w-.:]+$/;
-var reservedUsernamesRegexp = /^(su|anonymous)$/;
+const emailRegexp = /^[^@\s]+@+[^@\s]+$/;
+const nodeIdRegexp = /^[\w-.:]+$/;
+const reservedUsernamesRegexp = /^(su|anonymous)$/;
 
-var validClass = 'valid';
-var invalidClass = 'invalid';
-var disabledClass = 'disabled';
-var checkTimeout = 1000;
+const validClass = 'valid';
+const invalidClass = 'invalid';
+const disabledClass = 'disabled';
+const checkTimeout = 1000;
 
-var fillUsername = true;
+let fillUsername = true;
 
-var creationText;
-var userInvalidText;
-var emailCreationLabel;
-var emailCreationInput;
-var usernameCreationLabel;
-var usernameCreationInput;
-var passwordCreationLabel;
-var passwordCreationInput;
-var passwordRepeatLabel;
-var passwordRepeatInput;
-var createAdminButton;
-var messageContainer;
-var loginForm;
-var inputs;
-var passwordInvalidText;
-var confirmPasswordInvalidText;
-var emailInvalidText;
+let creationText;
+let userInvalidText;
+let emailCreationLabel;
+let emailCreationInput;
+let usernameCreationLabel;
+let usernameCreationInput;
+let passwordCreationLabel;
+let passwordCreationInput;
+let passwordRepeatLabel;
+let passwordRepeatInput;
+let createAdminButton;
+let messageContainer;
+let loginForm;
+let inputs;
+let passwordInvalidText;
+let confirmPasswordInvalidText;
+let emailInvalidText;
 
 function checkEmail() {
     setValidity(emailCreationInput, emailRegexp.test(emailCreationInput.val()));
@@ -73,8 +73,8 @@ function checkPasswords() {
 }
 
 function checkForm() {
-    var enabled = true;
-    inputs.forEach(function (input) {
+    let enabled = true;
+    inputs.forEach((input) => {
         if (!input.hasClass(validClass)) {
             enabled = false;
         }
@@ -115,7 +115,7 @@ function handleCreateAdminUserError() {
     messageContainer.html(i18n.localise('notify.creation.failed'));
 }
 
-$(function () {
+$(() => {
     loginForm = $('#login-form');
     if (loginForm.length) {
         return;
@@ -147,17 +147,18 @@ $(function () {
     passwordInvalidText.hide();
     confirmPasswordInvalidText.hide();
 
-    var emailCreationTimeoutId;
-    emailCreationInput.keyup(function () {
+    let emailCreationTimeoutId;
+    emailCreationInput.keyup(() => {
         if (fillUsername) {
-            var emailValue = emailCreationInput.val() || '';
-            var atIndex = emailValue.indexOf('@');
+            const emailValue = emailCreationInput.val() || '';
+            const atIndex = emailValue.indexOf('@');
             usernameCreationInput.val(
                 atIndex === -1 ? emailValue : emailValue.substr(0, atIndex)
             );
         }
+
         clearTimeout(emailCreationTimeoutId);
-        emailCreationTimeoutId = setTimeout(function () {
+        emailCreationTimeoutId = setTimeout(() => {
             checkEmail();
             if (fillUsername) {
                 checkUsername();
@@ -165,30 +166,30 @@ $(function () {
         }, checkTimeout);
     });
 
-    var usernameCreationTimeoutId;
-    usernameCreationInput.keyup(function () {
+    let usernameCreationTimeoutId;
+    usernameCreationInput.keyup(() => {
         fillUsername = false;
         clearTimeout(usernameCreationTimeoutId);
         usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
     });
 
-    var passwordCreationTimeoutId;
-    passwordCreationInput.keyup(function () {
+    let passwordCreationTimeoutId;
+    passwordCreationInput.keyup(() => {
         clearTimeout(passwordCreationTimeoutId);
         passwordCreationTimeoutId = setTimeout(checkPasswords, checkTimeout);
     });
 
-    var passwordRepeatitionTimeoutId;
-    passwordRepeatInput.keyup(function () {
+    let passwordRepeatitionTimeoutId;
+    passwordRepeatInput.keyup(() => {
         clearTimeout(passwordRepeatitionTimeoutId);
         passwordRepeatitionTimeoutId = setTimeout(checkPasswords, checkTimeout);
     });
 
-    createAdminButton.click(function () {
+    createAdminButton.click(() => {
         if (!createAdminButton.hasClass(disabledClass)) {
             messageContainer.html('');
             createAdminButton.addClass(disabledClass);
-            var data = {
+            const data = {
                 action: 'createAdminUser',
                 user: usernameCreationInput.val(),
                 email: emailCreationInput.val(),

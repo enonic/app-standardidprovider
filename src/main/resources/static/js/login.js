@@ -1,13 +1,13 @@
 'use strict' // eslint-disable-line
 
-var $ = require('jquery');
-var i18n = require('./i18n');
+const $ = require('jquery');
+const i18n = require('./i18n');
 
-var loginButton;
-var userNameInput;
-var passwordInput;
-var messageContainer;
-var loginForm;
+let loginButton;
+let userNameInput;
+let passwordInput;
+let messageContainer;
+let loginForm;
 
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
@@ -32,7 +32,7 @@ function loginButtonClicked() {
 
     $('#username-input, #password-input, #login-button').removeClass('invalid');
 
-    var data = {
+    const data = {
         action: 'login',
         user: userNameInput.val(),
         password: passwordInput.val()
@@ -56,7 +56,7 @@ function checkFieldsEmpty() {
 function onInputTyped(event) {
     $('#username-input, #password-input, #login-button').removeClass('invalid');
 
-    var fieldsEmpty = checkFieldsEmpty();
+    const fieldsEmpty = checkFieldsEmpty();
     if (fieldsEmpty) {
         loginButton.hide();
         messageContainer.html('');
@@ -68,7 +68,7 @@ function onInputTyped(event) {
     }
 }
 
-$(function () {
+$(() => {
     loginForm = $('#login-form');
 
     if (!loginForm.length) {
@@ -80,17 +80,17 @@ $(function () {
     passwordInput = $('#password-input');
     messageContainer = $('#message-container');
 
-    loginButton.click(function () {
+    loginButton.click(() => {
         loginButtonClicked();
         return false;
     });
     $('#username-input, #password-input').keyup(onInputTyped);
 
-    userNameInput.click(); // for mobile devices
+    userNameInput.click(); // For mobile devices
     userNameInput.focus();
-    var checkLoginButtonInterval = setInterval(function () {
-        // workaround to show login button when browser autofills inputs
-        var fieldsEmpty = checkFieldsEmpty();
+    const checkLoginButtonInterval = setInterval(() => {
+        // Workaround to show login button when browser autofills inputs
+        const fieldsEmpty = checkFieldsEmpty();
         if (!fieldsEmpty) {
             loginButton.show();
             clearInterval(checkLoginButtonInterval);

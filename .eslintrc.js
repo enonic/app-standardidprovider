@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ['airbnb-base/legacy', 'prettier'],
+    extends: ['xo', 'prettier'],
     plugins: ['prettier'],
     rules: {
         'comma-dangle': ['error', 'never'],
@@ -32,5 +32,8 @@ module.exports = {
         app: false,
         CONFIG: false,
         resolve: false
-    }
+    },
+    ignorePatterns: [
+        '**/*.js', '!src/main/resources/static/js/**/*.js'
+    ]
 };
