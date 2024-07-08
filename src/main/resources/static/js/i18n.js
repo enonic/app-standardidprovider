@@ -1,12 +1,12 @@
 'use strict' // eslint-disable-line
 
 exports.localise = (function (bundle) {
-    var messages = bundle;
+    const messages = bundle;
 
     return function (key) {
-        var message = '#' + key + '#';
+        const message = '#' + key + '#';
 
-        if (messages != null && messages[key] != null) {
+        if (messages !== null && messages[key] !== null) {
             return messages[key];
         }
 

@@ -19,7 +19,7 @@ async function loadConfig() {
 
     try {
         window.CONFIG = JSON.parse(config.innerText);
-    } catch (e) {
+    } catch {
         throw Error('Could not parse app config');
     }
 }

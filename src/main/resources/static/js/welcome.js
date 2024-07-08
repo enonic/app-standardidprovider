@@ -1,16 +1,16 @@
 'use strict' // eslint-disable-line
 
-var $ = require('jquery');
-var i18n = require('./i18n');
+const $ = require('jquery');
+const i18n = require('./i18n');
 
-var welcomeText;
-var enonicLogo;
-var createAdminLink;
-var loginAsGuestButton;
-var messageContainer;
-var welcomeView;
-var creationView;
-var loginForm;
+let welcomeText;
+let enonicLogo;
+let createAdminLink;
+let loginAsGuestButton;
+let messageContainer;
+let welcomeView;
+let creationView;
+let loginForm;
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -30,7 +30,6 @@ function handleSuLoginError() {
 
 function displayCreationView() {
     messageContainer.html('');
-    // TODO Refactor to use state and history
     enonicLogo.attr('hidden', '');
     welcomeView.attr('hidden', '');
     creationView.attr('hidden', null);
@@ -39,7 +38,7 @@ function displayCreationView() {
 
 function loginAsSuLinkClicked() {
     messageContainer.html('');
-    var data = {
+    const data = {
         action: 'loginAsSu'
     };
     $.ajax({
@@ -53,7 +52,7 @@ function loginAsSuLinkClicked() {
     });
 }
 
-$(function () {
+$(() => {
     loginForm = $('#login-form');
 
     if (loginForm.length) {
@@ -68,11 +67,11 @@ $(function () {
     welcomeView = $('#welcome-view');
     creationView = $('#creation-view');
 
-    loginAsGuestButton.click(function () {
+    loginAsGuestButton.click(() => {
         loginAsSuLinkClicked();
         return false;
     });
-    createAdminLink.click(function () {
+    createAdminLink.click(() => {
         displayCreationView();
         return false;
     });
