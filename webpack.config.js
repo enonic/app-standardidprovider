@@ -1,22 +1,17 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const zlib = require("zlib");
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-let input = path.join(__dirname, '/src/main/resources/assets');
-let output = path.join(__dirname, '/build/resources/main/assets');
 module.exports = {
-    context: input,
+    context: path.join(__dirname, '/src/main/resources/assets'),
     entry: {
         main: './js/main.js'
     },
     output: {
-        path: output,
+        path: path.join(__dirname, '/build/resources/main/assets'),
         filename: './js/_all.js',
         assetModuleFilename: './[file]'
     },
@@ -32,7 +27,7 @@ module.exports = {
                 ]
             },
             {
-                test: /background\.jpg$/,
+                test: /background.jpg$/,
                 type: "asset",
                 use: [
                     {
@@ -78,31 +73,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: './styles/_all.css',
             chunkFilename: './styles/_all.css'
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {from: path.join(input, 'icons/favicons'), to: path.join(output, 'icons/favicons')},
-                {from: path.join(input, 'images'), to: path.join(output, 'images'), globOptions: {ignore: ['**/background.jpg']}},
-            ],
-        }),
-        ...(isProd ?  [
-                new CompressionPlugin({
-                    test: /\.(js|css|svg|ttf|json|ico)$/,
-                    algorithm: "gzip",
-                    minRatio: Number.MAX_SAFE_INTEGER,
-                }),
-                new CompressionPlugin({
-                    test: /\.(js|css|svg|ttf|json|ico)$/,
-                    algorithm: "brotliCompress",
-                    compressionOptions: {
-                        params: {
-                            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-                        },
-                    },
-                    minRatio: Number.MAX_SAFE_INTEGER,
-                }),
-            ] : []
-        ),
+        })
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',

@@ -2,7 +2,6 @@ const mustacheLib = require('/lib/mustache');
 const portalLib = require('/lib/xp/portal');
 const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
-const assetLib = require('/lib/enonic/asset');
 const configLib = require('/lib/config');
 
 exports.handle401 = function() {
@@ -106,8 +105,8 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(redirectUrl) {
-    const assetUrlPrefix = assetLib.assetUrl({ path: '' });
-    const imageUrl = assetLib.assetUrl({ path: 'icons/' });
+    const assetUrlPrefix = portalLib.assetUrl({ path: '' });
+    const imageUrl = portalLib.assetUrl({ path: 'icons/' });
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
 
@@ -119,7 +118,7 @@ function generateLoginPage(redirectUrl) {
 
     const params = {
         assetUrlPrefix: assetUrlPrefix,
-        backgroundUrl: assetLib.assetUrl({
+        backgroundUrl: portalLib.assetUrl({
             path: 'images/background.jpg'
         }),
         imageUrl: imageUrl,
