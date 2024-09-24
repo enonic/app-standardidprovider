@@ -26,6 +26,7 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
+    include "com.enonic.lib:lib-asset:1.0.0-B1"
 }
 
 node {
@@ -59,15 +60,11 @@ task cleanNode( type: Delete ) {
 }
 
 jar {
-    def mainDir = file('build/resources/main')
-
-    exclude 'assets/**/*.less'
-
-    fileTree("$mainDir/assets/js") {
-        exclude '_all.js'
-    }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
-
     dependsOn += webpack
+}
+
+processResources {
+    exclude 'assets/**'  // Excluded because webpack does it
 }
 
 jar.outputs.dir "${buildDir}/resources/main"
