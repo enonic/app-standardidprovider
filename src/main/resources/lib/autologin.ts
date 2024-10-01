@@ -1,9 +1,8 @@
 /* global log, __ */
-import type {Request} from '@item-enonic-types/global/controller';
 
 import {extractJwtToken} from './jwt';
 
-export const autoLogin = function (req: Request) {
+export const autoLogin = function (req: {}) {
     try {
         const jwtToken = extractJwtToken(req);
         if (!jwtToken) {

@@ -28,7 +28,7 @@ const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const getStatic = buildGetter(
     {
         root: 'static',
-        getCleanPath: req => {
+        getCleanPath: (req: Request) => {
             return req.rawPath.split('/_static/')[1];
         },
         cacheControl: 'no-cache',
