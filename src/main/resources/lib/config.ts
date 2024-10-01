@@ -11,7 +11,7 @@ interface Config {
 
 const configBean = __.newBean<{
     isLoginWithoutUserEnabled: () => boolean;
-}>('com.enonic.app.standartidprovider.handler.ConfigurationHandler');
+}>('com.enonic.app.standardidprovider.handler.ConfigurationHandler');
 
 
 export const isLoginWithoutUserEnabled = () => configBean.isLoginWithoutUserEnabled();

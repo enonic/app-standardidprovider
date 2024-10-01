@@ -11,7 +11,7 @@ export const autoLogin = function (req: Request) {
         }
         return __.newBean<{
             verifyAndLogin(jwtToken: string): boolean;
-        }>('com.enonic.app.standartidprovider.handler.JwtHandler').verifyAndLogin(jwtToken);
+        }>('com.enonic.app.standardidprovider.handler.JwtHandler').verifyAndLogin(jwtToken);
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : 'Unknown error';
         log.debug(`Auto login failed: ${errorMessage}`);
