@@ -125,7 +125,7 @@ tasks.register('npmCheck', NpmTask) {
 	dependsOn npmInstall
 	args = [
 		'run',
-		'check'
+		'check:types'
 	]
 	environment = [
 		'FORCE_COLOR': 'true',
