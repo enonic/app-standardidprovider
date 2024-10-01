@@ -82,6 +82,14 @@ tasks.register('cleanNode', Delete) {
     delete 'node_modules'
 }
 
+// Command to find if any new files types should be excluded
+// find src -type f -a ! -name "*.ts" -a ! -name "*.java" ! -name "*.properties" ! -name "*.png" ! -name "*.jpg" ! -name "*.ttf" ! -name "*.woff" ! -name "*.eot" ! -name "*.svg" ! -name "*.json" ! -name "*.ico" ! -name "*.less" ! -name "*.js" ! -name "*.html" ! -name "*.xml"
+processResources {
+    exclude '**/*.js'
+    exclude '**/*.less'
+    exclude '**/*.ts'
+}
+
 jar {
     def mainDir = file('build/resources/main')
 
@@ -120,3 +128,16 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+tasks.register('npmCheck', NpmTask) {
+	dependsOn npmInstall
+	args = [
+		'run',
+		'check'
+	]
+	environment = [
+		'FORCE_COLOR': 'true',
+	]
+}
+
+check.dependsOn npmCheck

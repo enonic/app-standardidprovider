@@ -1,3 +1,5 @@
+/.enonic
+*.tsbuildinfo
 .DS_Store
 build/
 temp/

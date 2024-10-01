@@ -1,0 +1,12 @@
+{
+    "include": [
+        "src/main/resources/assets/**/*.ts",
+        "src/main/resources/static/**/*.ts"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "lib": [
+            "DOM"
+        ]
+    }
+}

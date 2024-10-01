@@ -1,27 +1,30 @@
-var authLib = require('/lib/xp/auth');
-var nodeLib = require('/lib/xp/node');
-var portalLib = require('/lib/xp/portal');
-var contextLib = require('/lib/xp/context');
-var config = require('./config');
+import {addMembers, changePassword, createUser, getIdProviderConfig, login} from '/lib/xp/auth';
+import {connect as nodeConnect} from '/lib/xp/node';
+import {getIdProviderKey} from '/lib/xp/portal';
+import {run} from '/lib/xp/context';
+import {isLoginWithoutUserEnabled} from './config';
 
-function adminUserCreationEnabled() {
+export function adminUserCreationEnabled() {
     return isSystemIdProvider() && checkFlag();
 }
-exports.adminUserCreationEnabled = adminUserCreationEnabled;
 
-function loginWithoutUserEnabled() {
-    return config.isLoginWithoutUserEnabled();
+export function loginWithoutUserEnabled() {
+    return isLoginWithoutUserEnabled();
 }
-exports.loginWithoutUserEnabled = loginWithoutUserEnabled;
 
-exports.canLoginAsSu = function canLoginAsSu() {
+export const canLoginAsSu = () => {
     return adminUserCreationEnabled() && loginWithoutUserEnabled();
 };
 
-exports.createAdminUserCreation = function(params) {
+export const createAdminUserCreation = (params: {
+    idProvider: string
+    user: string
+    email: string
+    password: string
+}) => {
     if (adminUserCreationEnabled()) {
-        return runAsAdmin(function() {
-            var createdUser = authLib.createUser({
+        return runAsAdmin(() => {
+            var createdUser = createUser({
                 idProvider: 'system',
                 name: params.user,
                 displayName: params.user,
@@ -29,17 +32,17 @@ exports.createAdminUserCreation = function(params) {
             });
 
             if (createdUser) {
-                authLib.changePassword({
+                changePassword({
                     userKey: createdUser.key,
                     password: params.password
                 });
 
-                authLib.addMembers('role:system.admin', [createdUser.key]);
-                authLib.addMembers('role:system.admin.login', [
+                addMembers('role:system.admin', [createdUser.key]);
+                addMembers('role:system.admin.login', [
                     createdUser.key
                 ]);
 
-                var loginResult = authLib.login({
+                var loginResult = login({
                     user: params.user,
                     password: params.password,
                     idProvider: 'system'
@@ -58,18 +61,24 @@ exports.createAdminUserCreation = function(params) {
 };
 
 function isSystemIdProvider() {
-    return portalLib.getIdProviderKey() === 'system';
+    return getIdProviderKey() === 'system';
 }
 
 function checkFlag() {
-    var idProviderConfig = authLib.getIdProviderConfig();
+    var idProviderConfig = getIdProviderConfig();
     return (
         idProviderConfig && idProviderConfig.adminUserCreationEnabled === true
     );
 }
 
 function setFlag() {
-    connect().modify({
+    connect().modify<{
+        idProvider?: {
+            config?: {
+                adminUserCreationEnabled?: boolean
+            }
+        }
+    }>({
         key: '/identity/system',
         editor: function(systemIdProvider) {
             if (
@@ -84,10 +93,10 @@ function setFlag() {
     });
 }
 
-function runAsAdmin(callback) {
-    return contextLib.run(
+function runAsAdmin<T>(callback: () => T) {
+    return run<T>(
         {
-            repoId: 'system-repo',
+            repository: 'system-repo',
             branch: 'master',
             principals: ['role:system.admin']
         },
@@ -96,7 +105,7 @@ function runAsAdmin(callback) {
 }
 
 function connect() {
-    return nodeLib.connect({
+    return nodeConnect({
         repoId: 'system-repo',
         branch: 'master',
         principals: ['role:system.admin']
