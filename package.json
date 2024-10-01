@@ -54,6 +54,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@enonic-types/lib-static": "file:../lib-static/build/types",
     "@enonic/js-utils": "^1.8.0",
     "jquery": "^3.7.1"
   },

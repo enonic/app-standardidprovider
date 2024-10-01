@@ -3,8 +3,7 @@
 import {render} from '/lib/mustache';
 import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
 import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
-// @ts-expect-error No types
-import {buildGetter} from '/lib/enonic/static';
+import {requestHandler} from '/lib/enonic/static';
 import {startsWith} from '@enonic/js-utils/string/startsWith';
 
 // Local libs
@@ -13,26 +12,20 @@ import {autoLogin as libAutoLogin} from '/lib/autologin';
 import {getConfig} from '/lib/config';
 
 
-interface Request {
-    contentType: string;
-    rawPath: string;
-    body: string;
-    params: {
-        redirect: string;
-    }
-}
+type Request = Parameters<typeof requestHandler>[0];
 
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 
-const getStatic = buildGetter(
+const getStatic = (request: Request) => requestHandler(
+    request,
     {
-        root: 'static',
-        getCleanPath: (req: Request) => {
-            return req.rawPath.split('/_static/')[1];
+        cacheControl: () => 'no-cache',
+        relativePath: (request) => {
+            log.info('relativePath request:%s', JSON.stringify(request, null, 4));
+            return (request.rawPath || '').split('/_static/')[1];
         },
-        cacheControl: 'no-cache',
-        etag: true,
+        root: 'static',
     }
 );
 
@@ -47,7 +40,7 @@ export const handle401 = function () {
 };
 
 export const get = (req: Request) => {
-    const rawPath = req.rawPath;
+    const rawPath = req.rawPath || '';
     if (!startsWith(rawPath, '/api/idprovider/')) {
         const indexOf = rawPath.indexOf('/_/');
         if (indexOf !== -1) {
@@ -71,7 +64,7 @@ export const get = (req: Request) => {
 };
 
 export const post = (req: Request) => {
-    const body = JSON.parse(req.body);
+    const body = JSON.parse(req.body as string);
     if (req.contentType !== 'application/json') {
         return {
             status: 400,
@@ -119,8 +112,8 @@ export const post = (req: Request) => {
 };
 
 export const login = function(req: Request & {validTicket?: boolean}) {
-    const redirectUrl =
-        (req.validTicket && req.params.redirect) || generateRedirectUrl();
+    const redirectUrl: string =
+        (req.validTicket && req.params && req.params.redirect as string) || generateRedirectUrl();
     const body = generateLoginPage(redirectUrl);
 
     return {
@@ -133,7 +126,7 @@ export const login = function(req: Request & {validTicket?: boolean}) {
 export const logout = function(req: Request & {validTicket?: boolean}) {
     authLogout();
     const redirectUrl =
-        (req.validTicket && req.params.redirect) || generateRedirectUrl();
+        (req.validTicket && req.params && req.params.redirect) || generateRedirectUrl();
 
     return {
         redirect: redirectUrl

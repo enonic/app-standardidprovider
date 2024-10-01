@@ -13,7 +13,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "paths": {
-            "/lib/enonic/static": ["./node_modules/@item-enonic-types/lib-static"],
+            "/lib/enonic/static": ["./node_modules/@enonic-types/lib-static"],
             "/lib/mustache": ["./node_modules/@item-enonic-types/lib-mustache"],
             "/lib/xp/*": ["./node_modules/@enonic-types/lib-*"],
             "/lib/*": ["./src/main/resources/lib/*"]
