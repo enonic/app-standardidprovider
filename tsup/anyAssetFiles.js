@@ -1,10 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 
 const folderPath = 'src/main/resources/assets';
 const regExpPattern = '(^.?|\.[^d]|[^.]d|[^.][^d])\.tsx?$';
 
 function checkFilesRecursively(folderPath) {
-  const files = fs.readdirSync(folderPath);
+  const files = fs.readdirSync(path.resolve(folderPath));
   for (const file of files) {
     const filePath = `${folderPath}/${file}`;
     if (fs.lstatSync(filePath).isDirectory()) {

@@ -1,11 +1,12 @@
 const fs = require('fs');
+const path = require('path');
 
 const folderPath = 'src/main/resources';
 const pattern = '(^.?|\.[^d]|[^.]d|[^.][^d])\.ts$';
 const ignoredPaths = ['src/main/resources/assets'];
 
 function checkFilesRecursively(folderPath) {
-  const files = fs.readdirSync(folderPath);
+  const files = fs.readdirSync(path.resolve(folderPath));
   for (const file of files) {
     const filePath = `${folderPath}/${file}`;
     if (ignoredPaths.some(d => filePath.includes(d))) {
