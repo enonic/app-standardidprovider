@@ -42,9 +42,6 @@ export default function buildServerConfig(): Options {
     bundle: true,
     dts: false, // d.ts files are use useless at runtime
     entry: SERVER_JS_ENTRY,
-    env: {
-      BROWSER_SYNC_PORT: '3100',
-    },
     esbuildOptions(options, context) {
       // If you have libs with chunks, use this to avoid collisions
       options.chunkNames = '_chunks/[name]-[hash]';
@@ -53,21 +50,6 @@ export default function buildServerConfig(): Options {
     },
     external: [
       /^\/lib\//,
-    //   '/lib/cache',
-    //   '/lib/enonic/asset',
-    //   '/lib/enonic/static',
-    //   /^\/lib\/guillotine/,
-    //   '/lib/graphql',
-    //   '/lib/graphql-connection',
-    //   '/lib/http-client',
-    //   '/lib/license',
-    //   '/lib/mustache',
-    //   '/lib/router',
-    //   '/lib/util',
-    //   '/lib/vanilla',
-    //   '/lib/text-encoding',
-    //   '/lib/thymeleaf',
-    //   /^\/lib\/xp\//,
     ],
     format: 'cjs',
     minify: false, // Minifying server files makes debugging harder
