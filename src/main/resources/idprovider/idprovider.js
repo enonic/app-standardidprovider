@@ -120,7 +120,7 @@ function generateLoginPage(redirectUrl) {
     const params = {
         assetUrlPrefix: assetUrlPrefix,
         backgroundUrl: assetLib.assetUrl({
-            path: 'images/background.jpg'
+            path: 'images/background.webp'
         }),
         imageUrl: imageUrl,
         adminUserCreation: adminUserCreation,
