@@ -4,6 +4,20 @@ const authLib = require('/lib/xp/auth');
 const adminCreationLib = require('/lib/admin-creation');
 const configLib = require('/lib/config');
 const autoLoginLib = require('/lib/autologin');
+const staticLib = require('/lib/enonic/static');
+const resourceLib = require('/lib/standardidprovider/resource');
+
+const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
+const BASE = '_static';
+
+const getStatic = (request) => staticLib.requestHandler(
+    request, {
+        cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
+        relativePath: staticLib.mappedRelativePath(`${BASE}/${resourceLib.readJsonResourceProperty('/assets/buildtime.json','timeSinceEpoch')}`),
+        root: 'assets',
+    }
+);
+
 
 exports.handle401 = function() {
     const body = generateLoginPage();
@@ -15,7 +29,16 @@ exports.handle401 = function() {
     };
 };
 
-exports.get = function() {
+exports.get = function(req) {
+    const rawPath = req.rawPath;
+    const indexOf = rawPath.indexOf('/_/');
+    if (indexOf !== -1) {
+        const endpointPath = rawPath.substring(indexOf);
+        if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
+            return getStatic(req);
+        }
+    }
+
     const redirectUrl = generateRedirectUrl();
     const body = generateLoginPage(redirectUrl);
 
@@ -112,11 +135,9 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(redirectUrl) {
-    const assetUrlPrefix = portalLib.assetUrl({ path: '' });
-    const imageUrl = portalLib.assetUrl({ path: 'icons/' });
+    const baseUrlPrefix = `${portalLib.idProviderUrl({})}/${BASE}/${resourceLib.readJsonResourceProperty('/assets/buildtime.json','timeSinceEpoch')}`;
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
-
     const view = resolve('idprovider.html');
     const config = configLib.getConfig();
     if (redirectUrl) {
@@ -124,11 +145,9 @@ function generateLoginPage(redirectUrl) {
     }
 
     const params = {
-        assetUrlPrefix: assetUrlPrefix,
-        backgroundUrl: portalLib.assetUrl({
-            path: 'images/background.jpg'
-        }),
-        imageUrl: imageUrl,
+        assetUrlPrefix: baseUrlPrefix,
+        backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
+        imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
         configScriptId: Math.random().toString(36).substring(2, 15),
