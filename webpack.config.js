@@ -1,6 +1,8 @@
+const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+// const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -14,6 +16,9 @@ module.exports = {
         path: path.join(__dirname, '/build/resources/main/assets'),
         filename: './js/_all.js',
         assetModuleFilename: './[file]'
+        // filename: './js/_all.[contenthash].js',
+        // assetModuleFilename: './assetModule/[name].[contenthash][ext][query]',
+        // chunkFilename: "./chunks/[name].[contenthash].js"
     },
     module: {
         rules: [
@@ -73,9 +78,19 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: './styles/_all.css',
             chunkFilename: './styles/_all.css'
-        })
+            // filename: './styles/_all.[contenthash].css',
+            // chunkFilename: './styles/_all.[contenthash].css',
+            // There currently aren't any
+            // chunkFilename: './styles/chunks/main.[contenthash].css'
+        }),
+        new GenerateJsonPlugin('buildtime.json', {
+            timeSinceEpoch: Date.now(),
+        }),
+        // new WebpackManifestPlugin({
+        //     publicPath: ''
+        // }),
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',
-    performance: {hints: false}
+    performance: {hints: false},
 };

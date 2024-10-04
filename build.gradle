@@ -25,7 +25,9 @@ dependencies {
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-io:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
+    include "com.enonic.lib:lib-static:2.0.0-SNAPSHOT"
 }
 
 node {
@@ -56,6 +58,36 @@ task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
 
 task cleanNode( type: Delete ) {
     delete 'node_modules'
+}
+
+// Command to find if any new files types should be excluded
+// find src -type f -a ! -name "*.java" ! -name "*.properties" ! -name "*.png" ! -name "*.jpg" ! -name "*.ttf" ! -name "*.woff" ! -name "*.eot" ! -name "*.svg" ! -name "*.json" ! -name "*.ico" ! -name "*.less" ! -name "*.js" ! -name "*.html" ! -name "*.xml"
+processResources {
+    // exclude '**/*.eot'
+    // exclude '**/*.ico'
+    // exclude '**/*.jpg'
+
+    // this would hinder src/main/resources/idprovider/idprovider.js
+    // exclude '**/*.js'
+
+    // This seems to break everything
+    // exclude 'assets/**/*.js'
+
+    // this would hinder src/main/resources/assets/icons/favicons/manifest.json
+    // exclude '**/*.json'
+
+    exclude '**/*.less'
+
+    // this would hinder src/main/resources/idprovider/idprovider.html
+    // exclude '**/*.html'
+
+    // exclude '**/*.png'
+    // exclude '**/*.svg'
+    // exclude '**/*.ttf'
+    // exclude '**/*.woff'
+
+    // this would hinder src/main/resources/idprovider/idprovider.xml
+    // exclude '**/*.xml'
 }
 
 jar {
