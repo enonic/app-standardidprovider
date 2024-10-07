@@ -9,12 +9,13 @@ const resourceLib = require('/lib/standardidprovider/resource');
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
-const getStatic = (request) => staticLib.requestHandler({
-    cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
-    request,
-    relativePath: staticLib.mappedRelativePath(`${BASE}/${resourceLib.readJsonResourceProperty('/assets/buildtime.json','timeSinceEpoch')}`),
-    root: 'assets',
-});
+const getStatic = (request) => staticLib.requestHandler(
+    request, {
+        cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
+        relativePath: staticLib.mappedRelativePath(`${BASE}/${resourceLib.readJsonResourceProperty('/assets/buildtime.json','timeSinceEpoch')}`),
+        root: 'assets',
+    }
+);
 
 
 exports.handle401 = function() {
