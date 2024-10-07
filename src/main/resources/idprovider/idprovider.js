@@ -6,18 +6,8 @@ const configLib = require('/lib/config');
 const staticLib = require('/lib/enonic/static');
 const resourceLib = require('/lib/standardidprovider/resource');
 
-const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
-
-function startsWith(
-	string,
-	searchString,
-	position = 0
-) {
-	const pos = position > 0 ? position|0 : 0;
-	return string.substring(pos, pos + searchString.length) === searchString;
-}
 
 const getStatic = (request) => staticLib.requestHandler({
     cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
@@ -39,16 +29,12 @@ exports.handle401 = function() {
 
 exports.get = function(req) {
     const rawPath = req.rawPath;
-    if (!startsWith(rawPath, '/api/idprovider/')) {
-        const indexOf = rawPath.indexOf('/_/');
-        if (indexOf !== -1) {
-            const endpointPath = rawPath.substring(indexOf);
-            if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
-                return getStatic(req);
-            }
+    const indexOf = rawPath.indexOf('/_/');
+    if (indexOf !== -1) {
+        const endpointPath = rawPath.substring(indexOf);
+        if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
+            return getStatic(req);
         }
-    } else if (STATIC_ASSETS_SLASH_API_REGEXP.test(rawPath)) {
-        return getStatic(req);
     }
 
     const redirectUrl = generateRedirectUrl();
