@@ -1,7 +1,5 @@
 const ioLib = require('/lib/xp/io');
 
-// const RESOURCE_PATH_ABSOLUTE_ASSETS_MANIFEST_JSON = '/assets/manifest.json';
-
 exports.readResource = function (path) {
     const resource = ioLib.getResource(path);
     if (!resource || !resource.exists()) {
@@ -35,7 +33,3 @@ exports.readJsonResource = function (path) {
 exports.readJsonResourceProperty = function (path, property) {
     return exports.readJsonResource(path)[property];
 }
-
-// exports.pathWithHash = function (property) {
-//     exports.readJsonResourceProperty(RESOURCE_PATH_ABSOLUTE_ASSETS_MANIFEST_JSON, property);
-// }
