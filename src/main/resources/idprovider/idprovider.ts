@@ -1,9 +1,9 @@
-import type {Request} from '@item-enonic-types/global/controller';
-
 // External libs
+// @ts-expect-error No types
 import {render} from '/lib/mustache';
 import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
 import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
+// @ts-expect-error No types
 import {buildGetter} from '/lib/enonic/static';
 import {startsWith} from '@enonic/js-utils/string/startsWith';
 
@@ -11,6 +11,16 @@ import {startsWith} from '@enonic/js-utils/string/startsWith';
 import {adminUserCreationEnabled, canLoginAsSu, createAdminUserCreation, loginWithoutUserEnabled} from '/lib/admin-creation';
 import {autoLogin as libAutoLogin} from '/lib/autologin';
 import {getConfig} from '/lib/config';
+
+
+interface Request {
+    contentType: string;
+    rawPath: string;
+    body: string;
+    params: {
+        redirect: string;
+    }
+}
 
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
