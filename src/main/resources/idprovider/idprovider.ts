@@ -1,27 +1,38 @@
-import type {Request} from '@item-enonic-types/global/controller';
-
 // External libs
+// @ts-expect-error No types
 import {render} from '/lib/mustache';
 import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
 import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
-import staticLib from '/lib/enonic/static';
+// @ts-expect-error No types
+import {buildGetter} from '/lib/enonic/static';
 import {startsWith} from '@enonic/js-utils/string/startsWith';
 
 // Local libs
 import {adminUserCreationEnabled, canLoginAsSu, createAdminUserCreation, loginWithoutUserEnabled} from '/lib/admin-creation';
 import {autoLogin as libAutoLogin} from '/lib/autologin';
 import {getConfig} from '/lib/config';
-import resourceLib from '/lib/standardidprovider/resource';
+
+
+interface Request {
+    contentType: string;
+    rawPath: string;
+    body: string;
+    params: {
+        redirect: string;
+    }
+}
 
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
-const BASE = '_static';
 
-const getStatic = (request: Request) => staticLib.requestHandler(
-    request, {
-        cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
-        relativePath: staticLib.mappedRelativePath(`${BASE}/${resourceLib.readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`),
-        root: 'static'
+const getStatic = buildGetter(
+    {
+        root: 'static',
+        getCleanPath: req => {
+            return req.rawPath.split('/_static/')[1];
+        },
+        cacheControl: 'no-cache',
+        etag: true,
     }
 );
 
@@ -37,9 +48,7 @@ export const handle401 = function () {
 
 export const get = (req: Request) => {
     const rawPath = req.rawPath;
-    const indexOf = rawPath.indexOf('/_/');
-
-    if (!rawPath.startsWith('/api/idprovider/')) {
+    if (!startsWith(rawPath, '/api/idprovider/')) {
         const indexOf = rawPath.indexOf('/_/');
         if (indexOf !== -1) {
             const endpointPath = rawPath.substring(indexOf);
@@ -149,7 +158,7 @@ function generateRedirectUrl() {
 function generateLoginPage(redirectUrl?: string) {
     const adminUserCreation = adminUserCreationEnabled();
     const loginWithoutUser = loginWithoutUserEnabled();
-    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${resourceLib.readJsonResourceProperty('/static/buildtime.json','timeSinceEpoch')}`;
+    const baseUrlPrefix = `${idProviderUrl({})}/_static`;
 
     const view = resolve('idprovider.html');
     const config = getConfig();
@@ -159,7 +168,7 @@ function generateLoginPage(redirectUrl?: string) {
 
     const params = {
         assetUrlPrefix: baseUrlPrefix,
-        backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
+        backgroundUrl: `${baseUrlPrefix}/images/background.jpg`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,
