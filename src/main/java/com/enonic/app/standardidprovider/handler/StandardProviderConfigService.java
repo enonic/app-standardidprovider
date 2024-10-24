@@ -1,4 +1,4 @@
-package com.enonic.app.standartidprovider.handler;
+package com.enonic.app.standardidprovider.handler;
 
 public interface StandardProviderConfigService
 {
