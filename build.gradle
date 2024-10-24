@@ -25,7 +25,9 @@ dependencies {
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-io:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
+    include "com.enonic.lib:lib-static:2.0.0"
 }
 
 node {
@@ -56,6 +58,10 @@ task webpack( type: NpmTask, dependsOn: [npmInstall, lint] ) {
 
 task cleanNode( type: Delete ) {
     delete 'node_modules'
+}
+
+processResources {
+    exclude '**/*.less'
 }
 
 jar {

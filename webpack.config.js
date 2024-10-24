@@ -1,3 +1,4 @@
+const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
@@ -73,7 +74,10 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: './styles/_all.css',
             chunkFilename: './styles/_all.css'
-        })
+        }),
+        new GenerateJsonPlugin('buildtime.json', {
+            timeSinceEpoch: Date.now(),
+        }),
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',
