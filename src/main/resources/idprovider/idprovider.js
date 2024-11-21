@@ -6,18 +6,17 @@ const adminLib = require('/lib/xp/admin');
 const autoLoginLib = require('/lib/autologin');
 const configLib = require('/lib/config');
 const staticLib = require('/lib/enonic/static');
+const resourceLib = require('/lib/standardidprovider/resource');
 
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
+const BASE = '_static';
 
-const getStatic = staticLib.buildGetter(
-    {
-        root: 'static',
-        getCleanPath: req => {
-            return req.rawPath.split('/_static/')[1];
-        },
-        cacheControl: 'no-cache',
-        etag: true,
+const getStatic = (request) => staticLib.requestHandler(
+    request, {
+        cacheControl: () => staticLib.RESPONSE_CACHE_CONTROL.IMMUTABLE,
+        relativePath: staticLib.mappedRelativePath(`${BASE}/${resourceLib.readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`),
+        root: 'static'
     }
 );
 
@@ -33,8 +32,9 @@ exports.handle401 = function () {
 
 exports.get = function (req) {
     const rawPath = req.rawPath;
+    const indexOf = rawPath.indexOf('/_/');
+
     if (!rawPath.startsWith('/api/idprovider/')) {
-        const indexOf = rawPath.indexOf('/_/');
         if (indexOf !== -1) {
             const endpointPath = rawPath.substring(indexOf);
             if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
@@ -141,9 +141,9 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(redirectUrl) {
+    const baseUrlPrefix = `${portalLib.idProviderUrl({})}/${BASE}/${resourceLib.readJsonResourceProperty('/static/buildtime.json','timeSinceEpoch')}`;
     const adminUserCreation = adminCreationLib.adminUserCreationEnabled();
     const loginWithoutUser = adminCreationLib.loginWithoutUserEnabled();
-    const baseUrlPrefix = `${portalLib.idProviderUrl()}/_static`;
 
     const view = resolve('idprovider.html');
     const config = configLib.getConfig();
@@ -153,7 +153,7 @@ function generateLoginPage(redirectUrl) {
 
     const params = {
         assetUrlPrefix: baseUrlPrefix,
-        backgroundUrl: `${baseUrlPrefix}/images/background.jpg`,
+        backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,

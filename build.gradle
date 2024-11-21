@@ -40,8 +40,9 @@ dependencies {
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-io:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-static:1.0.3"
+    include "com.enonic.lib:lib-static:2.0.0"
     include "com.auth0:java-jwt:4.4.0"
 
     testImplementation 'org.mockito:mockito-core:5.14.2'
@@ -82,17 +83,11 @@ tasks.register('cleanNode', Delete) {
     delete 'node_modules'
 }
 
+processResources {
+    exclude 'static/**' // Excluded because webpack does it
+}
+
 jar {
-    def mainDir = file('build/resources/main')
-
-    exclude 'static/**/*.less'
-
-    fileTree("$mainDir/static/js") {
-        exclude '_all.js'
-    }.each { f -> exclude mainDir.toURI().relativize( file( f.path ).toURI() ).toString() }
-
-    outputs.dir "$buildDir/resources/main"
-
     dependsOn += webpack
 }
 
