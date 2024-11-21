@@ -1,3 +1,5 @@
+/.enonic
+/bin/
 .DS_Store
 build/
 temp/
