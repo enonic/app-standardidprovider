@@ -58,7 +58,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew $GRADLE_ARGS
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
