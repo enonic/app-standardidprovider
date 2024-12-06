@@ -1,7 +1,6 @@
 const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
-const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const zlib = require('zlib');
@@ -43,23 +42,6 @@ module.exports = {
                     keep_classnames: true,
                     keep_fnames: true
                 }
-            }),
-            new ImageMinimizerPlugin({
-                generator: [
-                    {
-                        filter: (source, sourcePath) => sourcePath.match(/images\/background\.jpg$/),
-                        type: "asset",
-                        implementation: ImageMinimizerPlugin.sharpGenerate,
-                        options: {
-                            encodeOptions: {
-                                webp: {
-                                    effort: isProd ? 6 : 0,
-                                    preset: 'photo',
-                                },
-                            },
-                        },
-                    },
-                ],
             }),
         ]
     },
