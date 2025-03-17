@@ -1,5 +1,5 @@
 /* global log, __ */
-import type {Request} from '@item-enonic-types/global/controller';
+import type {Request} from '@enonic-types/core';
 
 import {extractJwtToken} from './jwt';
 

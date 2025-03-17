@@ -1,38 +1,28 @@
 // External libs
 // @ts-expect-error No types
 import {render} from '/lib/mustache';
+
 import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
 import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
-// @ts-expect-error No types
-import {buildGetter} from '/lib/enonic/static';
+import {requestHandler, RESPONSE_CACHE_CONTROL, mappedRelativePath} from '/lib/enonic/static';
+import {readJsonResourceProperty} from '/lib/standardidprovider/resource';
 import {startsWith} from '@enonic/js-utils/string/startsWith';
+import {Request} from '@enonic-types/core';
 
 // Local libs
 import {adminUserCreationEnabled, canLoginAsSu, createAdminUserCreation, loginWithoutUserEnabled} from '/lib/admin-creation';
 import {autoLogin as libAutoLogin} from '/lib/autologin';
 import {getConfig} from '/lib/config';
 
-
-interface Request {
-    contentType: string;
-    rawPath: string;
-    body: string;
-    params: {
-        redirect: string;
-    }
-}
-
 const STATIC_ASSETS_SLASH_API_REGEXP = /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
+const BASE = '_static';
 
-const getStatic = buildGetter(
-    {
-        root: 'static',
-        getCleanPath: req => {
-            return req.rawPath.split('/_static/')[1];
-        },
-        cacheControl: 'no-cache',
-        etag: true,
+const getStatic = (request: Request) => requestHandler(
+    request, {
+        cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
+        relativePath: mappedRelativePath(`${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`),
+        root: 'static'
     }
 );
 
@@ -48,8 +38,9 @@ export const handle401 = function () {
 
 export const get = (req: Request) => {
     const rawPath = req.rawPath;
+    const indexOf = rawPath.indexOf('/_/');
+
     if (!startsWith(rawPath, '/api/idprovider/')) {
-        const indexOf = rawPath.indexOf('/_/');
         if (indexOf !== -1) {
             const endpointPath = rawPath.substring(indexOf);
             if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
@@ -71,7 +62,7 @@ export const get = (req: Request) => {
 };
 
 export const post = (req: Request) => {
-    const body = JSON.parse(req.body);
+    const body = JSON.parse(req.body || '{}');
     if (req.contentType !== 'application/json') {
         return {
             status: 400,
@@ -120,7 +111,7 @@ export const post = (req: Request) => {
 
 export const login = function(req: Request & {validTicket?: boolean}) {
     const redirectUrl =
-        (req.validTicket && req.params.redirect) || generateRedirectUrl();
+        (req.validTicket && String(req.params.redirect)) || generateRedirectUrl();
     const body = generateLoginPage(redirectUrl);
 
     return {
@@ -158,7 +149,7 @@ function generateRedirectUrl() {
 function generateLoginPage(redirectUrl?: string) {
     const adminUserCreation = adminUserCreationEnabled();
     const loginWithoutUser = loginWithoutUserEnabled();
-    const baseUrlPrefix = `${idProviderUrl({})}/_static`;
+    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json','timeSinceEpoch')}`;
 
     const view = resolve('idprovider.html');
     const config = getConfig();
@@ -168,7 +159,7 @@ function generateLoginPage(redirectUrl?: string) {
 
     const params = {
         assetUrlPrefix: baseUrlPrefix,
-        backgroundUrl: `${baseUrlPrefix}/images/background.jpg`,
+        backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         adminUserCreation: adminUserCreation,
         loginWithoutUser: loginWithoutUser,

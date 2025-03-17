@@ -1,7 +1,3 @@
-/bin/
-/.enonic
-/bin/
-*.tsbuildinfo
 .DS_Store
 build/
 temp/
@@ -22,5 +18,7 @@ generated-java
 classes/
 out/
 .xp/
-
-testing/app-users/allure-results/
+.eslintcache
+/bin/
+/.enonic
+*.tsbuildinfo
