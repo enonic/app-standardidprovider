@@ -8,14 +8,30 @@
     "url": "https://github.com/enonic/app-standardidprovider"
   },
   "scripts": {
-    "build": "webpack --color",
-    "lint": "eslint .",
-    "fix": "eslint . --fix"
+    "build": "concurrently -c auto -g --timings npm:build:*",
+    "build:server": "node tsup/anyServerFiles.js && npx tsup -d build/resources/main || exit 0",
+    "build:static": "webpack --color",
+    "check:types": "concurrently -g -r --timings npm:check:types:*",
+    "check:types:browser": "node tsup/anyAssetFiles.js && npx tsc --noEmit -p /tsconfig.browser.json || exit 0",
+    "check:types:xp": "node tsup/anyServerFiles.js && npx tsc --noEmit -p tsconfig.xp.json || exit 0",
+    "lint": "eslint **/*.ts --quiet --cache",
+    "fix": "eslint --fix **/*.ts --cache"
   },
   "devDependencies": {
+    "@enonic-types/core": "^7.15.0",
+    "@enonic-types/global": "^7.15.0",
+    "@enonic-types/lib-admin": "^7.15.0",
+    "@enonic-types/lib-auth": "^7.15.0",
+    "@enonic-types/lib-context": "^7.15.0",
+    "@enonic-types/lib-io": "^7.15.0",
+    "@enonic-types/lib-node": "^7.15.0",
+    "@enonic-types/lib-portal": "^7.15.0",
+    "@enonic-types/lib-static": "^2.1.0-B1",
+    "@swc/core": "^1.7.26",
     "autoprefixer": "^10.4.21",
     "browserslist": "^4.24.4",
     "browserslist-config-enonic": "^1.0.8",
+    "concurrently": "^9.0.1",
     "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
@@ -36,17 +52,20 @@
     "prettier": "^3.5.3",
     "sharp": "^0.33.5",
     "terser-webpack-plugin": "^5.3.14",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@enonic/js-utils": "^1.8.0",
     "jquery": "^3.7.1"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 20.13.1",
-    "npm": ">= 10.5.2"
+    "node": ">= 20.18.0",
+    "npm": ">= 10.8.2"
   }
 }

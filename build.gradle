@@ -52,7 +52,7 @@ dependencies {
 }
 
 node {
-    version = '20.13.1'
+    version = '20.18.0'
     download = true
 }
 
@@ -83,8 +83,13 @@ tasks.register('cleanNode', Delete) {
     delete 'node_modules'
 }
 
+// Command to find if any new files types should be excluded
+// find src -type f -a ! -name "*.ts" -a ! -name "*.java" ! -name "*.properties" ! -name "*.png" ! -name "*.jpg" ! -name "*.ttf" ! -name "*.woff" ! -name "*.eot" ! -name "*.svg" ! -name "*.json" ! -name "*.ico" ! -name "*.less" ! -name "*.js" ! -name "*.html" ! -name "*.xml"
 processResources {
     exclude 'static/**' // Excluded because webpack does it
+    exclude '**/*.js'
+    exclude '**/*.less'
+    exclude '**/*.ts'
 }
 
 jar {
@@ -115,3 +120,16 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+tasks.register('npmCheck', NpmTask) {
+	dependsOn npmInstall
+	args = [
+		'run',
+		'check:types'
+	]
+	environment = [
+		'FORCE_COLOR': 'true',
+	]
+}
+
+check.dependsOn npmCheck

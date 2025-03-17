@@ -1,0 +1,26 @@
+{
+    "include": [
+        "src/main/resources/**/*.ts"
+    ],
+    "exclude": [
+        "src/main/resources/static",
+        "src/main/resources/**/*.d.ts"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "paths": {
+            "/lib/enonic/static": ["./node_modules/@enonic-types/lib-static"],
+            "/lib/mustache": ["./node_modules/@item-enonic-types/lib-mustache"],
+            "/lib/xp/*": ["./node_modules/@enonic-types/lib-*"],
+            "/lib/*": ["./src/main/resources/lib/*"]
+        },
+        "skipLibCheck": true,
+        "strict": true,
+        "types": [
+            "@enonic-types/global"
+        ]
+    }
+}
