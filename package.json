@@ -40,7 +40,7 @@
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-config-xo": "^0.45.0",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.2.4",
     "generate-json-webpack-plugin": "^2.0.0",
     "less": "^4.2.2",
     "less-loader": "^12.2.0",
