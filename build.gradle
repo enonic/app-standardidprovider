@@ -47,7 +47,7 @@ dependencies {
 
     testImplementation 'org.mockito:mockito-core:5.16.1'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.17.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.1'
     testImplementation "com.enonic.xp:testing:${xpVersion}"
 }
 
