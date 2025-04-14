@@ -50,7 +50,7 @@
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
     "prettier": "^3.5.3",
-    "sharp": "^0.34.0",
+    "sharp": "^0.34.1",
     "terser-webpack-plugin": "^5.3.14",
     "tsup": "^8.3.0",
     "typescript": "^5.8.3",
