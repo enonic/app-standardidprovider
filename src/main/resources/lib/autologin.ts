@@ -1,7 +1,7 @@
 /* global log, __ */
-import type {Request} from '@enonic-types/core';
+import type { Request } from '@enonic-types/core';
 
-import {extractJwtToken} from './jwt';
+import { extractJwtToken } from './jwt';
 
 export const autoLogin = function (req: Request) {
     try {
@@ -9,9 +9,13 @@ export const autoLogin = function (req: Request) {
         if (!jwtToken) {
             return false;
         }
+
         return __.newBean<{
+            // eslint-disable-next-line no-unused-vars
             verifyAndLogin(jwtToken: string): boolean;
-        }>('com.enonic.app.standardidprovider.handler.JwtHandler').verifyAndLogin(jwtToken);
+        }>(
+            'com.enonic.app.standardidprovider.handler.JwtHandler'
+        ).verifyAndLogin(jwtToken);
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : 'Unknown error';
         log.debug(`Auto login failed: ${errorMessage}`);
