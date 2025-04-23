@@ -1,8 +1,14 @@
-import {addMembers, changePassword, createUser, getIdProviderConfig, login} from '/lib/xp/auth';
-import {connect as nodeConnect} from '/lib/xp/node';
-import {getIdProviderKey} from '/lib/xp/portal';
-import {run} from '/lib/xp/context';
-import {isLoginWithoutUserEnabled} from './config';
+import {
+    addMembers,
+    changePassword,
+    createUser,
+    getIdProviderConfig,
+    login
+} from '/lib/xp/auth';
+import { connect as nodeConnect } from '/lib/xp/node';
+import { getIdProviderKey } from '/lib/xp/portal';
+import { run } from '/lib/xp/context';
+import { isLoginWithoutUserEnabled } from './config';
 
 export function adminUserCreationEnabled() {
     return isSystemIdProvider() && checkFlag();
@@ -12,19 +18,18 @@ export function loginWithoutUserEnabled() {
     return isLoginWithoutUserEnabled();
 }
 
-export const canLoginAsSu = () => {
-    return adminUserCreationEnabled() && loginWithoutUserEnabled();
-};
+export const canLoginAsSu = () =>
+    adminUserCreationEnabled() && loginWithoutUserEnabled();
 
 export const createAdminUserCreation = (params: {
-    idProvider: string
-    user: string
-    email: string
-    password: string
+    idProvider: string;
+    user: string;
+    email: string;
+    password: string;
 }) => {
     if (adminUserCreationEnabled()) {
         return runAsAdmin(() => {
-            var createdUser = createUser({
+            const createdUser = createUser({
                 idProvider: 'system',
                 name: params.user,
                 displayName: params.user,
@@ -38,11 +43,9 @@ export const createAdminUserCreation = (params: {
                 });
 
                 addMembers('role:system.admin', [createdUser.key]);
-                addMembers('role:system.admin.login', [
-                    createdUser.key
-                ]);
+                addMembers('role:system.admin.login', [createdUser.key]);
 
-                var loginResult = login({
+                const loginResult = login({
                     user: params.user,
                     password: params.password,
                     idProvider: 'system'
@@ -54,9 +57,11 @@ export const createAdminUserCreation = (params: {
 
                 return loginResult;
             }
+
             return undefined;
         });
     }
+
     return undefined;
 };
 
@@ -65,7 +70,7 @@ function isSystemIdProvider() {
 }
 
 function checkFlag() {
-    var idProviderConfig = getIdProviderConfig();
+    const idProviderConfig = getIdProviderConfig();
     return (
         idProviderConfig && idProviderConfig.adminUserCreationEnabled === true
     );
@@ -75,19 +80,20 @@ function setFlag() {
     connect().modify<{
         idProvider?: {
             config?: {
-                adminUserCreationEnabled?: boolean
-            }
-        }
+                adminUserCreationEnabled?: boolean;
+            };
+        };
     }>({
         key: '/identity/system',
-        editor: function(systemIdProvider) {
+        editor(systemIdProvider) {
             if (
                 systemIdProvider.idProvider &&
                 systemIdProvider.idProvider.config
             ) {
-                var cfg = systemIdProvider.idProvider.config;
+                const cfg = systemIdProvider.idProvider.config;
                 delete cfg.adminUserCreationEnabled;
             }
+
             return systemIdProvider;
         }
     });
