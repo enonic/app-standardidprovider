@@ -85,6 +85,7 @@ public class JwtHandler
     private AuthenticationInfo authenticate( final User serviceAccount )
     {
         VerifiedUsernameAuthToken authenticationToken = new VerifiedUsernameAuthToken();
+        authenticationToken.setIdProvider( IdProviderKey.system() );
         authenticationToken.setUsername( serviceAccount.getLogin() );
 
         return securityServiceSupplier.get().authenticate( authenticationToken );

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -26,10 +27,13 @@ import com.enonic.xp.security.SecurityService;
 import com.enonic.xp.security.User;
 import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.security.auth.AuthenticationToken;
+import com.enonic.xp.security.auth.VerifiedUsernameAuthToken;
 import com.enonic.xp.testing.ScriptTestSupport;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 public class JwtHandlerTest
     extends ScriptTestSupport
@@ -38,13 +42,15 @@ public class JwtHandlerTest
 
     private StandardProviderConfigServiceImpl standardProviderConfig;
 
+    private SecurityService securityService;
+
     @Override
     protected void initialize()
         throws Exception
     {
         super.initialize();
 
-        SecurityService securityService = Mockito.mock( SecurityService.class );
+        securityService = Mockito.mock( SecurityService.class );
 
         this.standardProviderConfig = new StandardProviderConfigServiceImpl();
         this.standardProviderConfig.activate( configurations );
@@ -90,6 +96,14 @@ public class JwtHandlerTest
         Clock clock = Clock.fixed( Instant.now(), ZoneId.of( "UTC" ) );
         ScriptValue result = runFunction( "/test/autologin-test.js", "autoLogin", TestHelper.generateJwtToken( 10, clock ) );
         assertTrue( result.getValue( Boolean.class ) );
+
+        ArgumentCaptor<VerifiedUsernameAuthToken> captor = ArgumentCaptor.forClass( VerifiedUsernameAuthToken.class );
+        verify( securityService ).authenticate( captor.capture() );
+
+        VerifiedUsernameAuthToken capturedParams = captor.getValue();
+
+        assertEquals( "username", capturedParams.getUsername() );
+        assertEquals( IdProviderKey.system(), capturedParams.getIdProvider() );
     }
 
     @Test
