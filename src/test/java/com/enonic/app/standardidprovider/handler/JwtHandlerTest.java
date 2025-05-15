@@ -58,11 +58,11 @@ public class JwtHandlerTest
         addService( StandardProviderConfigService.class, standardProviderConfig );
         addService( JwtVerifierService.class, jwtVerifierService );
 
-        PropertySet publicKeySet = new PropertySet();
+        PropertyTree profile = new PropertyTree();
+        PropertySet publicKeySet = profile.newSet();
         publicKeySet.setString( "kid", TestHelper.KID );
         publicKeySet.setString( "publicKey", TestHelper.ENCODED_PUBLIC_KEY );
 
-        PropertyTree profile = new PropertyTree();
         profile.addSet( "publicKeys", publicKeySet );
 
         User user = User.create().key( PrincipalKey.from( "user:system:username" ) ).displayName( "Username" ).login( "username" ).email(
