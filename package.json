@@ -55,7 +55,7 @@
     "terser-webpack-plugin": "^5.3.14",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
-    "webpack": "^5.101.0",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
