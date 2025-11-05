@@ -18,8 +18,11 @@ app {
     systemApp = true
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = sourceCompatibility
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
 
 dependencies {
     implementation "com.enonic.xp:core-api:${xpVersion}"
