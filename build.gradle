@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '3.6.2'
+    id 'com.enonic.xp.app' version '4.0.0-A1'
     id "com.github.node-gradle.node" version '7.1.0'
 }
 
@@ -19,7 +19,7 @@ app {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
