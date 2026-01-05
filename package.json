@@ -27,7 +27,7 @@
     "@enonic-types/lib-node": "^7.16.1",
     "@enonic-types/lib-portal": "^7.16.1",
     "@enonic-types/lib-static": "^2.1.1",
-    "@swc/core": "^1.15.7",
+    "@swc/core": "^1.15.8",
     "@typescript-eslint/parser": "^8.50.1",
     "autoprefixer": "^10.4.23",
     "browserslist": "^4.28.1",
