@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@enonic/js-utils": "^1.9.0",
-    "jquery": "^3.7.1"
+    "jquery": "^4.0.0"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
