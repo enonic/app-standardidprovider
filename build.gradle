@@ -55,7 +55,7 @@ dependencies {
 }
 
 node {
-    version = '22.16.0'
+    version = '24.13.0'
     download = true
 }
 
