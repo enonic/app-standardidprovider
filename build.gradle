@@ -44,7 +44,7 @@ dependencies {
     include "com.enonic.xp:lib-io:${xpVersion}"
     include "com.enonic.lib:lib-mustache:2.1.1"
     include "com.enonic.lib:lib-static:2.1.1"
-    include "com.auth0:java-jwt:4.5.0"
+    include "com.auth0:java-jwt:4.5.1"
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
     testImplementation(platform("org.junit:junit-bom:6.0.2"))
