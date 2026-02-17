@@ -91,10 +91,10 @@ function setFlag() {
                 systemIdProvider.idProvider.config
             ) {
                 const cfg = systemIdProvider.idProvider.config;
-                delete cfg.adminUserCreationEnabled;
+                cfg.adminUserCreationEnabled = false;
             }
 
-            return systemIdProvider;
+            return stripNulls(systemIdProvider); // Prevent XP 8 ScriptValueTranslator NPE on null values
         }
     });
 }
@@ -116,4 +116,24 @@ function connect() {
         branch: 'master',
         principals: ['role:system.admin']
     });
+}
+
+function stripNulls<T>(obj: T): T {
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+    if (Array.isArray(obj)) {
+        return obj.map((item) => stripNulls(item)) as T;
+    }
+    if (typeof obj === 'object') {
+        const result: Record<string, unknown> = {};
+        for (const key of Object.keys(obj as Record<string, unknown>)) {
+            const value = (obj as Record<string, unknown>)[key];
+            if (value !== null && value !== undefined) {
+                result[key] = stripNulls(value);
+            }
+        }
+        return result as T;
+    }
+    return obj;
 }
