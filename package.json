@@ -52,7 +52,7 @@
     "postcss-sort-media-queries": "^6.1.0",
     "prettier": "^3.8.1",
     "sharp": "^0.34.5",
-    "terser-webpack-plugin": "^5.3.17",
+    "terser-webpack-plugin": "^5.4.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "webpack": "^5.105.4",
