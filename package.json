@@ -45,7 +45,7 @@
     "generate-json-webpack-plugin": "^2.0.0",
     "less": "^4.6.4",
     "less-loader": "^12.3.2",
-    "mini-css-extract-plugin": "^2.10.1",
+    "mini-css-extract-plugin": "^2.10.2",
     "postcss": "^8.5.8",
     "postcss-loader": "^8.2.1",
     "postcss-normalize": "^13.0.1",
