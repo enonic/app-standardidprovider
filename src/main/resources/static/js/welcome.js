@@ -3,14 +3,29 @@
 const $ = require('jquery');
 const i18n = require('./i18n');
 
-let welcomeText;
-let enonicLogo;
-let createAdminLink;
-let loginAsGuestButton;
-let messageContainer;
 let welcomeView;
 let creationView;
-let loginForm;
+let welcomeMessageContainer;
+let creationMessageContainer;
+let createAdminLink;
+let loginAsGuestButton;
+let loginAsGuestLink;
+
+function activeMessageContainer() {
+    if (creationView.length && !creationView[0].hasAttribute('hidden')) {
+        return creationMessageContainer;
+    }
+    return welcomeMessageContainer;
+}
+
+function clearMessages() {
+    welcomeMessageContainer.html('');
+    creationMessageContainer.html('');
+}
+
+function showGeneralError(text) {
+    activeMessageContainer().text(text);
+}
 
 function handleSuLoginResponse(loginResult) {
     if (loginResult && loginResult.authenticated) {
@@ -20,65 +35,64 @@ function handleSuLoginResponse(loginResult) {
             window.location.reload();
         }
     } else {
-        handleSuLoginError();
+        showGeneralError(i18n.localise('notify.login.failed'));
     }
 }
 
-function handleSuLoginError() {
-    messageContainer.html(i18n.localise('notify.login.failed'));
-}
-
-function displayCreationView() {
-    messageContainer.html('');
-    enonicLogo.attr('hidden', '');
-    welcomeView.attr('hidden', '');
-    creationView.attr('hidden', null);
-    $('#email-creation-input').focus();
-}
-
-function loginAsSuLinkClicked() {
-    messageContainer.html('');
-    const data = {
-        action: 'loginAsSu'
-    };
+function loginAsSu() {
+    clearMessages();
     $.ajax({
         url: CONFIG.idProviderUrl,
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
         success: handleSuLoginResponse,
-        error: handleSuLoginError,
-        data: JSON.stringify(data)
+        error: () => showGeneralError(i18n.localise('notify.login.failed')),
+        data: JSON.stringify({action: 'loginAsSu'})
     });
 }
 
-$(() => {
-    loginForm = $('#login-form');
+function showCreationView() {
+    clearMessages();
+    welcomeView.attr('hidden', '');
+    creationView.removeAttr('hidden');
+    setTimeout(() => $('#email-creation-input').trigger('focus'), 0);
+}
 
-    if (loginForm.length) {
+$(() => {
+    if ($('#login-form').length) {
         return;
     }
 
-    welcomeText = $('#welcome-text');
-    enonicLogo = $('#enonic-logo');
-    createAdminLink = $('.create-admin-link');
-    loginAsGuestButton = $('.login-as-guest');
-    messageContainer = $('#message-container');
     welcomeView = $('#welcome-view');
     creationView = $('#creation-view');
+    welcomeMessageContainer = $('#welcome-message-container');
+    creationMessageContainer = $('#message-container');
+    createAdminLink = $('#create-admin-link');
+    loginAsGuestButton = $('#login-as-guest-button');
+    loginAsGuestLink = $('#login-as-guest-link');
 
-    loginAsGuestButton.click(() => {
-        loginAsSuLinkClicked();
-        return false;
-    });
-    createAdminLink.click(() => {
-        displayCreationView();
-        return false;
+    if (!welcomeView.length) {
+        return;
+    }
+
+    loginAsGuestButton.on('click', (e) => {
+        e.preventDefault();
+        loginAsSu();
     });
 
-    welcomeText.html(i18n.localise('page.welcome.text'));
-    $('#login-as-guest-button').html(
-        i18n.localise('page.welcome.loginAsGuest')
-    );
-    createAdminLink.html(i18n.localise('page.welcome.createAdmin'));
+    loginAsGuestLink.on('click', (e) => {
+        e.preventDefault();
+        loginAsSu();
+    });
+
+    createAdminLink.on('click', (e) => {
+        e.preventDefault();
+        showCreationView();
+    });
+
+    loginAsGuestButton.text(i18n.localise('page.welcome.loginAsGuest'));
+    createAdminLink.text(i18n.localise('page.welcome.createAdmin'));
+
+    setTimeout(() => loginAsGuestButton.trigger('focus'), 0);
 });
