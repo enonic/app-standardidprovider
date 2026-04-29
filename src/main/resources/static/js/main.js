@@ -1,14 +1,6 @@
 'use strict' // eslint-disable-line
 
-async function loadConfig() {
-    setTimeout(() => {
-        const backImage = document.getElementById('background-image');
-
-        if (backImage) {
-            backImage.classList.remove('empty');
-        }
-    }, 100);
-
+function loadConfig() {
     const attr = 'data-config-script-id';
     const configScriptId = document.currentScript.getAttribute(attr);
 
@@ -24,11 +16,32 @@ async function loadConfig() {
     }
 }
 
+function initBackground() {
+    const bg = document.getElementById('login-background');
+    if (!bg) {
+        return;
+    }
+    const url = bg.getAttribute('data-background-url');
+    if (!url) {
+        return;
+    }
+    bg.style.backgroundImage = `url("${url}")`;
+    const img = new Image();
+    img.onload = () => {
+        bg.classList.add('loaded');
+    };
+    img.src = url;
+}
+
 (() => {
-    loadConfig().finally(() => {
-        require('../styles/main.less');
-        require('./welcome');
-        require('./login');
-        require('./creation');
-    });
+    loadConfig();
+    require('../styles/main.less');
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBackground, {once: true});
+    } else {
+        initBackground();
+    }
+    require('./welcome');
+    require('./login');
+    require('./creation');
 })();

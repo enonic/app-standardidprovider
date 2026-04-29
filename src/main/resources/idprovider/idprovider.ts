@@ -180,6 +180,8 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
         assetUrlPrefix: baseUrlPrefix,
         backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
+        installation: config.installation,
+        xpVersion: config.xpVersion,
         adminUserCreation,
         loginWithoutUser,
         configScriptId: Math.random().toString(36).substring(2, 15),
