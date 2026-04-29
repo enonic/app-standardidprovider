@@ -9,28 +9,55 @@ let passwordInput;
 let messageContainer;
 let loginForm;
 
+function clearErrors() {
+    messageContainer.html('');
+    userNameInput.removeClass('invalid');
+    passwordInput.removeClass('invalid');
+}
+
+function showGeneralError(text) {
+    messageContainer.text(text);
+    userNameInput.addClass('invalid');
+    passwordInput.addClass('invalid');
+}
+
 function handleAuthenticateResponse(loginResult) {
-    if (loginResult.authenticated) {
+    if (loginResult && loginResult.authenticated) {
         if (CONFIG.redirectUrl) {
             window.location.href = CONFIG.redirectUrl;
         } else {
             window.location.reload();
         }
-    } else {
-        messageContainer.html(i18n.localise('notify.login.failed'));
-        passwordInput.focus();
-        $('#username-input, #password-input, #login-button').addClass(
-            'invalid'
-        );
-    }
-}
-
-function loginButtonClicked() {
-    if (checkFieldsEmpty()) {
         return;
     }
 
-    $('#username-input, #password-input, #login-button').removeClass('invalid');
+    showGeneralError(i18n.localise('notify.login.failed'));
+    passwordInput.val('').focus();
+    updateLoginButtonState();
+}
+
+function handleAuthenticateError() {
+    showGeneralError(i18n.localise('notify.login.failed'));
+    passwordInput.focus();
+    updateLoginButtonState();
+}
+
+function checkFieldsEmpty() {
+    return (
+        userNameInput.val().trim() === '' || passwordInput.val().trim() === ''
+    );
+}
+
+function updateLoginButtonState() {
+    loginButton.prop('disabled', checkFieldsEmpty());
+}
+
+function submitLogin() {
+    if (checkFieldsEmpty() || loginButton.prop('disabled')) {
+        return;
+    }
+    clearErrors();
+    loginButton.prop('disabled', true);
 
     const data = {
         action: 'login',
@@ -43,34 +70,20 @@ function loginButtonClicked() {
         dataType: 'json',
         contentType: 'application/json',
         success: handleAuthenticateResponse,
+        error: handleAuthenticateError,
         data: JSON.stringify(data)
     });
 }
 
-function checkFieldsEmpty() {
-    return (
-        userNameInput.val().trim() === '' || passwordInput.val().trim() === ''
-    );
-}
-
-function onInputTyped(event) {
-    $('#username-input, #password-input, #login-button').removeClass('invalid');
-
-    const fieldsEmpty = checkFieldsEmpty();
-    if (fieldsEmpty) {
-        loginButton.hide();
-        messageContainer.html('');
-    } else {
-        loginButton.show();
-        if (event.which !== 13) {
-            messageContainer.html('');
-        }
+function onInput() {
+    if (userNameInput.hasClass('invalid') || passwordInput.hasClass('invalid')) {
+        clearErrors();
     }
+    updateLoginButtonState();
 }
 
 $(() => {
     loginForm = $('#login-form');
-
     if (!loginForm.length) {
         return;
     }
@@ -80,29 +93,31 @@ $(() => {
     passwordInput = $('#password-input');
     messageContainer = $('#message-container');
 
-    loginButton.click(() => {
-        loginButtonClicked();
-        return false;
+    loginForm.on('submit', (e) => {
+        e.preventDefault();
+        submitLogin();
     });
-    $('#username-input, #password-input').keyup(onInputTyped);
 
-    userNameInput.click(); // For mobile devices
-    userNameInput.focus();
-    const checkLoginButtonInterval = setInterval(() => {
-        // Workaround to show login button when browser autofills inputs
-        const fieldsEmpty = checkFieldsEmpty();
-        if (!fieldsEmpty) {
-            loginButton.show();
-            clearInterval(checkLoginButtonInterval);
+    userNameInput.on('input', onInput);
+    passwordInput.on('input', onInput);
+
+    $('#username-label').text(i18n.localise('page.creation.username'));
+    $('#password-label').text(i18n.localise('page.creation.password'));
+    userNameInput.attr('placeholder', i18n.localise('page.login.userid_or_email'));
+    passwordInput.attr('placeholder', i18n.localise('page.login.password'));
+
+    updateLoginButtonState();
+
+    setTimeout(() => {
+        userNameInput.trigger('focus');
+    }, 0);
+
+    // Workaround to refresh button state when browser autofills inputs
+    const autofillInterval = setInterval(() => {
+        if (!checkFieldsEmpty()) {
+            updateLoginButtonState();
+            clearInterval(autofillInterval);
         }
     }, 100);
-
-    $('#username-input').attr(
-        'placeholder',
-        i18n.localise('page.login.userid_or_email')
-    );
-    $('#password-input').attr(
-        'placeholder',
-        i18n.localise('page.login.password')
-    );
+    setTimeout(() => clearInterval(autofillInterval), 5000);
 });
