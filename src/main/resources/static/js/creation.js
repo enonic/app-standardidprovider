@@ -1,11 +1,13 @@
 'use strict' // eslint-disable-line
 
 const $ = require('jquery');
+const {passwordStrength} = require('check-password-strength');
 const i18n = require('./i18n');
 
 const emailRegexp = /^[^@\s]+@+[^@\s]+$/;
 const nodeIdRegexp = /^[\w-.:]+$/;
 const reservedUsernamesRegexp = /^(su|anonymous)$/;
+const strengthLevels = ['bad', 'weak', 'medium', 'strong'];
 
 const validClass = 'valid';
 const invalidClass = 'invalid';
@@ -30,6 +32,8 @@ let passwordInvalidText;
 let confirmPasswordInvalidText;
 let emailInvalidText;
 let creationView;
+let passwordStrengthBadge;
+let currentPasswordStrength = '';
 
 function setValidity(input, valid) {
     if (input.val() === '') {
@@ -61,16 +65,44 @@ function checkUsername() {
     checkForm();
 }
 
+function updatePasswordStrength() {
+    const value = passwordCreationInput.val() || '';
+
+    strengthLevels.forEach((level) => passwordStrengthBadge.removeClass('strength-' + level));
+
+    if (value.length === 0) {
+        currentPasswordStrength = '';
+        passwordStrengthBadge.text('');
+        return;
+    }
+
+    const result = passwordStrength(value).value || '';
+    const normalized = result.toLowerCase().replace(/\s+/g, '');
+    let level = 'bad';
+    if (normalized === 'strong') {
+        level = 'strong';
+    } else if (normalized === 'medium') {
+        level = 'medium';
+    } else if (normalized === 'weak') {
+        level = 'weak';
+    }
+
+    currentPasswordStrength = level;
+    passwordStrengthBadge.addClass('strength-' + level);
+    passwordStrengthBadge.text(i18n.localise('field.pswGenerator.complexity.' + level));
+}
+
 function checkPasswords() {
+    updatePasswordStrength();
     setValidity(
         passwordCreationInput,
-        passwordCreationInput.val().length >= 10
+        passwordCreationInput.val().length > 0 && currentPasswordStrength === 'strong'
     );
-    toggleError(passwordInvalidText, passwordCreationInput.hasClass(invalidClass));
 
     setValidity(
         passwordRepeatInput,
-        passwordRepeatInput.val() === passwordCreationInput.val()
+        passwordRepeatInput.val() !== '' &&
+            passwordRepeatInput.val() === passwordCreationInput.val()
     );
     toggleError(
         confirmPasswordInvalidText,
@@ -152,6 +184,7 @@ $(() => {
     passwordRepeatInput = $('#password-repeat-input');
     passwordInvalidText = $('#invalid-password-message');
     confirmPasswordInvalidText = $('#invalid-confirm-password-message');
+    passwordStrengthBadge = $('#password-strength-badge');
     createAdminButton = $('#create-admin-button');
     messageContainer = $('#message-container');
     inputs = [
@@ -162,7 +195,6 @@ $(() => {
     ];
 
     emailInvalidText.addClass('hidden');
-    passwordInvalidText.addClass('hidden');
     confirmPasswordInvalidText.addClass('hidden');
     userInvalidText.addClass('hidden');
 
@@ -203,21 +235,21 @@ $(() => {
         usernameCreationTimeoutId = setTimeout(checkUsername, checkTimeout);
     });
 
-    let passwordCreationTimeoutId;
-    passwordCreationInput.on('input', () => {
-        clearTimeout(passwordCreationTimeoutId);
-        passwordCreationTimeoutId = setTimeout(checkPasswords, checkTimeout);
-    });
-
-    let passwordRepeatTimeoutId;
-    passwordRepeatInput.on('input', () => {
-        clearTimeout(passwordRepeatTimeoutId);
-        passwordRepeatTimeoutId = setTimeout(checkPasswords, checkTimeout);
-    });
+    passwordCreationInput.on('input', checkPasswords);
+    passwordRepeatInput.on('input', checkPasswords);
 
     creationView.on('submit', (e) => {
         e.preventDefault();
         submitCreate();
+    });
+
+    const passwordToggle = $('#password-toggle');
+    passwordToggle.on('click', (e) => {
+        e.preventDefault();
+        const visible = passwordCreationInput.attr('type') === 'text';
+        passwordCreationInput.attr('type', visible ? 'password' : 'text');
+        passwordToggle.toggleClass('is-visible', !visible);
+        passwordToggle.attr('aria-pressed', String(!visible));
     });
 
     creationText.text(i18n.localise('page.creation.text'));
@@ -230,8 +262,8 @@ $(() => {
     userInvalidText.text(i18n.localise('page.creation.error.userName'));
 
     passwordCreationLabel.text(i18n.localise('page.creation.password'));
-    passwordCreationInput.attr('placeholder', i18n.localise('page.creation.password.placeholder'));
-    passwordInvalidText.text(i18n.localise('page.creation.error.password'));
+    passwordCreationInput.attr('placeholder', i18n.localise('page.creation.password'));
+    passwordInvalidText.text(i18n.localise('field.pswGenerator.helpText'));
 
     passwordRepeatLabel.text(i18n.localise('page.creation.confirmPassword'));
     passwordRepeatInput.attr('placeholder', i18n.localise('page.creation.confirmPassword'));
