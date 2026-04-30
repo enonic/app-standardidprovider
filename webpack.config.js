@@ -55,7 +55,7 @@ module.exports = {
         }),
         new CopyWebpackPlugin({
             patterns: [
-                {from: path.join(input, 'icons/favicons'), to: path.join(output, 'icons/favicons')},
+                {from: path.join(input, 'icons'), to: path.join(output, 'icons')},
                 {from: path.join(input, 'images'), to: path.join(output, 'images')},
             ],
         }),
