@@ -174,9 +174,17 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100%;
   margin: 0;
+}
+
+.login-form {
+  row-gap: 35px;
+}
+
+.login-creation-view,
+.login-welcome-view {
+  row-gap: 10px;
 }
 
 .login-welcome-view {
@@ -429,7 +437,7 @@ body {
 
   &:focus-visible {
     outline: 2px solid @admin-white;
-    outline-offset: 2px;
+    outline-offset: 4px;
   }
 
   &:disabled,
@@ -500,7 +508,32 @@ body {
   }
 }
 
+#invalid-password-message {
+  margin-bottom: 10px;
+}
+
+@media screen and (max-height: 920px) {
+  .login-info-header {
+    top: 20px;
+  }
+
+  .login-info-panel:has(#creation-view:not([hidden])) {
+    .login-info-content {
+      padding-top: 70px;
+    }
+  }
+
+  .login-form-title {
+    font-size: 22px;
+  }
+}
+
 @media screen and (max-width: @login-mobile-breakpoint) {
+  .login-info-header {
+    left: 20px;
+    right: 20px;
+  }
+
   .login-background {
     filter: blur(10px);
     transform: scale(1.1);
@@ -534,12 +567,6 @@ body {
     }
   }
 
-  .login-info-header {
-    top: 70px;
-    left: 20px;
-    right: 20px;
-  }
-
   .login-info-title {
     font-size: 24px;
   }
@@ -552,12 +579,12 @@ body {
   }
 
   .login-info-panel:has(#creation-view:not([hidden])) {
-    .login-info-content {
-      padding-top: 30px;
-    }
-
     .login-info-header {
       display: none;
+    }
+
+    .login-info-content {
+      padding-top: 0;
     }
   }
 }
