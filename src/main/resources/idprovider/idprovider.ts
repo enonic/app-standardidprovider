@@ -15,8 +15,7 @@ import {
     mappedRelativePath
 } from '/lib/enonic/static';
 import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
-import { startsWith } from '@enonic/js-utils/string/startsWith';
-import { Request } from '@enonic-types/core';
+import { Request, Response } from '@enonic-types/core';
 
 // Local libs
 import {
@@ -33,14 +32,14 @@ const STATIC_ASSETS_SLASH_API_REGEXP =
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
-const getStatic = (request: Request) =>
-    requestHandler(request, {
+const getStatic = (request: Request): Response =>
+    requestHandler(request as Parameters<typeof requestHandler>[0], {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
         relativePath: mappedRelativePath(
             `${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
         ),
         root: 'static'
-    });
+    }) as Response;
 
 export const handle401 = function (req: Request) {
     const body = generateLoginPage(req);
@@ -56,7 +55,7 @@ export const get = (req: Request) => {
     const { rawPath } = req;
     const indexOf = rawPath.indexOf('/_/');
 
-    if (!startsWith(rawPath, '/api/idprovider/')) {
+    if (!rawPath.startsWith('/api/idprovider/')) {
         if (indexOf !== -1) {
             const endpointPath = rawPath.substring(indexOf);
             if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {

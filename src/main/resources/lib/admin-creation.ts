@@ -77,7 +77,7 @@ function checkFlag() {
 }
 
 function setFlag() {
-    connect().modify<{
+    connect().update<{
         idProvider?: {
             config?: {
                 adminUserCreationEnabled?: boolean;
