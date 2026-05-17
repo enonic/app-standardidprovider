@@ -1,0 +1,13 @@
+[versions]
+java-jwt = "4.5.2"
+junit-bom = "6.0.3"
+mockito-bom = "5.23.0"
+mustache = "2.1.1"
+static = "3.0.0-SNAPSHOT"
+
+[libraries]
+java-jwt = { module = "com.auth0:java-jwt", version.ref = "java-jwt" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "mustache" }
+lib-static = { module = "com.enonic.lib:lib-static", version.ref = "static" }
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito-bom" }
