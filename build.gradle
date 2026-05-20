@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '4.0.0-B1'
+    id 'com.enonic.xp.app'
     id "com.github.node-gradle.node" version '7.1.0'
 }
 
@@ -12,15 +12,8 @@ def xpVersion=version
 app {
     name = 'com.enonic.xp.app.standardidprovider'
     group = 'com.enonic.xp'
-    displayName = 'Standard ID Provider'
     systemVersion = "${xpVersion}"
     systemApp = true
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
 }
 
 configurations.all {
