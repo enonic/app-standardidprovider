@@ -1,6 +1,6 @@
 [versions]
 java-jwt = "4.5.2"
-junit-bom = "6.0.3"
+junit-bom = "6.1.0"
 mockito-bom = "5.23.0"
 mustache = "3.0.0-B1"
 static = "3.0.0-B1"
