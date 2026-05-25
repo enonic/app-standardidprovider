@@ -59,7 +59,7 @@
     "webpack-cli": "^7.0.2"
   },
   "dependencies": {
-    "@enonic/js-utils": "^1.9.0",
+    "@enonic/js-utils": "^1.10.0",
     "check-password-strength": "^3.0.0",
     "jquery": "^4.0.0"
   },
