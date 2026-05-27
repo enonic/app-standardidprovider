@@ -1,31 +1,17 @@
 // External libs
 // @ts-expect-error No types
-import { render } from '/lib/mustache';
+import {render} from '/lib/mustache';
 
-import {
-    getIdProviderKey,
-    getSite,
-    idProviderUrl,
-    pageUrl
-} from '/lib/xp/portal';
-import { login as authLogin, logout as authLogout } from '/lib/xp/auth';
-import {
-    requestHandler,
-    RESPONSE_CACHE_CONTROL,
-    mappedRelativePath
-} from '/lib/enonic/static';
-import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
-import { Request, Response } from '@enonic-types/core';
+import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
+import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
+import {mappedRelativePath, requestHandler, RESPONSE_CACHE_CONTROL} from '/lib/enonic/static';
+import {readJsonResourceProperty} from '/lib/standardidprovider/resource';
+import {Request, Response} from '@enonic-types/core';
 
 // Local libs
-import {
-    adminUserCreationEnabled,
-    canLoginAsSu,
-    createAdminUserCreation,
-    loginWithoutUserEnabled
-} from '/lib/admin-creation';
-import { autoLogin as libAutoLogin } from '/lib/autologin';
-import { getConfig } from '/lib/config';
+import {createAdminUserCreation, firstLoginEnabled} from '/lib/admin-creation';
+import {autoLogin as libAutoLogin} from '/lib/autologin';
+import {getConfig} from '/lib/config';
 
 const STATIC_ASSETS_SLASH_API_REGEXP =
     /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
@@ -101,7 +87,7 @@ export const post = (req: Request) => {
             break;
         case 'loginAsSu':
             result =
-                canLoginAsSu() &&
+                firstLoginEnabled() &&
                 authLogin({
                     user: 'su',
                     idProvider: 'system',
@@ -165,8 +151,7 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(req: Request, redirectUrl?: string) {
-    const adminUserCreation = adminUserCreationEnabled();
-    const loginWithoutUser = loginWithoutUserEnabled();
+    const firstLogin = firstLoginEnabled();
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
 
     const view = resolve('idprovider.html');
@@ -181,8 +166,7 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         installation: config.installation,
         xpVersion: config.xpVersion,
-        adminUserCreation,
-        loginWithoutUser,
+        firstLogin,
         configScriptId: Math.random().toString(36).substring(2, 15),
         configJson: JSON.stringify(config, null, 4).replace(
             /<(\/?script|!--)/gi,
