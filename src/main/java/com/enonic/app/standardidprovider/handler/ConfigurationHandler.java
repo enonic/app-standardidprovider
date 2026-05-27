@@ -16,8 +16,13 @@ public class ConfigurationHandler
         this.configServiceSupplier = beanContext.getService( StandardProviderConfigService.class );
     }
 
-    public boolean isLoginWithoutUserEnabled()
+    public boolean isDevMode()
     {
-        return configServiceSupplier.get().isLoginWithoutUserEnabled();
+        return configServiceSupplier.get().isDevMode();
+    }
+
+    public boolean isSuPasswordConfigured()
+    {
+        return configServiceSupplier.get().isSuPasswordConfigured();
     }
 }

@@ -2,24 +2,24 @@ import {
     addMembers,
     changePassword,
     createUser,
-    getIdProviderConfig,
+    getMembers,
     login
 } from '/lib/xp/auth';
-import { connect as nodeConnect } from '/lib/xp/node';
 import { getIdProviderKey } from '/lib/xp/portal';
 import { run } from '/lib/xp/context';
-import { isLoginWithoutUserEnabled } from './config';
+import { isDevMode, isSuPasswordConfigured } from './config';
 
-export function adminUserCreationEnabled() {
-    return isSystemIdProvider() && checkFlag();
+const SU_KEY = 'user:system:su';
+const ADMIN_ROLE = 'role:system.admin';
+
+export function firstLoginEnabled() {
+    return (
+        isSystemIdProvider() &&
+        isDevMode() &&
+        !isSuPasswordConfigured() &&
+        !adminUserExists()
+    );
 }
-
-export function loginWithoutUserEnabled() {
-    return isLoginWithoutUserEnabled();
-}
-
-export const canLoginAsSu = () =>
-    adminUserCreationEnabled() && loginWithoutUserEnabled();
 
 export const createAdminUserCreation = (params: {
     idProvider: string;
@@ -27,7 +27,7 @@ export const createAdminUserCreation = (params: {
     email: string;
     password: string;
 }) => {
-    if (adminUserCreationEnabled()) {
+    if (firstLoginEnabled()) {
         return runAsAdmin(() => {
             const createdUser = createUser({
                 idProvider: 'system',
@@ -45,17 +45,11 @@ export const createAdminUserCreation = (params: {
                 addMembers('role:system.admin', [createdUser.key]);
                 addMembers('role:system.admin.login', [createdUser.key]);
 
-                const loginResult = login({
+                return login({
                     user: params.user,
                     password: params.password,
                     idProvider: 'system'
                 });
-
-                if (loginResult && loginResult.authenticated) {
-                    setFlag();
-                }
-
-                return loginResult;
             }
 
             return undefined;
@@ -69,34 +63,20 @@ function isSystemIdProvider() {
     return getIdProviderKey() === 'system';
 }
 
-function checkFlag() {
-    const idProviderConfig = getIdProviderConfig();
-    return (
-        idProviderConfig && idProviderConfig.adminUserCreationEnabled === true
-    );
-}
-
-function setFlag() {
-    connect().update<{
-        idProvider?: {
-            config?: {
-                adminUserCreationEnabled?: boolean;
-            };
-        };
-    }>({
-        key: '/identity/system',
-        editor(systemIdProvider) {
-            if (
-                systemIdProvider.idProvider &&
-                systemIdProvider.idProvider.config
-            ) {
-                const cfg = systemIdProvider.idProvider.config;
-                delete cfg.adminUserCreationEnabled;
+// True if any user other than su has the admin role, directly or via a group.
+// XP has no nested groups, so a single descent into group members is enough.
+function adminUserExists(): boolean {
+    return runAsAdmin(() =>
+        getMembers(ADMIN_ROLE).some((member) => {
+            if (member.type === 'group') {
+                return getMembers(member.key).some(
+                    (groupMember) => groupMember.key !== SU_KEY
+                );
             }
 
-            return systemIdProvider;
-        }
-    });
+            return member.key !== SU_KEY;
+        })
+    );
 }
 
 function runAsAdmin<T>(callback: () => T) {
@@ -108,12 +88,4 @@ function runAsAdmin<T>(callback: () => T) {
         },
         callback
     );
-}
-
-function connect() {
-    return nodeConnect({
-        repoId: 'system-repo',
-        branch: 'master',
-        principals: ['role:system.admin']
-    });
 }

@@ -2,7 +2,9 @@ package com.enonic.app.standardidprovider.handler;
 
 public interface StandardProviderConfigService
 {
-    boolean isLoginWithoutUserEnabled();
+    boolean isDevMode();
+
+    boolean isSuPasswordConfigured();
 
     boolean isAutologinJwtEnabled( String idProviderKey );
 
