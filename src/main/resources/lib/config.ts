@@ -19,11 +19,14 @@ interface Config {
 
 // eslint-disable-next-line no-undef
 const configBean = __.newBean<{
-    isLoginWithoutUserEnabled: () => boolean;
+    isDevMode: () => boolean;
+    isSuPasswordConfigured: () => boolean;
 }>('com.enonic.app.standardidprovider.handler.ConfigurationHandler');
 
-export const isLoginWithoutUserEnabled = () =>
-    configBean.isLoginWithoutUserEnabled();
+export const isDevMode = () => configBean.isDevMode();
+
+export const isSuPasswordConfigured = () =>
+    configBean.isSuPasswordConfigured();
 
 export const getConfig = (req: RequestExt): Config => ({
     idProviderKey: getIdProviderKey(),

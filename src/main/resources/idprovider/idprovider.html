@@ -62,12 +62,10 @@
                             </g>
                         </svg>
                     </div>
-                {{#adminUserCreation}}
+                {{#firstLogin}}
                 <div id="welcome-view" class="login-welcome-view">
                     <button type="button" id="login-as-guest-button" class="login-as-guest login-primary-button">Log In As Guest</button>
-                    {{#loginWithoutUser}}
                     <button type="button" id="create-admin-link" class="create-admin-link login-secondary-link">... or create Admin user</button>
-                    {{/loginWithoutUser}}
                     <div id="welcome-message-container" class="login-message-container" role="alert" aria-live="polite"></div>
                 </div>
                 <form id="creation-view" class="login-creation-view" hidden novalidate>
@@ -100,13 +98,11 @@
                         <div id="invalid-confirm-password-message" class="login-field-error" role="alert">Passwords don't match!</div>
                     </div>
                     <button type="submit" id="create-admin-button" class="create-admin-button login-primary-button" disabled>Create Admin User</button>
-                    {{#loginWithoutUser}}
                     <button type="button" id="login-as-guest-link" class="login-as-guest login-secondary-link">... or log in as Guest</button>
-                    {{/loginWithoutUser}}
                     <div id="message-container" class="login-message-container" role="alert" aria-live="polite"></div>
                 </form>
-                {{/adminUserCreation}}
-                {{^adminUserCreation}}
+                {{/firstLogin}}
+                {{^firstLogin}}
                 <form id="login-form" class="login-form" novalidate>
                     <div class="login-fieldset">
                         <label id="username-label" class="login-label" for="username-input">Username</label>
@@ -119,7 +115,7 @@
                     <button type="submit" id="login-button" class="login-button login-primary-button" disabled>Log In</button>
                     <div id="message-container" class="login-message-container" role="alert" aria-live="polite"></div>
                 </form>
-                {{/adminUserCreation}}
+                {{/firstLogin}}
                 </div>
             </div>
         </div>
