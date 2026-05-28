@@ -284,6 +284,25 @@ body {
   .login-input {
     .login-input-dark();
   }
+
+  .login-input-wrapper {
+    background-color: @login-input-bg-dark;
+    border-color: @login-input-border-dark;
+
+    &:hover {
+      background-color: @login-input-bg-dark-hover;
+    }
+
+    &:focus-within {
+      background-color: @login-input-bg-dark-hover;
+      border-color: @login-input-border-focus-dark;
+    }
+
+    &:has(.invalid) {
+      border-color: @login-error-color;
+      background-color: @login-error-bg;
+    }
+  }
 }
 
 .login-field-error {
@@ -308,23 +327,55 @@ body {
 .login-input-wrapper {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  background-color: @login-input-bg-light;
+  border: 1px solid @login-input-border-light;
+  border-radius: 4px;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:focus-within {
+    border-color: @login-input-border-focus-light;
+    outline: 2px solid @admin-white;
+    outline-offset: 2px;
+  }
+
+  &:has(.invalid) {
+    border-color: @login-error-color;
+    background-color: lighten(@login-error-color, 28%);
+  }
 }
 
 .login-input-with-badge {
-  padding-right: 124px;
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  transition: none;
+
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+
+  &.invalid {
+    background: transparent;
+    border: none;
+  }
 }
 
 .login-input-toggle {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
+  align-self: center;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
+  margin-right: 6px;
   padding: 0;
   background: none;
   border: none;
@@ -372,19 +423,23 @@ body {
 }
 
 .login-strength-badge {
-  position: absolute;
-  right: 44px;
-  top: 50%;
-  transform: translateY(-50%);
+  align-self: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  max-width: 120px;
+  margin-right: 6px;
   padding: 3px 10px;
   border-radius: 999px;
   font-family: @admin-font-family;
   font-size: 12px;
   font-weight: 600;
+  text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   pointer-events: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:empty {
     display: none;
