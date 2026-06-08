@@ -3,7 +3,7 @@ java-jwt = "4.5.2"
 junit-bom = "6.1.0"
 mockito-bom = "5.23.0"
 mustache = "3.0.0-B1"
-static = "3.0.0-B1"
+static = "3.0.0"
 
 [libraries]
 java-jwt = { module = "com.auth0:java-jwt", version.ref = "java-jwt" }
