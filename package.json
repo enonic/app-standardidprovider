@@ -28,7 +28,7 @@
     "@enonic-types/lib-portal": "^8.0.0-B4",
     "@enonic-types/lib-static": "^2.1.1",
     "@swc/core": "^1.15.40",
-    "@typescript-eslint/parser": "^8.59.3",
+    "@typescript-eslint/parser": "^8.60.1",
     "autoprefixer": "^10.5.0",
     "browserslist": "^4.28.2",
     "browserslist-config-enonic": "^1.0.8",
