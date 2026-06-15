@@ -21,7 +21,7 @@
     "@enonic-types/core": "^8.0.2",
     "@enonic-types/global": "^8.0.0-B4",
     "@enonic-types/lib-admin": "^8.0.0-B4",
-    "@enonic-types/lib-auth": "^8.0.0-B5",
+    "@enonic-types/lib-auth": "^8.0.2",
     "@enonic-types/lib-context": "^8.0.0-B4",
     "@enonic-types/lib-io": "^8.0.2",
     "@enonic-types/lib-node": "^8.0.0-B5",
