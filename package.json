@@ -30,7 +30,7 @@
     "@swc/core": "^1.15.41",
     "@typescript-eslint/parser": "^8.61.1",
     "autoprefixer": "^10.5.0",
-    "browserslist": "^4.28.2",
+    "browserslist": "^4.28.4",
     "browserslist-config-enonic": "^1.0.8",
     "compression-webpack-plugin": "^12.0.0",
     "concurrently": "^10.0.3",
