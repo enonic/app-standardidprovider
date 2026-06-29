@@ -56,7 +56,7 @@
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "webpack": "^5.107.1",
-    "webpack-cli": "^7.0.3"
+    "webpack-cli": "^7.1.0"
   },
   "dependencies": {
     "@enonic/js-utils": "^2.0.0",
