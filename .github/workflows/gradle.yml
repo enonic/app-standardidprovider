@@ -20,7 +20,7 @@ jobs:
         env:
           ACTUAL_REF: ${{ github.ref }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Get publishing variables
         id: publish_vars
@@ -34,7 +34,7 @@ jobs:
     needs: publish_vars
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-java@v5
         with:
