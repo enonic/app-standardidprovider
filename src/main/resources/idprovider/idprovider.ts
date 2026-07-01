@@ -176,7 +176,6 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
         backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
         imageUrlPrefix: `${baseUrlPrefix}/icons`,
         installation: config.installation,
-        xpVersion: config.xpVersion,
         firstLogin,
         configScriptId: Math.random().toString(36).substring(2, 15),
         configJson: JSON.stringify(config, null, 4).replace(
