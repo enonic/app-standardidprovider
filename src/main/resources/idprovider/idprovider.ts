@@ -2,8 +2,7 @@
 // @ts-expect-error No types
 import {render} from '/lib/mustache';
 
-// @ts-expect-error -- drop this once @enonic-types/lib-portal ships csp()
-import {csp, getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
+import {getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
 import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
 import {mappedRelativePath, requestHandler, RESPONSE_CACHE_CONTROL} from '/lib/enonic/static';
 import {readJsonResourceProperty} from '/lib/standardidprovider/resource';
@@ -152,16 +151,6 @@ function generateRedirectUrl() {
 }
 
 function generateLoginPage(req: Request, redirectUrl?: string) {
-    csp()
-        .strict()
-        .scriptSrc("'self'")
-        .styleSrc("'self'")
-        .imgSrc("'self'")
-        .fontSrc("'self'")
-        .connectSrc("'self'")
-        .manifestSrc("'self'")
-        .formAction("'self'");
-
     const firstLogin = firstLoginEnabled();
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
 
