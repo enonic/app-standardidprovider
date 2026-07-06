@@ -23,7 +23,7 @@
     "@enonic-types/lib-admin": "^8.0.2",
     "@enonic-types/lib-auth": "^8.0.3",
     "@enonic-types/lib-context": "^8.0.2",
-    "@enonic-types/lib-io": "^8.0.2",
+    "@enonic-types/lib-io": "^8.0.3",
     "@enonic-types/lib-node": "^8.0.2",
     "@enonic-types/lib-portal": "^8.0.2",
     "@enonic-types/lib-static": "^3.0.0",
