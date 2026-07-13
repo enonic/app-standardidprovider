@@ -18,7 +18,7 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "devDependencies": {
-    "@enonic-types/core": "^8.0.2",
+    "@enonic-types/core": "^8.0.3",
     "@enonic-types/global": "^8.0.2",
     "@enonic-types/lib-admin": "^8.0.2",
     "@enonic-types/lib-auth": "^8.0.3",
