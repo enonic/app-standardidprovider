@@ -46,7 +46,7 @@
     "less": "^4.6.7",
     "less-loader": "^13.0.0",
     "mini-css-extract-plugin": "^2.10.2",
-    "postcss": "^8.5.18",
+    "postcss": "^8.5.20",
     "postcss-loader": "^8.2.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^6.6.2",
