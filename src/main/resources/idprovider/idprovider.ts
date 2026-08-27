@@ -14,8 +14,6 @@ import {createAdminUserCreation, firstLoginEnabled} from '/lib/admin-creation';
 import {autoLogin as libAutoLogin} from '/lib/autologin';
 import {getConfig} from '/lib/config';
 
-const STATIC_ASSETS_SLASH_API_REGEXP =
-    /^\/api\/idprovider\/[^/]+\/_static\/.+$/;
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
@@ -42,15 +40,11 @@ export const get = (req: Request) => {
     const { rawPath } = req;
     const indexOf = rawPath.indexOf('/_/');
 
-    if (!rawPath.startsWith('/api/idprovider/')) {
-        if (indexOf !== -1) {
-            const endpointPath = rawPath.substring(indexOf);
-            if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
-                return getStatic(req);
-            }
+    if (indexOf !== -1) {
+        const endpointPath = rawPath.substring(indexOf);
+        if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
+            return getStatic(req);
         }
-    } else if (STATIC_ASSETS_SLASH_API_REGEXP.test(rawPath)) {
-        return getStatic(req);
     }
 
     const redirectUrl = generateRedirectUrl();
