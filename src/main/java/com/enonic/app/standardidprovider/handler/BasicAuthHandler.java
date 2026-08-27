@@ -59,7 +59,7 @@ public class BasicAuthHandler
 
     private static String[] parseHeader( final String header )
     {
-        if ( header == null || header.length() < 6 || !"basic".equalsIgnoreCase( header.substring( 0, 5 ) ) )
+        if ( header == null || !header.regionMatches( true, 0, "Basic ", 0, 6 ) )
         {
             return null;
         }
