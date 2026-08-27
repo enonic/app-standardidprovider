@@ -8,6 +8,8 @@ public interface StandardProviderConfigService
 
     boolean isAutologinJwtEnabled( String idProviderKey );
 
+    boolean isAutologinBasicEnabled( String idProviderKey );
+
     long getAutologinJwtAcceptLeewaySeconds( String idProviderKey );
 
     long getAutologinJwtLifetimeSeconds( String idProviderKey );
