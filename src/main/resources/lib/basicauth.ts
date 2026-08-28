@@ -5,7 +5,7 @@ import { getIdProviderKey } from '/lib/xp/portal';
 const BASIC_PREFIX = /^basic\s/i;
 
 export const basicLogin = function (req: Request) {
-    const authHeader = req.headers.Authorization;
+    const authHeader = req.getHeader('Authorization');
     if (!authHeader || !BASIC_PREFIX.test(authHeader)) {
         return false;
     }
