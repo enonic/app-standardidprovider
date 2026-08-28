@@ -17,9 +17,9 @@ import com.enonic.xp.session.Session;
 
 /**
  * Handles HTTP Basic authentication in the {@code autoLogin} flow, given the base64-encoded
- * credentials of the Authorization header. Opt-in via the
- * {@code idprovider.<idProvider>.autologin.basic.enabled} configuration property. Credentials are
- * only checked against the id provider addressed by the request, never against other id providers.
+ * credentials of the Authorization header. Enabled by default for backwards compatibility; opt out
+ * with {@code idprovider.<idProvider>.autologin.basic.enabled = false}. Credentials are only
+ * checked against the id provider addressed by the request, never against other id providers.
  */
 public class BasicAuthHandler
     implements ScriptBean

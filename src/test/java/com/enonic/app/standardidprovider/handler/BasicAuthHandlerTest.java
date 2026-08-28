@@ -61,9 +61,12 @@ public class BasicAuthHandlerTest
     }
 
     @Test
-    public void testBasicAuthDisabledByDefault()
+    public void testBasicAuthDisabled()
         throws Exception
     {
+        this.configurations.put( "idprovider.system.autologin.basic.enabled", "false" );
+        this.standardProviderConfig.activate( configurations );
+
         ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "password" );
         assertFalse( result.getValue( Boolean.class ) );
         Mockito.verifyNoInteractions( securityService );
@@ -73,7 +76,7 @@ public class BasicAuthHandlerTest
     public void testBasicAuthWithUsername()
         throws Exception
     {
-        enableBasicAuth();
+        // enabled by default
         Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) )
             .thenReturn( AuthenticationInfo.create().user( user ).build() );
 
@@ -92,7 +95,6 @@ public class BasicAuthHandlerTest
     public void testBasicAuthWithEmail()
         throws Exception
     {
-        enableBasicAuth();
         Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) )
             .thenReturn( AuthenticationInfo.create().user( user ).build() );
 
@@ -110,17 +112,10 @@ public class BasicAuthHandlerTest
     public void testBasicAuthWrongCredentials()
         throws Exception
     {
-        enableBasicAuth();
         Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) )
             .thenReturn( AuthenticationInfo.unAuthenticated() );
 
         ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "wrong" );
         assertFalse( result.getValue( Boolean.class ) );
-    }
-
-    private void enableBasicAuth()
-    {
-        this.configurations.put( "idprovider.system.autologin.basic.enabled", "true" );
-        this.standardProviderConfig.activate( configurations );
     }
 }
