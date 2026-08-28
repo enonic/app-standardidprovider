@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.enonic.xp.script.ScriptValue;
 import com.enonic.xp.security.IdProvider;
 import com.enonic.xp.security.IdProviderKey;
@@ -18,6 +20,7 @@ import com.enonic.xp.security.auth.AuthenticationToken;
 import com.enonic.xp.security.auth.EmailPasswordAuthToken;
 import com.enonic.xp.security.auth.UsernamePasswordAuthToken;
 import com.enonic.xp.testing.ScriptTestSupport;
+import com.enonic.xp.web.dispatch.DispatchConstants;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -58,6 +61,16 @@ public class BasicAuthHandlerTest
 
         // getIdProviderKey() reads the id provider from the bound portal request
         this.portalRequest.setIdProvider( IdProvider.create().key( IdProviderKey.system() ).build() );
+
+        // basic authentication is only supported on the management endpoint
+        setConnector( DispatchConstants.API_CONNECTOR );
+    }
+
+    private void setConnector( final String connector )
+    {
+        HttpServletRequest rawRequest = Mockito.mock( HttpServletRequest.class );
+        Mockito.when( rawRequest.getAttribute( DispatchConstants.CONNECTOR_ATTRIBUTE ) ).thenReturn( connector );
+        this.portalRequest.setRawRequest( rawRequest );
     }
 
     @Test
@@ -106,6 +119,28 @@ public class BasicAuthHandlerTest
 
         assertEquals( "username@enonic.com", captor.getValue().getEmail() );
         assertEquals( IdProviderKey.system(), captor.getValue().getIdProvider() );
+    }
+
+    @Test
+    public void testBasicAuthOnWebEndpoint()
+        throws Exception
+    {
+        setConnector( DispatchConstants.XP_CONNECTOR );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "password" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthNonSystemIdProvider()
+        throws Exception
+    {
+        this.portalRequest.setIdProvider( IdProvider.create().key( IdProviderKey.from( "other" ) ).build() );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "password" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
     }
 
     @Test
