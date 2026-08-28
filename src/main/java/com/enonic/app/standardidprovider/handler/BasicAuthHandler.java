@@ -16,7 +16,8 @@ import com.enonic.xp.security.auth.UsernamePasswordAuthToken;
 import com.enonic.xp.session.Session;
 
 /**
- * Handles HTTP Basic authentication in the {@code autoLogin} flow. Opt-in via the
+ * Handles HTTP Basic authentication in the {@code autoLogin} flow, given the base64-encoded
+ * credentials of the Authorization header. Opt-in via the
  * {@code idprovider.<idProvider>.autologin.basic.enabled} configuration property. Credentials are
  * only checked against the id provider addressed by the request, never against other id providers.
  */
@@ -34,20 +35,20 @@ public class BasicAuthHandler
         this.configServiceSupplier = beanContext.getService( StandardProviderConfigService.class );
     }
 
-    public boolean login( final String header, final String idProviderKey )
+    public boolean login( final String credentials, final String idProviderKey )
     {
         if ( idProviderKey == null || !configServiceSupplier.get().isAutologinBasicEnabled( idProviderKey ) )
         {
             return false;
         }
 
-        final String[] credentials = parseHeader( header );
-        if ( credentials == null )
+        final String[] userAndPassword = parseCredentials( credentials );
+        if ( userAndPassword == null )
         {
             return false;
         }
 
-        final AuthenticationInfo authInfo = authenticate( IdProviderKey.from( idProviderKey ), credentials[0], credentials[1] );
+        final AuthenticationInfo authInfo = authenticate( IdProviderKey.from( idProviderKey ), userAndPassword[0], userAndPassword[1] );
         if ( !authInfo.isAuthenticated() )
         {
             return false;
@@ -57,17 +58,12 @@ public class BasicAuthHandler
         return true;
     }
 
-    private static String[] parseHeader( final String header )
+    private static String[] parseCredentials( final String credentials )
     {
-        if ( header == null || !header.regionMatches( true, 0, "Basic ", 0, 6 ) )
-        {
-            return null;
-        }
-
         final String decoded;
         try
         {
-            decoded = new String( Base64.getDecoder().decode( header.substring( 6 ) ), StandardCharsets.UTF_8 );
+            decoded = new String( Base64.getDecoder().decode( credentials ), StandardCharsets.UTF_8 );
         }
         catch ( IllegalArgumentException e )
         {

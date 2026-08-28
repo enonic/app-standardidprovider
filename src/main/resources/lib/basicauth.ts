@@ -1,15 +1,7 @@
-import type { Request } from '@enonic-types/core';
-
+/* global __ */
 import { getIdProviderKey } from '/lib/xp/portal';
 
-const BASIC_PREFIX = /^basic\s/i;
-
-export const basicLogin = function (req: Request) {
-    const authHeader = req.getHeader('Authorization');
-    if (!authHeader || !BASIC_PREFIX.test(authHeader)) {
-        return false;
-    }
-
+export const basicLogin = (credentials: string) => {
     const idProviderKey = getIdProviderKey();
     if (!idProviderKey) {
         return false;
@@ -17,9 +9,9 @@ export const basicLogin = function (req: Request) {
 
     return __.newBean<{
         // eslint-disable-next-line no-unused-vars
-        login(header: string, idProviderKey: string): boolean;
+        login(credentials: string, idProviderKey: string): boolean;
     }>('com.enonic.app.standardidprovider.handler.BasicAuthHandler').login(
-        authHeader,
+        credentials,
         idProviderKey
     );
 };
