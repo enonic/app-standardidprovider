@@ -17,6 +17,14 @@ import {getConfig} from '/lib/config';
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
+// The custom endpoints (login page, its assets and actions) only serve interactive login, so they
+// follow the vhost's login flow when XP provides the flow list on the request.
+const isLoginFlowEnabled = (req: Request): boolean => {
+    const flows = (req as Request & { idProviderFlows?: string[] })
+        .idProviderFlows;
+    return !flows || flows.indexOf('login') >= 0;
+};
+
 const getStatic = (request: Request): Response =>
     requestHandler(request as Parameters<typeof requestHandler>[0], {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
@@ -37,6 +45,10 @@ export const handle401 = function (req: Request) {
 };
 
 export const get = (req: Request) => {
+    if (!isLoginFlowEnabled(req)) {
+        return { status: 403 };
+    }
+
     const { rawPath } = req;
     const indexOf = rawPath.indexOf('/_/');
 
@@ -58,6 +70,10 @@ export const get = (req: Request) => {
 };
 
 export const post = (req: Request) => {
+    if (!isLoginFlowEnabled(req)) {
+        return { status: 403 };
+    }
+
     const body = JSON.parse(req.body || '{}');
     if (req.contentType !== 'application/json') {
         return {
