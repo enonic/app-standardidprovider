@@ -22,3 +22,10 @@ exports.autoLoginBasic = function (user, password) {
         toJsRequest(helper.createPortalRequestWithBasicAuth(user, password))
     );
 };
+
+exports.autoLoginHeader = function (header) {
+    const helper = __.newBean('com.enonic.app.standardidprovider.handler.TestHelper');
+    return autoLoginLib.autoLogin(
+        toJsRequest(helper.createPortalRequestWithAuthorization(header))
+    );
+};

@@ -40,6 +40,18 @@ public class TestHelper
         return request;
     }
 
+    public PortalRequest createPortalRequestWithAuthorization( final String header )
+    {
+        final PortalRequest request = new PortalRequest();
+
+        request.setMode( RenderMode.LIVE );
+        request.setApplicationKey( ApplicationKey.SYSTEM );
+        request.setBaseUri( "/endpoint" );
+        request.getHeaders().put( "Authorization", header );
+
+        return request;
+    }
+
     public PortalRequest createPortalRequestWithBasicAuth( final String user, final String password )
     {
         final PortalRequest request = new PortalRequest();

@@ -1,5 +1,7 @@
 package com.enonic.app.standardidprovider.handler;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import org.mockito.Mockito;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.script.ScriptValue;
 import com.enonic.xp.security.IdProvider;
 import com.enonic.xp.security.IdProviderKey;
@@ -19,6 +22,7 @@ import com.enonic.xp.security.auth.AuthenticationInfo;
 import com.enonic.xp.security.auth.AuthenticationToken;
 import com.enonic.xp.security.auth.EmailPasswordAuthToken;
 import com.enonic.xp.security.auth.UsernamePasswordAuthToken;
+import com.enonic.xp.session.Session;
 import com.enonic.xp.testing.ScriptTestSupport;
 import com.enonic.xp.web.dispatch.DispatchConstants;
 
@@ -152,5 +156,65 @@ public class BasicAuthHandlerTest
 
         ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "wrong" );
         assertFalse( result.getValue( Boolean.class ) );
+    }
+
+    @Test
+    public void testBasicAuthMalformedCredentials()
+        throws Exception
+    {
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginHeader", "Basic !!!not-base64!!!" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthCredentialsWithoutColon()
+        throws Exception
+    {
+        final String credentials = Base64.getEncoder().encodeToString( "nocolon".getBytes( StandardCharsets.UTF_8 ) );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginHeader", "Basic " + credentials );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthUnknownScheme()
+        throws Exception
+    {
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginHeader", "Digest username=\"username\"" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthWithoutRawRequest()
+        throws Exception
+    {
+        this.portalRequest.setRawRequest( null );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "password" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthReplacesSession()
+        throws Exception
+    {
+        final AuthenticationInfo authenticationInfo = AuthenticationInfo.create().user( user ).build();
+        Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) ).thenReturn( authenticationInfo );
+
+        final Session session = Mockito.mock( Session.class );
+        Mockito.when( session.getAttributes() ).thenReturn( Map.of( "attribute", "value" ) );
+        ContextAccessor.current().getLocalScope().setSession( session );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasic", "username", "password" );
+        assertTrue( result.getValue( Boolean.class ) );
+
+        // a new session prevents session fixation, and keeps the old session's attributes
+        Mockito.verify( session ).invalidate();
+        Mockito.verify( session ).setAttribute( "attribute", "value" );
+        Mockito.verify( session ).setAttribute( authenticationInfo );
     }
 }
