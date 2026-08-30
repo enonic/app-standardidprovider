@@ -90,6 +90,28 @@ public class BasicAuthHandlerTest
     }
 
     @Test
+    public void testBasicAuthFlowNotListed()
+        throws Exception
+    {
+        // an explicit flow list without "basic" disables basic authentication for the vhost
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginBasicWithFlows", "username", "password", "autologin" );
+        assertFalse( result.getValue( Boolean.class ) );
+        Mockito.verifyNoInteractions( securityService );
+    }
+
+    @Test
+    public void testBasicAuthFlowListed()
+        throws Exception
+    {
+        Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) )
+            .thenReturn( AuthenticationInfo.create().user( user ).build() );
+
+        ScriptValue result =
+            runFunction( "/test/autologin-test.js", "autoLoginBasicWithFlows", "username", "password", "autologin,basic" );
+        assertTrue( result.getValue( Boolean.class ) );
+    }
+
+    @Test
     public void testBasicAuthWithUsername()
         throws Exception
     {

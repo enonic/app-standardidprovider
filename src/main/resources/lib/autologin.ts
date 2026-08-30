@@ -7,6 +7,14 @@ import { bearerLogin } from './jwt';
 const BEARER_SCHEME = /^bearer\s/i;
 const BASIC_SCHEME = /^basic\s/i;
 
+// Basic authentication is the additional "basic" flow: served where the vhost lists it, or where
+// no flow restriction applies.
+const isBasicFlowEnabled = (req: Request): boolean => {
+    const flows = (req as Request & { idProviderFlows?: string[] })
+        .idProviderFlows;
+    return !flows || flows.indexOf('basic') >= 0;
+};
+
 export const autoLogin = function (req: Request) {
     try {
         const authHeader = req.getHeader('Authorization');
@@ -19,7 +27,10 @@ export const autoLogin = function (req: Request) {
         }
 
         if (BASIC_SCHEME.test(authHeader)) {
-            return basicLogin(authHeader.substring('Basic '.length));
+            return (
+                isBasicFlowEnabled(req) &&
+                basicLogin(authHeader.substring('Basic '.length))
+            );
         }
 
         return false;

@@ -29,3 +29,10 @@ exports.autoLoginHeader = function (header) {
         toJsRequest(helper.createPortalRequestWithAuthorization(header))
     );
 };
+
+exports.autoLoginBasicWithFlows = function (user, password, flows) {
+    const helper = __.newBean('com.enonic.app.standardidprovider.handler.TestHelper');
+    const request = toJsRequest(helper.createPortalRequestWithBasicAuth(user, password));
+    request.idProviderFlows = flows.split(',');
+    return autoLoginLib.autoLogin(request);
+};
