@@ -24,8 +24,8 @@ import com.enonic.xp.web.dispatch.DispatchConstants;
 /**
  * HTTP Basic authentication for the {@code autoLogin} flow: logs in with the base64-encoded
  * credentials of the Authorization header. Supported for the system id provider on the management
- * endpoint only. Enabled by default, disabled with
- * {@code idprovider.system.autologin.basic.enabled = false}.
+ * endpoint only. Deprecated and left only for backwards compatibility: enabled by default,
+ * disabled with {@code idprovider.system.autologin.basic.enabled = false}.
  */
 public class BasicAuthHandler
     implements ScriptBean
