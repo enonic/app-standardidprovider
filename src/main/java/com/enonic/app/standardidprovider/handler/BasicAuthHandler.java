@@ -46,38 +46,20 @@ public class BasicAuthHandler
 
     public boolean login( final String credentials, @Nullable final String idProviderKey )
     {
-        if ( !IdProviderKey.system().toString().equals( idProviderKey ) || !isManagementEndpoint() ||
+        if ( !IdProviderKey.system().toString().equals( idProviderKey ) ||
             !configServiceSupplier.get().isAutologinBasicEnabled( idProviderKey ) )
         {
             return false;
         }
 
-        final String[] userAndPassword = parseCredentials( credentials );
-        if ( userAndPassword == null )
-        {
-            return false;
-        }
-
-        final AuthenticationInfo authInfo = authenticate( IdProviderKey.from( idProviderKey ), userAndPassword[0], userAndPassword[1] );
-        if ( !authInfo.isAuthenticated() )
-        {
-            return false;
-        }
-
-        createSession( authInfo );
-        return true;
-    }
-
-    private boolean isManagementEndpoint()
-    {
         final PortalRequest request = requestSupplier.get();
         final HttpServletRequest rawRequest = request == null ? null : request.getRawRequest();
-        return rawRequest != null &&
-            DispatchConstants.API_CONNECTOR.equals( rawRequest.getAttribute( DispatchConstants.CONNECTOR_ATTRIBUTE ) );
-    }
+        if ( rawRequest == null ||
+            !DispatchConstants.API_CONNECTOR.equals( rawRequest.getAttribute( DispatchConstants.CONNECTOR_ATTRIBUTE ) ) )
+        {
+            return false;
+        }
 
-    private static String @Nullable [] parseCredentials( final String credentials )
-    {
         final String decoded;
         try
         {
@@ -85,43 +67,34 @@ public class BasicAuthHandler
         }
         catch ( IllegalArgumentException e )
         {
-            return null;
+            return false;
         }
 
         final int pos = decoded.indexOf( ':' );
         if ( pos == -1 )
         {
-            return null;
+            return false;
         }
+        final String user = decoded.substring( 0, pos );
+        final String password = decoded.substring( pos + 1 );
 
-        return new String[]{decoded.substring( 0, pos ), decoded.substring( pos + 1 )};
-    }
-
-    private AuthenticationInfo authenticate( final IdProviderKey idProviderKey, final String user, final String password )
-    {
+        final IdProviderKey idProvider = IdProviderKey.from( idProviderKey );
         AuthenticationInfo authInfo = AuthenticationInfo.unAuthenticated();
-
-        if ( isValidEmail( user ) )
+        if ( user.chars().filter( ch -> ch == '@' ).count() == 1 )
         {
-            authInfo = securityServiceSupplier.get().authenticate( new EmailPasswordAuthToken( idProviderKey, user, password ) );
+            authInfo = securityServiceSupplier.get().authenticate( new EmailPasswordAuthToken( idProvider, user, password ) );
         }
         if ( !authInfo.isAuthenticated() )
         {
-            authInfo = securityServiceSupplier.get().authenticate( new UsernamePasswordAuthToken( idProviderKey, user, password ) );
+            authInfo = securityServiceSupplier.get().authenticate( new UsernamePasswordAuthToken( idProvider, user, password ) );
         }
-        return authInfo;
-    }
+        if ( !authInfo.isAuthenticated() )
+        {
+            return false;
+        }
 
-    private static boolean isValidEmail( final String value )
-    {
-        return value != null && value.chars().filter( ch -> ch == '@' ).count() == 1;
-    }
-
-    private static void createSession( final AuthenticationInfo authInfo )
-    {
         final LocalScope localScope = ContextAccessor.current().getLocalScope();
         final Session session = localScope.getSession();
-
         if ( session != null )
         {
             // A new session prevents session fixation.
@@ -133,10 +106,10 @@ public class BasicAuthHandler
             {
                 attributes.forEach( newSession::setAttribute );
                 newSession.setAttribute( authInfo );
-                return;
+                return true;
             }
         }
-
         localScope.setAttribute( authInfo );
+        return true;
     }
 }
