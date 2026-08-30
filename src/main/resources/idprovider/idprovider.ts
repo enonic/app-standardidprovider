@@ -17,8 +17,7 @@ import {getConfig} from '/lib/config';
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
-// The custom endpoints (login page, its assets and actions) only serve interactive login, so they
-// follow the vhost's login flow when XP provides the flow list on the request.
+// The custom endpoints only serve interactive login, so they follow the vhost's login flow.
 const isLoginFlowEnabled = (req: Request): boolean => {
     const flows = (req as Request & { idProviderFlows?: string[] })
         .idProviderFlows;

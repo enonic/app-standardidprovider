@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.enonic.xp.context.ContextAccessor;
@@ -20,10 +22,9 @@ import com.enonic.xp.session.Session;
 import com.enonic.xp.web.dispatch.DispatchConstants;
 
 /**
- * Handles HTTP Basic authentication in the {@code autoLogin} flow, given the base64-encoded
- * credentials of the Authorization header. Only supported for the system id provider on the
- * management endpoint, matching the built-in basic authentication XP used to perform there;
- * enabled by default for backwards compatibility, disable with
+ * HTTP Basic authentication for the {@code autoLogin} flow: logs in with the base64-encoded
+ * credentials of the Authorization header. Supported for the system id provider on the management
+ * endpoint only. Enabled by default, disabled with
  * {@code idprovider.system.autologin.basic.enabled = false}.
  */
 public class BasicAuthHandler
@@ -43,7 +44,7 @@ public class BasicAuthHandler
         this.requestSupplier = beanContext.getBinding( PortalRequest.class );
     }
 
-    public boolean login( final String credentials, final String idProviderKey )
+    public boolean login( final String credentials, @Nullable final String idProviderKey )
     {
         if ( !IdProviderKey.system().toString().equals( idProviderKey ) || !isManagementEndpoint() ||
             !configServiceSupplier.get().isAutologinBasicEnabled( idProviderKey ) )
@@ -75,7 +76,7 @@ public class BasicAuthHandler
             DispatchConstants.API_CONNECTOR.equals( rawRequest.getAttribute( DispatchConstants.CONNECTOR_ATTRIBUTE ) );
     }
 
-    private static String[] parseCredentials( final String credentials )
+    private static String @Nullable [] parseCredentials( final String credentials )
     {
         final String decoded;
         try

@@ -25,7 +25,6 @@ public class StandardProviderConfigServiceImpl
 
     private static final boolean DEFAULT_JWT_ENABLED = true;
 
-    // Basic authentication is opt-out: enabled by default for backwards compatibility.
     private static final boolean DEFAULT_BASIC_ENABLED = true;
 
     private static final long DEFAULT_JWT_ACCEPT_LEEWAY = -1L;
