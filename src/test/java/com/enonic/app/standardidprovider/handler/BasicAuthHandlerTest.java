@@ -201,6 +201,19 @@ public class BasicAuthHandlerTest
     }
 
     @Test
+    public void testBasicAuthExtraWhitespaceAfterScheme()
+        throws Exception
+    {
+        Mockito.when( securityService.authenticate( Mockito.any( AuthenticationToken.class ) ) )
+            .thenReturn( AuthenticationInfo.create().user( user ).build() );
+
+        final String credentials = Base64.getEncoder().encodeToString( "username:password".getBytes( StandardCharsets.UTF_8 ) );
+
+        ScriptValue result = runFunction( "/test/autologin-test.js", "autoLoginHeader", "Basic \t " + credentials );
+        assertTrue( result.getValue( Boolean.class ) );
+    }
+
+    @Test
     public void testBasicAuthUnknownScheme()
         throws Exception
     {

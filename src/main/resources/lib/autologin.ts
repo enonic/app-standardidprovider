@@ -4,8 +4,8 @@ import type { Request } from '@enonic-types/core';
 import { basicLogin } from './basicauth';
 import { bearerLogin } from './jwt';
 
-const BEARER_SCHEME = /^bearer\s/i;
-const BASIC_SCHEME = /^basic\s/i;
+const BEARER_SCHEME = /^bearer\s+/i;
+const BASIC_SCHEME = /^basic\s+/i;
 
 // Basic authentication is the additional "basic" flow: served where the vhost lists it, or where
 // no flow restriction applies.
@@ -23,13 +23,13 @@ export const autoLogin = function (req: Request) {
         }
 
         if (BEARER_SCHEME.test(authHeader)) {
-            return bearerLogin(authHeader.substring('Bearer '.length));
+            return bearerLogin(authHeader.replace(BEARER_SCHEME, ''));
         }
 
         if (BASIC_SCHEME.test(authHeader)) {
             return (
                 isBasicFlowEnabled(req) &&
-                basicLogin(authHeader.substring('Basic '.length))
+                basicLogin(authHeader.replace(BASIC_SCHEME, ''))
             );
         }
 
