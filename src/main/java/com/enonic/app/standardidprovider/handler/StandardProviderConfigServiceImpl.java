@@ -21,7 +21,11 @@ public class StandardProviderConfigServiceImpl
 
     private static final String AUTOLOGIN_JWT_MAX_LIFETIME_CONFIG = "idprovider.{{idProvider}}.autologin.jwt.maxLifetimeSeconds";
 
+    private static final String AUTOLOGIN_BASIC_ENABLED_CONFIG = "idprovider.{{idProvider}}.autologin.basic.enabled";
+
     private static final boolean DEFAULT_JWT_ENABLED = true;
+
+    private static final boolean DEFAULT_BASIC_ENABLED = true;
 
     private static final long DEFAULT_JWT_ACCEPT_LEEWAY = -1L;
 
@@ -52,6 +56,12 @@ public class StandardProviderConfigServiceImpl
     public boolean isAutologinJwtEnabled( final String idProviderKey )
     {
         return getProperty( AUTOLOGIN_JWT_ENABLED_CONFIG, idProviderKey, DEFAULT_JWT_ENABLED, Boolean::parseBoolean );
+    }
+
+    @Override
+    public boolean isAutologinBasicEnabled( final String idProviderKey )
+    {
+        return getProperty( AUTOLOGIN_BASIC_ENABLED_CONFIG, idProviderKey, DEFAULT_BASIC_ENABLED, Boolean::parseBoolean );
     }
 
     @Override

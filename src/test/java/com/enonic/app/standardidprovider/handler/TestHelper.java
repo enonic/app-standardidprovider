@@ -1,5 +1,6 @@
 package com.enonic.app.standardidprovider.handler;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -35,6 +36,32 @@ public class TestHelper
         request.setApplicationKey( ApplicationKey.SYSTEM );
         request.setBaseUri( "/endpoint" );
         request.getHeaders().put( "Authorization", "Bearer " + jwtToken );
+
+        return request;
+    }
+
+    public PortalRequest createPortalRequestWithAuthorization( final String header )
+    {
+        final PortalRequest request = new PortalRequest();
+
+        request.setMode( RenderMode.LIVE );
+        request.setApplicationKey( ApplicationKey.SYSTEM );
+        request.setBaseUri( "/endpoint" );
+        request.getHeaders().put( "Authorization", header );
+
+        return request;
+    }
+
+    public PortalRequest createPortalRequestWithBasicAuth( final String user, final String password )
+    {
+        final PortalRequest request = new PortalRequest();
+
+        request.setMode( RenderMode.LIVE );
+        request.setApplicationKey( ApplicationKey.SYSTEM );
+        request.setBaseUri( "/endpoint" );
+        request.getHeaders()
+            .put( "Authorization",
+                  "Basic " + Base64.getEncoder().encodeToString( ( user + ":" + password ).getBytes( StandardCharsets.UTF_8 ) ) );
 
         return request;
     }
