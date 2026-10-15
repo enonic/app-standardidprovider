@@ -42,7 +42,7 @@
                         <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
                         {{#hasRequired}}
                         <div class="device-granted">
-                            <p class="device-text">{{t.itCan}}</p>
+                            <p class="device-text">{{app}} {{t.wouldLikeTo}}</p>
                             <ul class="device-required">
                                 {{#required}}
                                 <li>{{description}}</li>
@@ -52,7 +52,7 @@
                         {{/hasRequired}}
                         {{#hasOptional}}
                         <fieldset class="device-scopes">
-                            <legend class="device-text">{{#hasRequired}}{{t.youCanAlsoAllow}}{{/hasRequired}}{{^hasRequired}}{{t.itCan}}{{/hasRequired}}</legend>
+                            <legend class="device-text">{{t.selectWhat}} {{app}} {{#hasRequired}}{{t.canAlsoAccess}}{{/hasRequired}}{{^hasRequired}}{{t.canAccess}}{{/hasRequired}}</legend>
                             {{#optional}}
                             <label class="device-scope">
                                 <input type="checkbox" name="scope" value="{{id}}" checked>
