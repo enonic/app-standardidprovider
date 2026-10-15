@@ -12,7 +12,7 @@ const BASIC_SCHEME = /^basic\s+/i;
 const isBasicFlowEnabled = (req: Request): boolean => {
     const flows = (req as Request & { idProviderFlows?: string[] })
         .idProviderFlows;
-    return !flows || flows.indexOf('basic') >= 0;
+    return !flows || flows.includes('basic');
 };
 
 export const autoLogin = function (req: Request) {

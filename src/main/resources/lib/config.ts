@@ -2,7 +2,7 @@ import { getIdProviderKey, idProviderUrl } from '/lib/xp/portal';
 // @ts-ignore
 import { getPhrases } from '/lib/xp/i18n';
 import { getInstallation } from '/lib/xp/admin';
-import { Request } from '@enonic-types/core';
+import { type Request } from '@enonic-types/core';
 
 type RequestExt = Request & {
     locales: string[];
@@ -16,7 +16,6 @@ interface Config {
     redirectUrl?: string;
 }
 
-// eslint-disable-next-line no-undef
 const configBean = __.newBean<{
     isDevMode: () => boolean;
     isSuPasswordConfigured: () => boolean;
@@ -24,8 +23,7 @@ const configBean = __.newBean<{
 
 export const isDevMode = () => configBean.isDevMode();
 
-export const isSuPasswordConfigured = () =>
-    configBean.isSuPasswordConfigured();
+export const isSuPasswordConfigured = () => configBean.isSuPasswordConfigured();
 
 export const getConfig = (req: RequestExt): Config => ({
     idProviderKey: getIdProviderKey(),
