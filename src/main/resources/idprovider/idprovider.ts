@@ -154,8 +154,7 @@ export const autoLogin = function (req: Request) {
 // XP owns the flow and checks whatever this page posts back; this page only renders.
 interface DeviceLoginScope {
     id: string;
-    description: string;
-    principals: string[];
+    roles: string[];
 }
 
 interface DeviceLogin {
@@ -210,6 +209,14 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
     const config = getConfig(req as Request & { locales: string[] });
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
+    // What a scope means to a user is this page's to say: a phrase "scope.<id>" when one exists, else the id.
+    const scope = (context.scope || []).map((s) => {
+        return {
+            id: s.id,
+            description: messages[`scope.${s.id}`] || s.id,
+            roles: (s.roles || []).join(', ')
+        };
+    });
 
     const view = resolve('device.html');
     const params = {
@@ -223,9 +230,9 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         wrongAccount: context.action === 'wrongAccount',
         error: context.error,
         userCode: context.userCode,
-        clientId: context.clientId,
-        hasScope: (context.scope || []).length > 0,
-        scope: context.scope || [],
+        app: context.clientId || phrase('page.device.thisDevice'),
+        hasScope: scope.length > 0,
+        scope,
         audience: (context.audience || []).join(', '),
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
@@ -238,18 +245,13 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             enterCode: phrase('page.device.enterCode'),
             code: phrase('page.device.code'),
             continue: phrase('page.device.continue'),
-            confirmTitle: phrase('page.device.confirmTitle'),
-            signedInAs: phrase('page.device.signedInAs'),
-            requesting: phrase('page.device.requesting'),
-            application: phrase('page.device.application'),
-            unknownApplication: phrase('page.device.unknownApplication'),
-            permissions: phrase('page.device.permissions'),
-            keepAllowed: phrase('page.device.keepAllowed'),
+            authorize: phrase('page.device.authorize'),
+            wantsToSignInAs: phrase('page.device.wantsToSignInAs'),
+            itCan: phrase('page.device.itCan'),
+            details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
-            none: phrase('page.device.none'),
             warning: phrase('page.device.warning'),
-            approve: phrase('page.device.approve'),
-            deny: phrase('page.device.deny'),
+            cancel: phrase('page.device.cancel'),
             approvedTitle: phrase('page.device.approvedTitle'),
             approvedText: phrase('page.device.approvedText'),
             deniedTitle: phrase('page.device.deniedTitle'),

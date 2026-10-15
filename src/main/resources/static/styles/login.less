@@ -705,11 +705,23 @@ img.login-background {
 }
 
 .device-details {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 6px 16px;
-  margin: 0;
-  font-size: 16px;
+  font-size: 14px;
+
+  summary {
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    margin: 12px 0 0;
+  }
 
   dt {
     opacity: 0.7;
@@ -731,7 +743,7 @@ img.login-background {
 
   legend {
     padding: 0;
-    margin: 0 0 4px;
+    margin: 0 0 2px;
   }
 }
 
@@ -752,11 +764,6 @@ img.login-background {
     cursor: pointer;
   }
 
-  code {
-    display: block;
-    font-size: 13px;
-    opacity: 0.6;
-  }
 }
 
 .device-actions {
