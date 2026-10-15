@@ -643,3 +643,205 @@ body {
     }
   }
 }
+
+// Device sign-in page (the verification page of XP's device login).
+// The page is served under a strict CSP without inline styles, so the background is an <img>,
+// and its content is taller than the login form, so the header flows instead of floating.
+img.login-background {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.login-info-panel .device-content {
+  justify-content: flex-start;
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+.login-info-header.device-header {
+  position: static;
+  margin: 0 0 36px;
+}
+
+.login-form.device-form {
+  row-gap: 18px;
+}
+
+.device-title {
+  text-align: left;
+}
+
+.device-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.device-hint {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.device-warning {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.device-code-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.device-code {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.device-code-input {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.device-details {
+  font-size: 14px;
+
+  summary {
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    margin: 12px 0 0;
+  }
+
+  dt {
+    opacity: 0.7;
+  }
+
+  dd {
+    margin: 0;
+    word-break: break-word;
+  }
+}
+
+.device-granted {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.device-required {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 1.4;
+
+  li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    &::before {
+      content: '\2713';
+      flex-shrink: 0;
+      width: 18px;
+      margin-top: 2px;
+      text-align: center;
+      font-weight: 600;
+    }
+  }
+}
+
+.device-scopes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    padding: 0;
+    margin: 0 0 2px;
+  }
+}
+
+.device-scope {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+
+  input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: @admin-white;
+    cursor: pointer;
+  }
+
+}
+
+.device-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+
+  &.device-actions-end {
+    justify-content: flex-end;
+  }
+
+  .login-primary-button,
+  .login-secondary-link {
+    align-self: auto;
+    margin-top: 0;
+  }
+}
+
+.device-error {
+  position: static;
+  display: block;
+  margin: 0;
+  text-align: left;
+}
+
+@media screen and (max-width: @login-mobile-breakpoint) {
+  .login-info-panel.device-panel {
+    height: 100%;
+    min-height: 0;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .login-info-panel .device-content {
+    padding-top: 40px;
+    max-width: none;
+  }
+
+  .login-info-header.device-header {
+    margin-bottom: 32px;
+  }
+}
