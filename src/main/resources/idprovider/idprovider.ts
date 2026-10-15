@@ -1,18 +1,30 @@
 // External libs
 // @ts-expect-error No types
-import {render} from '/lib/mustache';
+import { render } from '/lib/mustache';
 
-// @ts-expect-error -- drop this once @enonic-types/lib-portal ships csp()
-import {csp, getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
-import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
-import {mappedRelativePath, requestHandler, RESPONSE_CACHE_CONTROL} from '/lib/enonic/static';
-import {readJsonResourceProperty} from '/lib/standardidprovider/resource';
-import {Request, Response} from '@enonic-types/core';
+import {
+    csp,
+    getIdProviderKey,
+    getSite,
+    idProviderUrl,
+    pageUrl
+} from '/lib/xp/portal';
+import { login as authLogin, logout as authLogout } from '/lib/xp/auth';
+import {
+    mappedRelativePath,
+    requestHandler,
+    RESPONSE_CACHE_CONTROL
+} from '/lib/enonic/static';
+import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
+import { type Request, type Response } from '@enonic-types/core';
 
 // Local libs
-import {createAdminUserCreation, firstLoginEnabled} from '/lib/admin-creation';
-import {autoLogin as libAutoLogin} from '/lib/autologin';
-import {getConfig} from '/lib/config';
+import {
+    createAdminUserCreation,
+    firstLoginEnabled
+} from '/lib/admin-creation';
+import { autoLogin as libAutoLogin } from '/lib/autologin';
+import { getConfig } from '/lib/config';
 
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
@@ -21,17 +33,17 @@ const BASE = '_static';
 const isLoginFlowEnabled = (req: Request): boolean => {
     const flows = (req as Request & { idProviderFlows?: string[] })
         .idProviderFlows;
-    return !flows || flows.indexOf('login') >= 0;
+    return !flows || flows.includes('login');
 };
 
 const getStatic = (request: Request): Response =>
-    requestHandler(request as Parameters<typeof requestHandler>[0], {
+    requestHandler(request, {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
         relativePath: mappedRelativePath(
             `${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
         ),
         root: 'static'
-    }) as Response;
+    });
 
 export const handle401 = function (req: Request) {
     const body = generateLoginPage(req);
@@ -85,7 +97,6 @@ export const post = (req: Request) => {
     const idProviderKey = getIdProviderKey() || undefined; // Convert '' and null to undefined for types to match;
 
     let result;
-    /* eslint-disable default-case */
 
     switch (body.action) {
         case 'login':
@@ -114,7 +125,6 @@ export const post = (req: Request) => {
             break;
     }
 
-    /* eslint-enable default-case */
     return {
         body: result,
         contentType: 'application/json'
@@ -175,7 +185,7 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
 
     const view = resolve('idprovider.html');
-    const config = getConfig(req as Request & { locales: string[] });
+    const config = getConfig(req);
     if (redirectUrl) {
         config.redirectUrl = redirectUrl;
     }

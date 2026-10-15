@@ -1,8 +1,8 @@
 'use strict' // eslint-disable-line
 
-const $ = require('jquery');
-const {passwordStrength} = require('check-password-strength');
-const i18n = require('./i18n');
+import $ from 'jquery';
+import {passwordStrength} from 'check-password-strength';
+import * as i18n from './i18n';
 
 const emailRegexp = /^[^@\s]+@+[^@\s]+$/;
 const nodeIdRegexp = /^[\w-.:]+$/;
