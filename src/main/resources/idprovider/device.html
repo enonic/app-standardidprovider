@@ -12,72 +12,81 @@
 </head>
 <body>
 <div class="login-root">
-    <div class="login-background loaded" style="background-image: url('{{backgroundUrl}}')" aria-hidden="true"></div>
+    <img class="login-background loaded" src="{{backgroundUrl}}" alt="" aria-hidden="true">
     <main class="login-panel">
-        <div class="login-info-panel">
-            <div class="login-info-content">
-                <header class="login-info-header">
+        <div class="login-info-panel device-panel">
+            <div class="login-info-content device-content">
+                <header class="login-info-header device-header">
                     <h1 class="login-info-title">{{installation}}</h1>
                     <p class="login-info-version">Enonic XP</p>
                 </header>
-                <div class="login-form-section device-section">
+                <div class="login-form-section">
                 {{#enter}}
                     <form method="get" action="" class="login-form device-form">
-                        <h2 class="login-form-title">{{t.title}}</h2>
+                        <h2 class="login-form-title device-title">{{t.title}}</h2>
                         {{#error}}<div class="login-message-container device-error" role="alert">{{error}}</div>{{/error}}
                         <p class="device-text">{{t.enterCode}}</p>
                         <div class="login-fieldset">
                             <label class="login-label" for="user-code-input">{{t.code}}</label>
                             <input id="user-code-input" class="login-input device-code-input" type="text" name="user_code" placeholder="XXXX-XXXX" autocomplete="off" autofocus>
                         </div>
-                        <button type="submit" class="login-primary-button">{{t.continue}}</button>
+                        <div class="device-actions device-actions-end">
+                            <button type="submit" class="login-primary-button">{{t.continue}}</button>
+                        </div>
                     </form>
                 {{/enter}}
                 {{#confirm}}
                     <form method="post" action="" class="login-form device-form">
-                        <h2 class="login-form-title">{{t.confirmTitle}}</h2>
+                        <h2 class="login-form-title device-title">{{t.confirmTitle}}</h2>
                         <p class="device-text">{{t.signedInAs}} <strong>{{userName}}</strong></p>
-                        <p class="device-text">{{t.requesting}}</p>
-                        <p class="device-code">{{userCode}}</p>
+                        <div>
+                            <p class="device-text">{{t.requesting}}</p>
+                            <p class="device-code">{{userCode}}</p>
+                        </div>
                         <dl class="device-details">
                             <dt>{{t.application}}</dt>
                             <dd>{{#clientId}}{{clientId}}{{/clientId}}{{^clientId}}{{t.unknownApplication}}{{/clientId}}</dd>
                             <dt>{{t.audience}}</dt>
                             <dd>{{#hasAudience}}{{audience}}{{/hasAudience}}{{^hasAudience}}{{t.none}}{{/hasAudience}}</dd>
-                            <dt>{{t.permissions}}</dt>
-                            <dd>{{#hasScope}}{{t.keepAllowed}}{{/hasScope}}{{^hasScope}}{{t.none}}{{/hasScope}}</dd>
                         </dl>
                         {{#hasScope}}
-                        <ul class="device-scopes">
+                        <fieldset class="device-scopes">
+                            <legend class="login-label">{{t.permissions}}</legend>
+                            <p class="device-text device-hint">{{t.keepAllowed}}</p>
                             {{#scope}}
-                            <li><label><input type="checkbox" name="scope" value="{{id}}" checked> <span>{{description}}</span> <code>{{id}}</code></label></li>
+                            <label class="device-scope">
+                                <input type="checkbox" name="scope" value="{{id}}" checked>
+                                <span class="device-scope-text">{{description}}<code>{{id}}</code></span>
+                            </label>
                             {{/scope}}
-                        </ul>
+                        </fieldset>
                         {{/hasScope}}
                         <p class="device-text device-warning">{{t.warning}}</p>
                         <input type="hidden" name="user_code" value="{{userCode}}">
                         <input type="hidden" name="_csrf" value="{{csrf}}">
-                        <button type="submit" name="approve" value="true" class="login-primary-button">{{t.approve}}</button>
-                        <button type="submit" name="approve" value="false" class="login-secondary-link">{{t.deny}}</button>
+                        <div class="device-actions">
+                            <button type="submit" name="approve" value="false" class="login-secondary-link">{{t.deny}}</button>
+                            <button type="submit" name="approve" value="true" class="login-primary-button">{{t.approve}}</button>
+                        </div>
                     </form>
                 {{/confirm}}
                 {{#done}}
                     <div class="login-form device-form">
                         {{#approved}}
-                        <h2 class="login-form-title">{{t.approvedTitle}}</h2>
+                        <h2 class="login-form-title device-title">{{t.approvedTitle}}</h2>
                         <p class="device-text">{{t.approvedText}}</p>
                         {{/approved}}
                         {{^approved}}
-                        <h2 class="login-form-title">{{t.deniedTitle}}</h2>
+                        <h2 class="login-form-title device-title">{{t.deniedTitle}}</h2>
                         <p class="device-text">{{t.deniedText}}</p>
                         {{/approved}}
                     </div>
                 {{/done}}
                 {{#wrongAccount}}
                     <div class="login-form device-form">
-                        <h2 class="login-form-title">{{t.wrongAccountTitle}}</h2>
-                        <p class="device-text"><strong>{{userKey}}</strong></p>
+                        <h2 class="login-form-title device-title">{{t.wrongAccountTitle}}</h2>
                         <p class="device-text">{{t.wrongAccountText}} <strong>{{idProvider}}</strong></p>
+                        <p class="device-text device-hint">{{userKey}}</p>
                     </div>
                 {{/wrongAccount}}
                 </div>
