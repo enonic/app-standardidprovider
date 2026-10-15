@@ -39,7 +39,7 @@
                     <form method="post" action="" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToSignInAs}} <strong>{{userName}}</strong>.</p>
-                        <p class="device-text device-code-line"><span class="device-hint">{{t.codeShownBy}} {{app}}</span><span class="device-code">{{userCode}}</span></p>
+                        <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
                         {{#hasRequired}}
                         <div class="device-granted">
                             <p class="device-text">{{t.itCan}}</p>
