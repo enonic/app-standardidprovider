@@ -155,6 +155,7 @@ export const autoLogin = function (req: Request) {
 interface DeviceLoginScope {
     id: string;
     roles: string[];
+    required: boolean;
 }
 
 interface DeviceLogin {
@@ -214,9 +215,13 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         return {
             id: s.id,
             description: messages[`scope.${s.id}`] || s.id,
-            roles: (s.roles || []).join(', ')
+            roles: (s.roles || []).join(', '),
+            required: s.required === true
         };
     });
+    // A required scope is granted with the request; only the others are the user's to drop.
+    const required = scope.filter((s) => s.required);
+    const optional = scope.filter((s) => !s.required);
 
     const view = resolve('device.html');
     const params = {
@@ -231,8 +236,11 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         error: context.error,
         userCode: context.userCode,
         app: context.clientId || phrase('page.device.thisDevice'),
-        hasScope: scope.length > 0,
         scope,
+        required,
+        optional,
+        hasRequired: required.length > 0,
+        hasOptional: optional.length > 0,
         audience: (context.audience || []).join(', '),
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
@@ -249,6 +257,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             wantsToSignInAs: phrase('page.device.wantsToSignInAs'),
             codeShownBy: phrase('page.device.codeShownBy'),
             itCan: phrase('page.device.itCan'),
+            youCanAlsoAllow: phrase('page.device.youCanAlsoAllow'),
             details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
             warning: phrase('page.device.warning'),

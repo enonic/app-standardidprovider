@@ -40,17 +40,27 @@
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToSignInAs}} <strong>{{userName}}</strong>.</p>
                         <p class="device-text device-code-line"><span class="device-hint">{{t.codeShownBy}} {{app}}</span><span class="device-code">{{userCode}}</span></p>
-                        {{#hasScope}}
+                        {{#hasRequired}}
+                        <div class="device-granted">
+                            <p class="device-text">{{t.itCan}}</p>
+                            <ul class="device-required">
+                                {{#required}}
+                                <li>{{description}}</li>
+                                {{/required}}
+                            </ul>
+                        </div>
+                        {{/hasRequired}}
+                        {{#hasOptional}}
                         <fieldset class="device-scopes">
-                            <legend class="device-text">{{t.itCan}}</legend>
-                            {{#scope}}
+                            <legend class="device-text">{{#hasRequired}}{{t.youCanAlsoAllow}}{{/hasRequired}}{{^hasRequired}}{{t.itCan}}{{/hasRequired}}</legend>
+                            {{#optional}}
                             <label class="device-scope">
                                 <input type="checkbox" name="scope" value="{{id}}" checked>
                                 <span>{{description}}</span>
                             </label>
-                            {{/scope}}
+                            {{/optional}}
                         </fieldset>
-                        {{/hasScope}}
+                        {{/hasOptional}}
                         <details class="device-details">
                             <summary>{{t.details}}</summary>
                             <dl>
