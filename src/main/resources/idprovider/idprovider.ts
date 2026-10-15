@@ -150,6 +150,43 @@ export const autoLogin = function (req: Request) {
     };
 };
 
+// The data XP hands the device verification page (RFC 8628 device login) as req.deviceLogin.
+// XP owns the flow and checks whatever this page posts back; this page only renders.
+interface DeviceLoginScope {
+    id: string;
+    description: string;
+    principals: string[];
+}
+
+interface DeviceLogin {
+    idProvider: string;
+    action: 'enter' | 'confirm' | 'done' | 'wrongAccount';
+    user: { key: string; login: string; displayName: string | null };
+    error?: string;
+    userCode?: string;
+    clientId?: string | null;
+    scope?: DeviceLoginScope[];
+    audience?: string[];
+    csrf?: string;
+    approved?: boolean;
+}
+
+/**
+ * The device verification page: enter the code a device shows, see what it asks for, approve or
+ * deny. The form posts user_code, approve, _csrf and one scope per kept permission back to the
+ * same URL, which is XP's device endpoint.
+ */
+export const deviceVerification = function (req: Request) {
+    const context = (req as Request & { deviceLogin: DeviceLogin }).deviceLogin;
+    const body = generateDevicePage(req, context);
+
+    return {
+        status: 200,
+        contentType: 'text/html',
+        body
+    };
+};
+
 function generateRedirectUrl() {
     const site = getSite();
 
@@ -158,6 +195,70 @@ function generateRedirectUrl() {
     }
 
     return '/';
+}
+
+function generateDevicePage(req: Request, context: DeviceLogin) {
+    csp()
+        .strict()
+        .styleSrc("'self'")
+        .imgSrc("'self'")
+        .fontSrc("'self'")
+        .manifestSrc("'self'")
+        .formAction("'self'");
+
+    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
+    const config = getConfig(req as Request & { locales: string[] });
+    const messages = config.messages as Record<string, string>;
+    const phrase = (key: string) => messages[key] || key;
+
+    const view = resolve('device.html');
+    const params = {
+        assetUrlPrefix: baseUrlPrefix,
+        backgroundUrl: `${baseUrlPrefix}/images/background.webp`,
+        imageUrlPrefix: `${baseUrlPrefix}/icons`,
+        installation: config.installation,
+        enter: context.action === 'enter',
+        confirm: context.action === 'confirm',
+        done: context.action === 'done',
+        wrongAccount: context.action === 'wrongAccount',
+        error: context.error,
+        userCode: context.userCode,
+        clientId: context.clientId,
+        hasScope: (context.scope || []).length > 0,
+        scope: context.scope || [],
+        audience: (context.audience || []).join(', '),
+        hasAudience: (context.audience || []).length > 0,
+        csrf: context.csrf,
+        approved: context.approved === true,
+        userName: context.user.displayName || context.user.login,
+        userKey: context.user.key,
+        idProvider: context.idProvider,
+        t: {
+            title: phrase('page.device.title'),
+            enterCode: phrase('page.device.enterCode'),
+            code: phrase('page.device.code'),
+            continue: phrase('page.device.continue'),
+            confirmTitle: phrase('page.device.confirmTitle'),
+            signedInAs: phrase('page.device.signedInAs'),
+            requesting: phrase('page.device.requesting'),
+            application: phrase('page.device.application'),
+            unknownApplication: phrase('page.device.unknownApplication'),
+            permissions: phrase('page.device.permissions'),
+            keepAllowed: phrase('page.device.keepAllowed'),
+            audience: phrase('page.device.audience'),
+            none: phrase('page.device.none'),
+            warning: phrase('page.device.warning'),
+            approve: phrase('page.device.approve'),
+            deny: phrase('page.device.deny'),
+            approvedTitle: phrase('page.device.approvedTitle'),
+            approvedText: phrase('page.device.approvedText'),
+            deniedTitle: phrase('page.device.deniedTitle'),
+            deniedText: phrase('page.device.deniedText'),
+            wrongAccountTitle: phrase('page.device.wrongAccountTitle'),
+            wrongAccountText: phrase('page.device.wrongAccountText')
+        }
+    };
+    return render(view, params);
 }
 
 function generateLoginPage(req: Request, redirectUrl?: string) {
