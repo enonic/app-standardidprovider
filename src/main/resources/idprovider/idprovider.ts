@@ -167,6 +167,7 @@ interface DeviceLogin {
     clientId?: string | null;
     scope?: DeviceLoginScope[];
     audience?: string[];
+    unrestricted?: boolean;
     csrf?: string;
     approved?: boolean;
 }
@@ -241,6 +242,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         optional,
         hasRequired: required.length > 0,
         hasOptional: optional.length > 0,
+        unrestricted: context.unrestricted === true,
         audience: (context.audience || []).join(', '),
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
@@ -257,6 +259,8 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             wantsToSignInAs: phrase('page.device.wantsToSignInAs'),
             codeShownBy: phrase('page.device.codeShownBy'),
             itCan: phrase('page.device.itCan'),
+            fullAccess: phrase('page.device.fullAccess'),
+            can: phrase('page.device.can'),
             youCanAlsoAllow: phrase('page.device.youCanAlsoAllow'),
             details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
