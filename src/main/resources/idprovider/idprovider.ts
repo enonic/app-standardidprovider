@@ -251,6 +251,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         idProvider: context.idProvider,
         t: {
             title: phrase('page.device.title'),
+            enterTitle: phrase('page.device.enterTitle'),
             enterCode: phrase('page.device.enterCode'),
             code: phrase('page.device.code'),
             continue: phrase('page.device.continue'),
@@ -268,7 +269,9 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             deniedTitle: phrase('page.device.deniedTitle'),
             deniedText: phrase('page.device.deniedText'),
             wrongAccountTitle: phrase('page.device.wrongAccountTitle'),
-            wrongAccountText: phrase('page.device.wrongAccountText')
+            wrongAccountSignedInAs: phrase('page.device.wrongAccountSignedInAs'),
+            wrongAccountFor: phrase('page.device.wrongAccountFor'),
+            wrongAccountHint: phrase('page.device.wrongAccountHint')
         }
     };
     return render(view, params);

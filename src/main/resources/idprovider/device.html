@@ -23,7 +23,7 @@
                 <div class="login-form-section">
                 {{#enter}}
                     <form method="get" action="" class="login-form device-form">
-                        <h2 class="login-form-title device-title">{{t.title}}</h2>
+                        <h2 class="login-form-title device-title">{{t.enterTitle}}</h2>
                         {{#error}}<div class="login-message-container device-error" role="alert">{{error}}</div>{{/error}}
                         <p class="device-text">{{t.enterCode}}</p>
                         <div class="login-fieldset">
@@ -98,8 +98,7 @@
                 {{#wrongAccount}}
                     <div class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.wrongAccountTitle}}</h2>
-                        <p class="device-text">{{t.wrongAccountText}} <strong>{{idProvider}}</strong></p>
-                        <p class="device-text device-hint">{{userKey}}</p>
+                        <p class="device-text">{{t.wrongAccountSignedInAs}} <strong>{{userKey}}</strong>, {{t.wrongAccountFor}} <strong>{{idProvider}}</strong>. {{t.wrongAccountHint}}</p>
                     </div>
                 {{/wrongAccount}}
                 </div>
