@@ -39,6 +39,7 @@
                     <form method="post" action="" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToSignInAs}} <strong>{{userName}}</strong>.</p>
+                        <p class="device-text device-code-line"><span class="device-hint">{{t.codeShownBy}} {{app}}</span><span class="device-code">{{userCode}}</span></p>
                         {{#hasScope}}
                         <fieldset class="device-scopes">
                             <legend class="device-text">{{t.itCan}}</legend>
@@ -53,8 +54,6 @@
                         <details class="device-details">
                             <summary>{{t.details}}</summary>
                             <dl>
-                                <dt>{{t.code}}</dt>
-                                <dd>{{userCode}}</dd>
                                 {{#hasAudience}}
                                 <dt>{{t.audience}}</dt>
                                 <dd>{{audience}}</dd>

@@ -247,6 +247,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             continue: phrase('page.device.continue'),
             authorize: phrase('page.device.authorize'),
             wantsToSignInAs: phrase('page.device.wantsToSignInAs'),
+            codeShownBy: phrase('page.device.codeShownBy'),
             itCan: phrase('page.device.itCan'),
             details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
