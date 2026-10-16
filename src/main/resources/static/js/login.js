@@ -1,7 +1,7 @@
 'use strict' // eslint-disable-line
 
-const $ = require('jquery');
-const i18n = require('./i18n');
+import $ from 'jquery';
+import * as i18n from './i18n';
 
 let loginButton;
 let userNameInput;

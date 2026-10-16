@@ -7,15 +7,14 @@
     "type": "git",
     "url": "https://github.com/enonic/app-standardidprovider"
   },
+  "type": "module",
   "scripts": {
     "build": "concurrently -c auto -g --timings npm:build:*",
-    "build:server": "node tsup/anyServerFiles.js && npx tsup -d build/resources/main || exit 0",
-    "build:static": "webpack --color",
-    "check:types": "concurrently -g -r --timings npm:check:types:*",
-    "check:types:browser": "node tsup/anyAssetFiles.js && npx tsc --noEmit -p /tsconfig.browser.json || exit 0",
-    "check:types:xp": "node tsup/anyServerFiles.js && npx tsc --noEmit -p tsconfig.xp.json || exit 0",
-    "lint": "eslint **/*.ts --quiet --cache",
-    "fix": "eslint --fix **/*.ts --cache"
+    "build:server": "cross-env BUILD_TARGET=server vite build",
+    "build:static": "cross-env BUILD_TARGET=static vite build",
+    "check:types": "tsc --noEmit -p tsconfig.xp.json",
+    "lint": "eslint \"**/*.ts\" --quiet --cache",
+    "fix": "eslint --fix \"**/*.ts\" --cache"
   },
   "devDependencies": {
     "@enonic-types/core": "^8.0.4",
@@ -25,38 +24,30 @@
     "@enonic-types/lib-context": "^8.0.4",
     "@enonic-types/lib-io": "^8.0.4",
     "@enonic-types/lib-node": "^8.0.4",
-    "@enonic-types/lib-portal": "^8.0.4",
+    "@enonic-types/lib-portal": "^8.1.0-RC4",
     "@enonic-types/lib-static": "^3.0.0",
-    "@swc/core": "^1.16.13",
+    "@types/node": "^24.19.2",
     "@typescript-eslint/parser": "^8.71.1",
     "autoprefixer": "^10.6.1",
     "browserslist": "^4.29.1",
     "browserslist-config-enonic": "^1.0.8",
-    "compression-webpack-plugin": "^12.0.0",
     "concurrently": "^10.0.6",
-    "copy-webpack-plugin": "^14.0.0",
-    "css-loader": "^7.1.5",
+    "cross-env": "^10.1.0",
     "cssnano": "^9.5.0",
     "enonic-admin-artifacts": "^2.5.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-config-xo": "^0.45.0",
+    "eslint-config-xo": "^6.0.0",
     "eslint-plugin-prettier": "^5.5.6",
-    "generate-json-webpack-plugin": "^2.0.0",
+    "globals": "^17.13.0",
     "less": "^4.9.1",
-    "less-loader": "^13.0.0",
-    "mini-css-extract-plugin": "^2.10.2",
     "postcss": "^8.5.29",
-    "postcss-loader": "^8.2.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^6.7.1",
     "prettier": "^3.9.9",
     "sharp": "^0.35.5",
-    "terser-webpack-plugin": "^5.6.1",
-    "tsup": "^8.5.1",
     "typescript": "^6.0.3",
-    "webpack": "^5.111.1",
-    "webpack-cli": "^7.2.3"
+    "vite": "^8.3.4"
   },
   "dependencies": {
     "@enonic/js-utils": "^2.1.0",
@@ -67,7 +58,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 24.13.0",
-    "npm": ">= 11.6.2"
+    "node": ">= 24.20.0",
+    "npm": ">= 11.19.0"
   }
 }
