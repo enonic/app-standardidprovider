@@ -10,9 +10,9 @@ const BASIC_SCHEME = /^basic\s+/i;
 // Basic authentication is the additional "basic" flow: served where the vhost lists it, or where
 // no flow restriction applies.
 const isBasicFlowEnabled = (req: Request): boolean => {
-    const flows = (req as Request & { idProviderFlows?: string[] })
-        .idProviderFlows;
-    return !flows || flows.indexOf('basic') >= 0;
+    const flows = (req as Request & { idProviderSettings?: { flows: string[] } })
+        .idProviderSettings?.flows ?? [];
+    return flows.length === 0 || flows.indexOf('basic') >= 0;
 };
 
 export const autoLogin = function (req: Request) {

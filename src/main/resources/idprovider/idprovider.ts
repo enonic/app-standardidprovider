@@ -19,9 +19,9 @@ const BASE = '_static';
 
 // The custom endpoints only serve interactive login, so they follow the vhost's login flow.
 const isLoginFlowEnabled = (req: Request): boolean => {
-    const flows = (req as Request & { idProviderFlows?: string[] })
-        .idProviderFlows;
-    return !flows || flows.indexOf('login') >= 0;
+    const flows = (req as Request & { idProviderSettings?: { flows: string[] } })
+        .idProviderSettings?.flows ?? [];
+    return flows.length === 0 || flows.indexOf('login') >= 0;
 };
 
 const getStatic = (request: Request): Response =>
