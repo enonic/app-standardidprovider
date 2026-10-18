@@ -33,6 +33,6 @@ exports.autoLoginHeader = function (header) {
 exports.autoLoginBasicWithFlows = function (user, password, flows) {
     const helper = __.newBean('com.enonic.app.standardidprovider.handler.TestHelper');
     const request = toJsRequest(helper.createPortalRequestWithBasicAuth(user, password));
-    request.idProviderSettings = {flows: flows.split(','), audience: [], scopes: {}, requiredScopes: []};
+    request.idProviderSettings = {flows: flows.split(','), audience: [], scopes: {}};
     return autoLoginLib.autoLogin(request);
 };
