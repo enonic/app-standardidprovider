@@ -164,7 +164,8 @@ interface DeviceLogin {
     user: { key: string; login: string; displayName: string | null };
     error?: string;
     userCode?: string;
-    clientId?: string | null;
+    /** How the client named itself; any string, not a verified name. */
+    clientId?: string;
     scope?: DeviceLoginScope[];
     audience?: string[];
     unrestricted?: boolean;
@@ -237,7 +238,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         // XP hands an error code; the wording is this page's.
         error: context.error ? phrase(`page.device.error.${context.error}`) : undefined,
         userCode: context.userCode,
-        app: context.clientId || phrase('page.device.thisDevice'),
+        app: context.clientId,
         scope,
         required,
         optional,
