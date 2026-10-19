@@ -104,10 +104,6 @@ compileTestJava.configure {
     dependsOn( 'jar' )
 }
 
-xp {
-    scriptEngines = ['GraalJS']
-}
-
 test {
     useJUnitPlatform()
     systemProperty 'java.awt.headless', 'true'
