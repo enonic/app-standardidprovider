@@ -14,6 +14,7 @@ app {
     group = 'com.enonic.xp'
     systemVersion = "${xpVersion}"
     systemApp = true
+    scriptEngine = 'GraalJS'
 }
 
 configurations.all {
@@ -49,7 +50,7 @@ dependencies {
 }
 
 node {
-    version = '24.13.0'
+    version = '24.20.0'
     download = true
 }
 
@@ -66,13 +67,13 @@ tasks.register('lint', NpmTask) {
     outputs.upToDateWhen { false }
 }
 
-tasks.register('webpack', NpmTask) {
+tasks.register('npmBuild', NpmTask) {
     dependsOn( 'npmInstall', 'lint', 'javadoc' )
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (js, css, etc).'
+    description = 'Build server and UI resources (js, css, etc) with Vite.'
     args = [ 'run', 'build' ]
     inputs.dir 'src/main'
-    inputs.file 'webpack.config.js'
+    inputs.file 'vite.config.ts'
     outputs.dir "${buildDir}/resources/main"
 }
 
@@ -83,14 +84,14 @@ tasks.register('cleanNode', Delete) {
 // Command to find if any new files types should be excluded
 // find src -type f -a ! -name "*.ts" -a ! -name "*.java" ! -name "*.properties" ! -name "*.png" ! -name "*.jpg" ! -name "*.ttf" ! -name "*.woff" ! -name "*.eot" ! -name "*.svg" ! -name "*.json" ! -name "*.ico" ! -name "*.less" ! -name "*.js" ! -name "*.html" ! -name "*.xml"
 processResources {
-    exclude 'static/**' // Excluded because webpack does it
+    exclude 'static/**' // Excluded because Vite does it
     exclude '**/*.js'
     exclude '**/*.less'
     exclude '**/*.ts'
 }
 
 jar {
-    dependsOn += webpack
+    dependsOn += npmBuild
 }
 
 def nodeEnvironment() {

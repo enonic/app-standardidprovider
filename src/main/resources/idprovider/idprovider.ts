@@ -1,37 +1,50 @@
 // External libs
 // @ts-expect-error No types
-import {render} from '/lib/mustache';
+import { render } from '/lib/mustache';
 
-// @ts-expect-error -- drop this once @enonic-types/lib-portal ships csp()
-import {csp, getIdProviderKey, getSite, idProviderUrl, pageUrl} from '/lib/xp/portal';
-import {login as authLogin, logout as authLogout} from '/lib/xp/auth';
-import {mappedRelativePath, requestHandler, RESPONSE_CACHE_CONTROL} from '/lib/enonic/static';
-import {readJsonResourceProperty} from '/lib/standardidprovider/resource';
-import {Request, Response} from '@enonic-types/core';
+import {
+    csp,
+    getIdProviderKey,
+    getSite,
+    idProviderUrl,
+    pageUrl
+} from '/lib/xp/portal';
+import { login as authLogin, logout as authLogout } from '/lib/xp/auth';
+import {
+    mappedRelativePath,
+    requestHandler,
+    RESPONSE_CACHE_CONTROL
+} from '/lib/enonic/static';
+import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
+import { type Request, type Response } from '@enonic-types/core';
 
 // Local libs
-import {createAdminUserCreation, firstLoginEnabled} from '/lib/admin-creation';
-import {autoLogin as libAutoLogin} from '/lib/autologin';
-import {getConfig} from '/lib/config';
+import {
+    createAdminUserCreation,
+    firstLoginEnabled
+} from '/lib/admin-creation';
+import { autoLogin as libAutoLogin } from '/lib/autologin';
+import { getConfig } from '/lib/config';
 
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
 const BASE = '_static';
 
 // The custom endpoints only serve interactive login, so they follow the vhost's login flow.
 const isLoginFlowEnabled = (req: Request): boolean => {
-    const flows = (req as Request & { idProviderSettings?: { flows: string[] } })
-        .idProviderSettings?.flows ?? [];
-    return flows.length === 0 || flows.indexOf('login') >= 0;
+    const flows =
+        (req as Request & { idProviderSettings?: { flows: string[] } })
+            .idProviderSettings?.flows ?? [];
+    return flows.length === 0 || flows.includes('login');
 };
 
 const getStatic = (request: Request): Response =>
-    requestHandler(request as Parameters<typeof requestHandler>[0], {
+    requestHandler(request, {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
         relativePath: mappedRelativePath(
             `${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
         ),
         root: 'static'
-    }) as Response;
+    });
 
 export const handle401 = function (req: Request) {
     const body = generateLoginPage(req);
@@ -85,7 +98,6 @@ export const post = (req: Request) => {
     const idProviderKey = getIdProviderKey() || undefined; // Convert '' and null to undefined for types to match;
 
     let result;
-    /* eslint-disable default-case */
 
     switch (body.action) {
         case 'login':
@@ -114,7 +126,6 @@ export const post = (req: Request) => {
             break;
     }
 
-    /* eslint-enable default-case */
     return {
         body: result,
         contentType: 'application/json'
@@ -164,7 +175,9 @@ interface DeviceLogin {
     user: { key: string; login: string; displayName: string | null };
     error?: string;
     userCode?: string;
-    /** How the client named itself; any string, not a verified name. */
+    /**
+    How the client named itself; any string, not a verified name.
+    */
     clientId?: string;
     scope?: DeviceLoginScope[];
     audience?: string[];
@@ -174,10 +187,10 @@ interface DeviceLogin {
 }
 
 /**
- * The device verification page: enter the code a device shows, see what it asks for, approve or
- * deny. The form posts user_code, approve, _csrf and one scope per kept permission back to the
- * same URL, which is XP's device endpoint.
- */
+The device verification page: enter the code a device shows, see what it asks for, approve or
+deny. The form posts user_code, approve, _csrf and one scope per kept permission back to the
+same URL, which is XP's device endpoint.
+*/
 export const deviceVerification = function (req: Request) {
     const context = (req as Request & { deviceLogin: DeviceLogin }).deviceLogin;
     const body = generateDevicePage(req, context);
@@ -209,18 +222,16 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         .formAction("'self'");
 
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
-    const config = getConfig(req as Request & { locales: string[] });
+    const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
     // What a scope means to a user is this page's to say: a phrase "scope.<id>" when one exists, else the id.
-    const scope = (context.scope || []).map((s) => {
-        return {
-            id: s.id,
-            description: messages[`scope.${s.id}`] || s.id,
-            roles: (s.roles || []).join(', '),
-            required: s.required === true
-        };
-    });
+    const scope = (context.scope || []).map((s) => ({
+        id: s.id,
+        description: messages[`scope.${s.id}`] || s.id,
+        roles: (s.roles || []).join(', '),
+        required: s.required
+    }));
     // A required scope is granted with the request; only the others are the user's to drop.
     const required = scope.filter((s) => s.required);
     const optional = scope.filter((s) => !s.required);
@@ -236,7 +247,9 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         done: context.action === 'done',
         wrongAccount: context.action === 'wrongAccount',
         // XP hands an error code; the wording is this page's.
-        error: context.error ? phrase(`page.device.error.${context.error}`) : undefined,
+        error: context.error
+            ? phrase(`page.device.error.${context.error}`)
+            : undefined,
         userCode: context.userCode,
         app: context.clientId,
         scope,
@@ -274,7 +287,9 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             deniedTitle: phrase('page.device.deniedTitle'),
             deniedText: phrase('page.device.deniedText'),
             wrongAccountTitle: phrase('page.device.wrongAccountTitle'),
-            wrongAccountSignedInAs: phrase('page.device.wrongAccountSignedInAs'),
+            wrongAccountSignedInAs: phrase(
+                'page.device.wrongAccountSignedInAs'
+            ),
             wrongAccountFor: phrase('page.device.wrongAccountFor'),
             wrongAccountHint: phrase('page.device.wrongAccountHint')
         }
@@ -297,7 +312,7 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
 
     const view = resolve('idprovider.html');
-    const config = getConfig(req as Request & { locales: string[] });
+    const config = getConfig(req);
     if (redirectUrl) {
         config.redirectUrl = redirectUrl;
     }

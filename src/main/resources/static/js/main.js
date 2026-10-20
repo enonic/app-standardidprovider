@@ -1,5 +1,10 @@
 'use strict' // eslint-disable-line
 
+import '../styles/main.less';
+import './welcome';
+import './login';
+import './creation';
+
 function loadConfig() {
     const attr = 'data-config-script-id';
     const configScriptId = document.currentScript.getAttribute(attr);
@@ -35,13 +40,9 @@ function initBackground() {
 
 (() => {
     loadConfig();
-    require('../styles/main.less');
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initBackground, {once: true});
     } else {
         initBackground();
     }
-    require('./welcome');
-    require('./login');
-    require('./creation');
 })();

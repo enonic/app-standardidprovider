@@ -1,11 +1,11 @@
 {
+    "compilerOptions": {
+        "types": ["node"]
+    },
     "files": [],
     "references": [
         {
             "path": "./tsconfig.xp.json"
-        },
-        {
-            "path": "./tsconfig.browser.json"
         }
     ]
 }
