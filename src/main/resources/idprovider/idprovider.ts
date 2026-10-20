@@ -57,10 +57,7 @@ export const handle401 = function (req: Request) {
 };
 
 export const get = (req: Request) => {
-    if (!isLoginFlowEnabled(req)) {
-        return { status: 403 };
-    }
-
+    // Assets are shared with the device page, which the login flow does not gate.
     const { rawPath } = req;
     const indexOf = rawPath.indexOf('/_/');
 
@@ -69,6 +66,10 @@ export const get = (req: Request) => {
         if (STATIC_ASSETS_LOCAL_REGEXP.test(endpointPath)) {
             return getStatic(req);
         }
+    }
+
+    if (!isLoginFlowEnabled(req)) {
+        return { status: 403 };
     }
 
     const redirectUrl = generateRedirectUrl();

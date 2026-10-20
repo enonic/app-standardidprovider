@@ -36,7 +36,8 @@
                     </form>
                 {{/enter}}
                 {{#confirm}}
-                    <form method="post" action="" class="login-form device-form">
+                    <!-- "?" drops the query the page was opened with, so only the form decides. -->
+                    <form method="post" action="?" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToAccessYour}} <strong>{{userLogin}}</strong> {{t.account}}.</p>
                         <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
