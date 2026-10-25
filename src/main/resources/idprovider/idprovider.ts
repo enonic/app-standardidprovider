@@ -162,24 +162,40 @@ export const autoLogin = function (req: Request) {
     };
 };
 
-// The data XP hands the device verification page (RFC 8628 device login) as req.deviceLogin.
-// XP owns the flow and checks whatever this page posts back; this page only renders.
+// The data XP hands the consent page as req.deviceLogin, for device login (RFC 8628) and for the
+// authorization code flow alike. XP owns the flows and checks whatever this page posts back; this
+// page only renders.
 interface DeviceLoginScope {
     id: string;
+    displayName: string;
+    description?: string;
     roles: string[];
     required: boolean;
+}
+
+interface DeviceLoginClient {
+    id: string;
+    displayName: string;
+    uri?: string;
+    logoUri?: string;
+    policyUri?: string;
+    tosUri?: string;
+    registered: boolean;
 }
 
 interface DeviceLogin {
     idProvider: string;
     action: 'enter' | 'confirm' | 'done' | 'wrongAccount';
+    flow?: 'device' | 'code';
     user: { key: string; login: string; displayName: string | null };
     error?: string;
     userCode?: string;
+    requestId?: string;
     /**
     How the client named itself; any string, not a verified name.
     */
     clientId?: string;
+    client?: DeviceLoginClient;
     scope?: DeviceLoginScope[];
     audience?: string[];
     unrestricted?: boolean;
@@ -188,9 +204,10 @@ interface DeviceLogin {
 }
 
 /**
-The device verification page: enter the code a device shows, see what it asks for, approve or
-deny. The form posts user_code, approve, _csrf and one scope per kept permission back to the
-same URL, which is XP's device endpoint.
+The consent page: in device login, enter the code a device shows, then see what the client asks
+for and approve or deny; in the authorization code flow, the latter alone. The form posts
+user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
+which is XP's endpoint.
 */
 export const deviceVerification = function (req: Request) {
     const context = (req as Request & { deviceLogin: DeviceLogin }).deviceLogin;
@@ -226,13 +243,19 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
     const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
-    // What a scope means to a user is this page's to say: a phrase "scope.<id>" when one exists, else the id.
-    const scope = (context.scope || []).map((s) => ({
-        id: s.id,
-        description: messages[`scope.${s.id}`] || s.id,
-        roles: (s.roles || []).join(', '),
-        required: s.required
-    }));
+    // What a scope means to a user: a phrase "scope.<id>" when one exists, else the title and
+    // description its id provider gave it, else the id.
+    const scope = (context.scope || []).map((s) => {
+        const worded = messages[`scope.${s.id}`];
+        return {
+            id: s.id,
+            title: worded || s.displayName || s.id,
+            description: worded ? undefined : s.description,
+            roles: (s.roles || []).join(', '),
+            required: s.required
+        };
+    });
+    const { client } = context;
     // A required scope is granted with the request; only the others are the user's to drop.
     const required = scope.filter((s) => s.required);
     const optional = scope.filter((s) => !s.required);
@@ -252,7 +275,13 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             ? phrase(`page.device.error.${context.error}`)
             : undefined,
         userCode: context.userCode,
-        app: context.clientId,
+        requestId: context.requestId,
+        codeFlow: context.flow === 'code',
+        app: client ? client.displayName : context.clientId,
+        clientUri: client ? client.uri : undefined,
+        clientPolicyUri: client ? client.policyUri : undefined,
+        clientTosUri: client ? client.tosUri : undefined,
+        unrestricted: context.unrestricted === true,
         scope,
         required,
         optional,
@@ -282,6 +311,11 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
             warning: phrase('page.device.warning'),
+            warningCode: phrase('page.device.warningCode'),
+            fullAccess: phrase('page.device.fullAccess'),
+            website: phrase('page.device.website'),
+            privacyPolicy: phrase('page.device.privacyPolicy'),
+            terms: phrase('page.device.terms'),
             cancel: phrase('page.device.cancel'),
             approvedTitle: phrase('page.device.approvedTitle'),
             approvedText: phrase('page.device.approvedText'),
