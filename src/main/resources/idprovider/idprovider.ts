@@ -167,7 +167,7 @@ export const autoLogin = function (req: Request) {
 // page only renders.
 interface DeviceLoginScope {
     id: string;
-    displayName: string;
+    title: string;
     description?: string;
     roles: string[];
     required: boolean;
@@ -249,7 +249,7 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
         const worded = messages[`scope.${s.id}`];
         return {
             id: s.id,
-            title: worded || s.displayName || s.id,
+            title: worded || s.title || s.id,
             description: worded ? undefined : s.description,
             roles: (s.roles || []).join(', '),
             required: s.required
