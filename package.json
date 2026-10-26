@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@enonic-types/core": "^8.1.0",
-    "@enonic-types/global": "^8.1.0",
+    "@enonic-types/global": "^8.1.1",
     "@enonic-types/lib-admin": "^8.1.0",
     "@enonic-types/lib-auth": "^8.1.0",
     "@enonic-types/lib-context": "^8.1.1",
