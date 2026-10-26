@@ -46,7 +46,7 @@
     "prettier": "^3.9.10",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.5"
   },
   "dependencies": {
     "@enonic/js-utils": "^2.1.0",
