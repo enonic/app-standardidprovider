@@ -232,13 +232,17 @@ function generateRedirectUrl() {
 }
 
 function generateDevicePage(req: Request, context: OAuthConsent) {
-    csp()
+    const policy = csp()
         .strict()
         .styleSrc("'self'")
         .imgSrc("'self'")
         .fontSrc("'self'")
-        .manifestSrc("'self'")
-        .formAction("'self'");
+        .manifestSrc("'self'");
+    // The form posts to this host, but browsers hold a form's redirects to form-action too, and
+    // the authorization request ends in a redirect to the client, so that flow leaves it open.
+    if (!(context.action === 'confirm' && context.flow === 'code')) {
+        policy.formAction("'self'");
+    }
 
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
     const config = getConfig(req);
