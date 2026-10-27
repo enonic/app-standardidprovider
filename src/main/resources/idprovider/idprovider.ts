@@ -244,6 +244,18 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         policy.formAction("'self'");
     }
 
+    // With only optional permissions to choose from, a script keeps the user from approving
+    // while none is kept, which XP would deny; a required permission is granted in any case.
+    const asked = context.scope || [];
+    const keepOne =
+        context.action === 'confirm' &&
+        asked.length > 0 &&
+        asked.every((s) => !s.required);
+
+    if (keepOne) {
+        policy.scriptSrc("'self'");
+    }
+
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
     const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
@@ -292,6 +304,7 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         optional,
         hasRequired: required.length > 0,
         hasOptional: optional.length > 0,
+        keepOne,
         audience: (context.audience || []).join(', '),
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
@@ -318,6 +331,7 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
             warning: phrase('page.device.warning'),
             warningCode: phrase('page.device.warningCode'),
             fullAccess: phrase('page.device.fullAccess'),
+            keepOne: phrase('page.device.keepOne'),
             website: phrase('page.device.website'),
             privacyPolicy: phrase('page.device.privacyPolicy'),
             terms: phrase('page.device.terms'),

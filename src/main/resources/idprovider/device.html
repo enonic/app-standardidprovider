@@ -9,6 +9,9 @@
     <link rel="icon" type="image/svg+xml" href="{{imageUrlPrefix}}/favicon.svg">
     <link rel="manifest" href="{{imageUrlPrefix}}/manifest.webmanifest">
     <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
+    {{#keepOne}}
+    <script src="{{assetUrlPrefix}}/consent/consent.js" defer></script>
+    {{/keepOne}}
 </head>
 <body>
 <div class="login-root">
@@ -65,6 +68,9 @@
                                 <span>{{title}}{{#description}}<span class="device-scope-description">{{description}}</span>{{/description}}</span>
                             </label>
                             {{/optional}}
+                            {{#keepOne}}
+                            <p class="device-text device-keep-one" id="device-keep-one" hidden>{{t.keepOne}}</p>
+                            {{/keepOne}}
                         </fieldset>
                         {{/hasOptional}}
                         <details class="device-details">
