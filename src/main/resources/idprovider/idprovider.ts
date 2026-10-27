@@ -162,10 +162,10 @@ export const autoLogin = function (req: Request) {
     };
 };
 
-// The data XP hands the consent page as req.deviceLogin, for device login (RFC 8628) and for the
+// The data XP hands the consent page as req.oauthConsent, for device login (RFC 8628) and for the
 // authorization code flow alike. XP owns the flows and checks whatever this page posts back; this
 // page only renders.
-interface DeviceLoginScope {
+interface OAuthConsentScope {
     id: string;
     title: string;
     description?: string;
@@ -173,7 +173,7 @@ interface DeviceLoginScope {
     required: boolean;
 }
 
-interface DeviceLoginClient {
+interface OAuthConsentClient {
     id: string;
     displayName: string;
     uri?: string;
@@ -183,7 +183,7 @@ interface DeviceLoginClient {
     registered: boolean;
 }
 
-interface DeviceLogin {
+interface OAuthConsent {
     idProvider: string;
     action: 'enter' | 'confirm' | 'done' | 'wrongAccount';
     flow?: 'device' | 'code';
@@ -195,8 +195,8 @@ interface DeviceLogin {
     How the client named itself; any string, not a verified name.
     */
     clientId?: string;
-    client?: DeviceLoginClient;
-    scope?: DeviceLoginScope[];
+    client?: OAuthConsentClient;
+    scope?: OAuthConsentScope[];
     audience?: string[];
     unrestricted?: boolean;
     csrf?: string;
@@ -209,8 +209,9 @@ for and approve or deny; in the authorization code flow, the latter alone. The f
 user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
 which is XP's endpoint.
 */
-export const deviceVerification = function (req: Request) {
-    const context = (req as Request & { deviceLogin: DeviceLogin }).deviceLogin;
+export const oauthConsent = function (req: Request) {
+    const context = (req as Request & { oauthConsent: OAuthConsent })
+        .oauthConsent;
     const body = generateDevicePage(req, context);
 
     return {
@@ -230,7 +231,7 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function generateDevicePage(req: Request, context: DeviceLogin) {
+function generateDevicePage(req: Request, context: OAuthConsent) {
     csp()
         .strict()
         .styleSrc("'self'")
