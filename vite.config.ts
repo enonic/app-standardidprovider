@@ -158,7 +158,10 @@ export default defineConfig(() => {
             root: STATIC_SRC,
             base: './',
             mode: isProduction ? 'production' : 'development',
-            plugins: [copyStatic(['icons', 'images']), assetPipeline()],
+            plugins: [
+                copyStatic(['icons', 'images', 'consent']),
+                assetPipeline()
+            ],
             build: {
                 outDir: STATIC_OUT,
                 emptyOutDir: false,

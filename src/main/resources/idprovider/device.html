@@ -9,6 +9,9 @@
     <link rel="icon" type="image/svg+xml" href="{{imageUrlPrefix}}/favicon.svg">
     <link rel="manifest" href="{{imageUrlPrefix}}/manifest.webmanifest">
     <link rel="stylesheet" type="text/css" href="{{assetUrlPrefix}}/styles/_all.css">
+    {{#keepOne}}
+    <script src="{{assetUrlPrefix}}/consent/consent.js" defer></script>
+    {{/keepOne}}
 </head>
 <body>
 <div class="login-root">
@@ -40,13 +43,18 @@
                     <form method="post" action="?" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToAccessYour}} <strong>{{userLogin}}</strong> {{t.account}}.</p>
+                        {{#userCode}}
                         <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
+                        {{/userCode}}
+                        {{#unrestricted}}
+                        <p class="device-text">{{app}} {{t.fullAccess}}</p>
+                        {{/unrestricted}}
                         {{#hasRequired}}
                         <div class="device-granted">
                             <p class="device-text">{{app}} {{t.wouldLikeTo}}</p>
                             <ul class="device-required">
                                 {{#required}}
-                                <li>{{description}}</li>
+                                <li><span>{{title}}{{#description}}<span class="device-scope-description">{{description}}</span>{{/description}}</span></li>
                                 {{/required}}
                             </ul>
                         </div>
@@ -57,14 +65,29 @@
                             {{#optional}}
                             <label class="device-scope">
                                 <input type="checkbox" name="scope" value="{{id}}" checked>
-                                <span>{{description}}</span>
+                                <span>{{title}}{{#description}}<span class="device-scope-description">{{description}}</span>{{/description}}</span>
                             </label>
                             {{/optional}}
+                            {{#keepOne}}
+                            <p class="device-text device-keep-one" id="device-keep-one" hidden>{{t.keepOne}}</p>
+                            {{/keepOne}}
                         </fieldset>
                         {{/hasOptional}}
                         <details class="device-details">
                             <summary>{{t.details}}</summary>
                             <dl>
+                                {{#clientUri}}
+                                <dt>{{t.website}}</dt>
+                                <dd><a href="{{clientUri}}" rel="noopener noreferrer">{{clientUri}}</a></dd>
+                                {{/clientUri}}
+                                {{#clientPolicyUri}}
+                                <dt>{{t.privacyPolicy}}</dt>
+                                <dd><a href="{{clientPolicyUri}}" rel="noopener noreferrer">{{clientPolicyUri}}</a></dd>
+                                {{/clientPolicyUri}}
+                                {{#clientTosUri}}
+                                <dt>{{t.terms}}</dt>
+                                <dd><a href="{{clientTosUri}}" rel="noopener noreferrer">{{clientTosUri}}</a></dd>
+                                {{/clientTosUri}}
                                 {{#hasAudience}}
                                 <dt>{{t.audience}}</dt>
                                 <dd>{{audience}}</dd>
@@ -75,8 +98,13 @@
                                 {{/scope}}
                             </dl>
                         </details>
-                        <p class="device-text device-warning">{{t.warning}}</p>
+                        <p class="device-text device-warning">{{#codeFlow}}{{t.warningCode}}{{/codeFlow}}{{^codeFlow}}{{t.warning}}{{/codeFlow}}</p>
+                        {{#userCode}}
                         <input type="hidden" name="user_code" value="{{userCode}}">
+                        {{/userCode}}
+                        {{#requestId}}
+                        <input type="hidden" name="request" value="{{requestId}}">
+                        {{/requestId}}
                         <input type="hidden" name="_csrf" value="{{csrf}}">
                         <div class="device-actions">
                             <button type="submit" name="approve" value="false" class="login-secondary-link">{{t.cancel}}</button>

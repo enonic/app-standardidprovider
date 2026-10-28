@@ -162,25 +162,41 @@ export const autoLogin = function (req: Request) {
     };
 };
 
-// The data XP hands the device verification page (RFC 8628 device login) as req.deviceLogin.
-// XP owns the flow and checks whatever this page posts back; this page only renders.
-interface DeviceLoginScope {
+// The data XP hands the consent page as req.oauthConsent, for device login (RFC 8628) and for the
+// authorization code flow alike. XP owns the flows and checks whatever this page posts back; this
+// page only renders.
+interface OAuthConsentScope {
     id: string;
+    title: string;
+    description?: string;
     roles: string[];
     required: boolean;
 }
 
-interface DeviceLogin {
+interface OAuthConsentClient {
+    id: string;
+    displayName: string;
+    uri?: string;
+    logoUri?: string;
+    policyUri?: string;
+    tosUri?: string;
+    registered: boolean;
+}
+
+interface OAuthConsent {
     idProvider: string;
     action: 'enter' | 'confirm' | 'done' | 'wrongAccount';
+    flow?: 'device' | 'code';
     user: { key: string; login: string; displayName: string | null };
     error?: string;
     userCode?: string;
+    requestId?: string;
     /**
     How the client named itself; any string, not a verified name.
     */
     clientId?: string;
-    scope?: DeviceLoginScope[];
+    client?: OAuthConsentClient;
+    scope?: OAuthConsentScope[];
     audience?: string[];
     unrestricted?: boolean;
     csrf?: string;
@@ -188,12 +204,14 @@ interface DeviceLogin {
 }
 
 /**
-The device verification page: enter the code a device shows, see what it asks for, approve or
-deny. The form posts user_code, approve, _csrf and one scope per kept permission back to the
-same URL, which is XP's device endpoint.
+The consent page: in device login, enter the code a device shows, then see what the client asks
+for and approve or deny; in the authorization code flow, the latter alone. The form posts
+user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
+which is XP's endpoint.
 */
-export const deviceVerification = function (req: Request) {
-    const context = (req as Request & { deviceLogin: DeviceLogin }).deviceLogin;
+export const oauthConsent = function (req: Request) {
+    const context = (req as Request & { oauthConsent: OAuthConsent })
+        .oauthConsent;
     const body = generateDevicePage(req, context);
 
     return {
@@ -213,26 +231,48 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function generateDevicePage(req: Request, context: DeviceLogin) {
-    csp()
+function generateDevicePage(req: Request, context: OAuthConsent) {
+    const policy = csp()
         .strict()
         .styleSrc("'self'")
         .imgSrc("'self'")
         .fontSrc("'self'")
-        .manifestSrc("'self'")
-        .formAction("'self'");
+        .manifestSrc("'self'");
+    // The form posts to this host, but browsers hold a form's redirects to form-action too, and
+    // the authorization request ends in a redirect to the client, so that flow leaves it open.
+    if (!(context.action === 'confirm' && context.flow === 'code')) {
+        policy.formAction("'self'");
+    }
+
+    // With only optional permissions to choose from, a script keeps the user from approving
+    // while none is kept, which XP would deny; a required permission is granted in any case.
+    const asked = context.scope || [];
+    const keepOne =
+        context.action === 'confirm' &&
+        asked.length > 0 &&
+        asked.every((s) => !s.required);
+
+    if (keepOne) {
+        policy.scriptSrc("'self'");
+    }
 
     const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
     const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
-    // What a scope means to a user is this page's to say: a phrase "scope.<id>" when one exists, else the id.
-    const scope = (context.scope || []).map((s) => ({
-        id: s.id,
-        description: messages[`scope.${s.id}`] || s.id,
-        roles: (s.roles || []).join(', '),
-        required: s.required
-    }));
+    // What a scope means to a user: a phrase "scope.<id>" when one exists, else the title and
+    // description its id provider gave it, else the id.
+    const scope = (context.scope || []).map((s) => {
+        const worded = messages[`scope.${s.id}`];
+        return {
+            id: s.id,
+            title: worded || s.title || s.id,
+            description: worded ? undefined : s.description,
+            roles: (s.roles || []).join(', '),
+            required: s.required
+        };
+    });
+    const { client } = context;
     // A required scope is granted with the request; only the others are the user's to drop.
     const required = scope.filter((s) => s.required);
     const optional = scope.filter((s) => !s.required);
@@ -252,12 +292,19 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             ? phrase(`page.device.error.${context.error}`)
             : undefined,
         userCode: context.userCode,
-        app: context.clientId,
+        requestId: context.requestId,
+        codeFlow: context.flow === 'code',
+        app: client ? client.displayName : context.clientId,
+        clientUri: client ? client.uri : undefined,
+        clientPolicyUri: client ? client.policyUri : undefined,
+        clientTosUri: client ? client.tosUri : undefined,
+        unrestricted: context.unrestricted === true,
         scope,
         required,
         optional,
         hasRequired: required.length > 0,
         hasOptional: optional.length > 0,
+        keepOne,
         audience: (context.audience || []).join(', '),
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
@@ -282,6 +329,12 @@ function generateDevicePage(req: Request, context: DeviceLogin) {
             details: phrase('page.device.details'),
             audience: phrase('page.device.audience'),
             warning: phrase('page.device.warning'),
+            warningCode: phrase('page.device.warningCode'),
+            fullAccess: phrase('page.device.fullAccess'),
+            keepOne: phrase('page.device.keepOne'),
+            website: phrase('page.device.website'),
+            privacyPolicy: phrase('page.device.privacyPolicy'),
+            terms: phrase('page.device.terms'),
             cancel: phrase('page.device.cancel'),
             approvedTitle: phrase('page.device.approvedTitle'),
             approvedText: phrase('page.device.approvedText'),
