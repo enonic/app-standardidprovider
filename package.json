@@ -28,7 +28,7 @@
     "@enonic-types/lib-static": "^3.0.0",
     "@types/node": "^24.19.2",
     "@typescript-eslint/parser": "^8.71.1",
-    "autoprefixer": "^10.6.1",
+    "autoprefixer": "^10.6.2",
     "browserslist": "^4.29.1",
     "browserslist-config-enonic": "^1.0.8",
     "concurrently": "^10.0.6",
