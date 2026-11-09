@@ -24,7 +24,7 @@
     "@enonic-types/lib-context": "^8.1.2",
     "@enonic-types/lib-io": "^8.1.2",
     "@enonic-types/lib-node": "^8.1.2",
-    "@enonic-types/lib-portal": "^8.1.1",
+    "@enonic-types/lib-portal": "^8.1.2",
     "@enonic-types/lib-static": "^3.0.0",
     "@types/node": "^26.6.6",
     "@typescript-eslint/parser": "^8.71.1",
