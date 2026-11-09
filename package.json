@@ -38,7 +38,7 @@
     "eslint": "^10.13.0",
     "eslint-config-xo": "^7.0.0",
     "eslint-plugin-prettier": "^5.5.7",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "less": "^4.9.1",
     "postcss": "^8.5.31",
     "postcss-normalize": "^13.0.1",
