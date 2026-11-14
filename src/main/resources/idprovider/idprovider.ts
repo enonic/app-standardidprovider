@@ -180,6 +180,10 @@ interface OAuthConsentClient {
     logoUri?: string;
     policyUri?: string;
     tosUri?: string;
+    /**
+    True when the id provider's administrators registered the client, false when it registered
+    itself and its name is only its own claim.
+    */
     registered: boolean;
 }
 
@@ -201,6 +205,11 @@ interface OAuthConsent {
     unrestricted?: boolean;
     csrf?: string;
     approved?: boolean;
+    /**
+    In the authorization code flow, the origin of the client's redirect URI, which approving sends the
+    browser to; checked by XP.
+    */
+    redirectOrigin?: string;
 }
 
 /**
@@ -239,8 +248,13 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         .fontSrc("'self'")
         .manifestSrc("'self'");
     // The form posts to this host, but browsers hold a form's redirects to form-action too, and
-    // the authorization request ends in a redirect to the client, so that flow leaves it open.
-    if (!(context.action === 'confirm' && context.flow === 'code')) {
+    // the authorization request ends in a redirect to the client, so that flow also allows the
+    // client's origin, and nothing else. An XP that does not name it leaves form-action open there.
+    if (context.action === 'confirm' && context.flow === 'code') {
+        if (context.redirectOrigin) {
+            policy.formAction("'self'", context.redirectOrigin);
+        }
+    } else {
         policy.formAction("'self'");
     }
 
