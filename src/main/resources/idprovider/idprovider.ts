@@ -180,6 +180,10 @@ interface OAuthConsentClient {
     logoUri?: string;
     policyUri?: string;
     tosUri?: string;
+    /**
+    True when the id provider's administrators registered the client, false when it registered
+    itself and its name is only its own claim.
+    */
     registered: boolean;
 }
 
