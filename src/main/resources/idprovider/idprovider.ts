@@ -211,8 +211,11 @@ The consent page: in device login, enter the code a device shows, then see what 
 for and approve or deny; in the authorization code flow, the latter alone. The form posts
 user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
 which is XP's endpoint. XP also renders it for an id provider whose app has no consent page of its
-own; it then runs as the system id provider's page, so it reads the request from req.oauthConsent and
-its assets from its own id provider.
+own, when the vhost maps the system id provider; it then runs as the system id provider's page, so it
+reads the request from req.oauthConsent and its assets from its own id provider. To map the system id
+provider for this page alone, give it this app's consent flow and nothing else:
+idProvider.system.flows = consent. Its assets are served without a flow; login, autologin and logout
+are then off.
 */
 export const oauthConsent = function (req: Request) {
     const context = (req as Request & { oauthConsent: OAuthConsent })
