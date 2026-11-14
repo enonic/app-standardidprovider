@@ -2,13 +2,7 @@
 // @ts-expect-error No types
 import { render } from '/lib/mustache';
 
-import {
-    csp,
-    getIdProviderKey,
-    getSite,
-    idProviderUrl,
-    pageUrl
-} from '/lib/xp/portal';
+import { csp, getIdProviderKey, getSite, pageUrl } from '/lib/xp/portal';
 import { login as authLogin, logout as authLogout } from '/lib/xp/auth';
 import {
     mappedRelativePath,
@@ -16,6 +10,7 @@ import {
     RESPONSE_CACHE_CONTROL
 } from '/lib/enonic/static';
 import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
+import { assetUrlPrefix, STATIC_BASE } from '/lib/standardidprovider/assets';
 import { type Request, type Response } from '@enonic-types/core';
 
 // Local libs
@@ -27,7 +22,6 @@ import { autoLogin as libAutoLogin } from '/lib/autologin';
 import { getConfig } from '/lib/config';
 
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
-const BASE = '_static';
 
 // The custom endpoints only serve interactive login, so they follow the vhost's login flow.
 const isLoginFlowEnabled = (req: Request): boolean => {
@@ -41,7 +35,7 @@ const getStatic = (request: Request): Response =>
     requestHandler(request, {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
         relativePath: mappedRelativePath(
-            `${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
+            `${STATIC_BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
         ),
         root: 'static'
     });
@@ -216,7 +210,9 @@ interface OAuthConsent {
 The consent page: in device login, enter the code a device shows, then see what the client asks
 for and approve or deny; in the authorization code flow, the latter alone. The form posts
 user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
-which is XP's endpoint.
+which is XP's endpoint. XP also renders it for an id provider whose app has no consent page of its
+own; it then runs as the system id provider's page, so it reads the request from req.oauthConsent and
+its assets from its own id provider.
 */
 export const oauthConsent = function (req: Request) {
     const context = (req as Request & { oauthConsent: OAuthConsent })
@@ -270,7 +266,7 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         policy.scriptSrc("'self'");
     }
 
-    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
+    const baseUrlPrefix = assetUrlPrefix();
     const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
@@ -377,7 +373,7 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
         .formAction("'self'");
 
     const firstLogin = firstLoginEnabled();
-    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
+    const baseUrlPrefix = assetUrlPrefix();
 
     const view = resolve('idprovider.html');
     const config = getConfig(req);
