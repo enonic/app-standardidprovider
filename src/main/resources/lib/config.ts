@@ -1,4 +1,5 @@
-import { getIdProviderKey, idProviderUrl } from '/lib/xp/portal';
+import { getIdProviderKey } from '/lib/xp/portal';
+import { ownIdProviderUrl } from '/lib/standardidprovider/assets';
 // @ts-ignore
 import { getPhrases } from '/lib/xp/i18n';
 import { getInstallation } from '/lib/xp/admin';
@@ -27,7 +28,7 @@ export const isSuPasswordConfigured = () => configBean.isSuPasswordConfigured();
 
 export const getConfig = (req: RequestExt): Config => ({
     idProviderKey: getIdProviderKey(),
-    idProviderUrl: idProviderUrl({}),
+    idProviderUrl: ownIdProviderUrl(),
     installation: getInstallation() || 'Enonic XP',
     messages: getPhrases(req.locales, ['i18n/phrases'])
 });

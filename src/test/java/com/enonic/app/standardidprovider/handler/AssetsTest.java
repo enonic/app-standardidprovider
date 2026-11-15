@@ -44,4 +44,15 @@ public class AssetsTest
         assertEquals( IdProviderKey.system(), params.getValue().getIdProviderKey() );
         assertTrue( prefix.matches( "/_/idprovider/system/_static/\\d+" ), prefix );
     }
+
+    @Test
+    public void the_id_provider_url_is_the_one_the_page_runs_as()
+    {
+        final String url = runFunction( "/test/assets-test.js", "ownIdProviderUrl" ).getValue( String.class );
+
+        final ArgumentCaptor<IdentityUrlParams> params = ArgumentCaptor.forClass( IdentityUrlParams.class );
+        Mockito.verify( portalUrlService ).identityUrl( params.capture() );
+        assertEquals( IdProviderKey.system(), params.getValue().getIdProviderKey() );
+        assertEquals( "/_/idprovider/system", url );
+    }
 }
