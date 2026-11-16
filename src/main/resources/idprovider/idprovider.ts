@@ -2,13 +2,7 @@
 // @ts-expect-error No types
 import { render } from '/lib/mustache';
 
-import {
-    csp,
-    getIdProviderKey,
-    getSite,
-    idProviderUrl,
-    pageUrl
-} from '/lib/xp/portal';
+import { csp, getIdProviderKey, getSite, pageUrl } from '/lib/xp/portal';
 import { login as authLogin, logout as authLogout } from '/lib/xp/auth';
 import {
     mappedRelativePath,
@@ -16,6 +10,7 @@ import {
     RESPONSE_CACHE_CONTROL
 } from '/lib/enonic/static';
 import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
+import { assetUrlPrefix, STATIC_BASE } from '/lib/standardidprovider/assets';
 import { type Request, type Response } from '@enonic-types/core';
 
 // Local libs
@@ -27,7 +22,6 @@ import { autoLogin as libAutoLogin } from '/lib/autologin';
 import { getConfig } from '/lib/config';
 
 const STATIC_ASSETS_LOCAL_REGEXP = /^\/_\/idprovider\/[^/]+\/_static\/.+$/;
-const BASE = '_static';
 
 // The custom endpoints only serve interactive login, so they follow the vhost's login flow.
 const isLoginFlowEnabled = (req: Request): boolean => {
@@ -41,7 +35,7 @@ const getStatic = (request: Request): Response =>
     requestHandler(request, {
         cacheControl: () => RESPONSE_CACHE_CONTROL.IMMUTABLE,
         relativePath: mappedRelativePath(
-            `${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
+            `${STATIC_BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`
         ),
         root: 'static'
     });
@@ -180,6 +174,10 @@ interface OAuthConsentClient {
     logoUri?: string;
     policyUri?: string;
     tosUri?: string;
+    /**
+    True when the id provider's administrators registered the client, false when it registered
+    itself and its name is only its own claim.
+    */
     registered: boolean;
 }
 
@@ -201,13 +199,23 @@ interface OAuthConsent {
     unrestricted?: boolean;
     csrf?: string;
     approved?: boolean;
+    /**
+    In the authorization code flow, the origin of the client's redirect URI, which approving sends the
+    browser to; checked by XP.
+    */
+    redirectOrigin?: string;
 }
 
 /**
 The consent page: in device login, enter the code a device shows, then see what the client asks
 for and approve or deny; in the authorization code flow, the latter alone. The form posts
 user_code or request, approve, _csrf and one scope per kept permission back to the same URL,
-which is XP's endpoint.
+which is XP's endpoint. XP also renders it for an id provider whose app has no consent page of its
+own, when the vhost maps the system id provider; it then runs as the system id provider's page, so it
+reads the request from req.oauthConsent and its assets from its own id provider. To map the system id
+provider for this page alone, give it this app's consent flow and nothing else:
+idProvider.system.flows = consent. Its assets are served without a flow; login, autologin and logout
+are then off.
 */
 export const oauthConsent = function (req: Request) {
     const context = (req as Request & { oauthConsent: OAuthConsent })
@@ -239,8 +247,13 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         .fontSrc("'self'")
         .manifestSrc("'self'");
     // The form posts to this host, but browsers hold a form's redirects to form-action too, and
-    // the authorization request ends in a redirect to the client, so that flow leaves it open.
-    if (!(context.action === 'confirm' && context.flow === 'code')) {
+    // the authorization request ends in a redirect to the client, so that flow also allows the
+    // client's origin, and nothing else. An XP that does not name it leaves form-action open there.
+    if (context.action === 'confirm' && context.flow === 'code') {
+        if (context.redirectOrigin) {
+            policy.formAction("'self'", context.redirectOrigin);
+        }
+    } else {
         policy.formAction("'self'");
     }
 
@@ -256,7 +269,7 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         policy.scriptSrc("'self'");
     }
 
-    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
+    const baseUrlPrefix = assetUrlPrefix();
     const config = getConfig(req);
     const messages = config.messages as Record<string, string>;
     const phrase = (key: string) => messages[key] || key;
@@ -363,7 +376,7 @@ function generateLoginPage(req: Request, redirectUrl?: string) {
         .formAction("'self'");
 
     const firstLogin = firstLoginEnabled();
-    const baseUrlPrefix = `${idProviderUrl({})}/${BASE}/${readJsonResourceProperty('/static/buildtime.json', 'timeSinceEpoch')}`;
+    const baseUrlPrefix = assetUrlPrefix();
 
     const view = resolve('idprovider.html');
     const config = getConfig(req);
