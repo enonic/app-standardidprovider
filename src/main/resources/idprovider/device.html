@@ -43,6 +43,9 @@
                     <form method="post" action="?" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
                         <p class="device-text">{{app}} {{t.wantsToAccessYour}} <strong>{{accountName}}</strong> {{t.account}}.</p>
+                        {{#accountId}}
+                        <p class="device-text device-hint">{{accountId}}</p>
+                        {{/accountId}}
                         {{#userCode}}
                         <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
                         {{/userCode}}

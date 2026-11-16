@@ -13,6 +13,7 @@ import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
 import { assetUrlPrefix, STATIC_BASE } from '/lib/standardidprovider/assets';
 import {
     type Account,
+    accountId,
     accountName,
     signedInAs
 } from '/lib/standardidprovider/account';
@@ -328,6 +329,7 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         csrf: context.csrf,
         approved: context.approved === true,
         accountName: accountName(context.user),
+        accountId: accountId(context.user),
         signedInAs: signedInAs(context.user),
         idProvider: context.idProvider,
         t: {
