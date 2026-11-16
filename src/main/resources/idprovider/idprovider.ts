@@ -11,6 +11,11 @@ import {
 } from '/lib/enonic/static';
 import { readJsonResourceProperty } from '/lib/standardidprovider/resource';
 import { assetUrlPrefix, STATIC_BASE } from '/lib/standardidprovider/assets';
+import {
+    type Account,
+    accountName,
+    signedInAs
+} from '/lib/standardidprovider/account';
 import { type Request, type Response } from '@enonic-types/core';
 
 // Local libs
@@ -185,7 +190,7 @@ interface OAuthConsent {
     idProvider: string;
     action: 'enter' | 'confirm' | 'done' | 'wrongAccount';
     flow?: 'device' | 'code';
-    user: { key: string; login: string; displayName: string | null };
+    user: Account;
     error?: string;
     userCode?: string;
     requestId?: string;
@@ -322,8 +327,8 @@ function generateDevicePage(req: Request, context: OAuthConsent) {
         hasAudience: (context.audience || []).length > 0,
         csrf: context.csrf,
         approved: context.approved === true,
-        userLogin: context.user.login,
-        userKey: context.user.key,
+        accountName: accountName(context.user),
+        signedInAs: signedInAs(context.user),
         idProvider: context.idProvider,
         t: {
             title: phrase('page.device.title'),

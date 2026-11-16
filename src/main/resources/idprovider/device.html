@@ -42,7 +42,7 @@
                     <!-- "?" drops the query the page was opened with, so only the form decides. -->
                     <form method="post" action="?" class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.authorize}} {{app}}</h2>
-                        <p class="device-text">{{app}} {{t.wantsToAccessYour}} <strong>{{userLogin}}</strong> {{t.account}}.</p>
+                        <p class="device-text">{{app}} {{t.wantsToAccessYour}} <strong>{{accountName}}</strong> {{t.account}}.</p>
                         {{#userCode}}
                         <p class="device-text device-code-line"><span class="device-hint">{{t.verificationCode}}</span><span class="device-code">{{userCode}}</span></p>
                         {{/userCode}}
@@ -127,7 +127,7 @@
                 {{#wrongAccount}}
                     <div class="login-form device-form">
                         <h2 class="login-form-title device-title">{{t.wrongAccountTitle}}</h2>
-                        <p class="device-text">{{t.wrongAccountSignedInAs}} <strong>{{userKey}}</strong>, {{t.wrongAccountFor}} <strong>{{idProvider}}</strong>. {{t.wrongAccountHint}}</p>
+                        <p class="device-text">{{t.wrongAccountSignedInAs}} <strong>{{signedInAs}}</strong>, {{t.wrongAccountFor}} <strong>{{idProvider}}</strong>. {{t.wrongAccountHint}}</p>
                     </div>
                 {{/wrongAccount}}
                 </div>
