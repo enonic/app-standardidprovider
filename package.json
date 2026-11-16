@@ -31,7 +31,7 @@
     "autoprefixer": "^10.6.2",
     "browserslist": "^4.29.5",
     "browserslist-config-enonic": "^1.0.8",
-    "concurrently": "^10.0.6",
+    "concurrently": "^10.0.7",
     "cross-env": "^10.1.0",
     "cssnano": "^9.9.0",
     "enonic-admin-artifacts": "^2.5.0",
