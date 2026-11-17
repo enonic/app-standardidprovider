@@ -13,10 +13,18 @@ export const accountName = (user: Account): string =>
 
 /**
 What tells the account from others of the same display name: the email, else the login. None when
-the account has no display name, since its name is then already one of them.
+the account has no display name, since its name is then already one of them, and none when it would
+only repeat the display name, as for an account whose display name is its email.
 */
-export const accountId = (user: Account): string | undefined =>
-    user.displayName?.trim() ? user.email?.trim() || user.login : undefined;
+export const accountId = (user: Account): string | undefined => {
+    const displayName = user.displayName?.trim();
+    if (!displayName) {
+        return undefined;
+    }
+
+    const id = user.email?.trim() || user.login;
+    return id.toLowerCase() === displayName.toLowerCase() ? undefined : id;
+};
 
 /**
 The account signed in, with its key to tell it from others of the same name.

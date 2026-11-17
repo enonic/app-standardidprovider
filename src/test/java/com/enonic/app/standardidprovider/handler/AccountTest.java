@@ -58,6 +58,21 @@ public class AccountTest
     }
 
     @Test
+    public void display_name_that_is_the_email_is_not_repeated()
+    {
+        assertNull( accountId( EMAIL, EMAIL ) );
+        assertNull( accountId( "Jane@Example.com", EMAIL ) );
+        assertNull( accountId( " " + EMAIL + " ", EMAIL ) );
+    }
+
+    @Test
+    public void display_name_that_is_the_login_is_not_repeated()
+    {
+        assertNull( accountId( LOGIN, null ) );
+        assertNull( accountId( LOGIN.toUpperCase(), " " ) );
+    }
+
+    @Test
     public void signed_in_account_shows_display_name_and_key()
     {
         assertEquals( "Jane Doe (" + KEY + ")", signedInAs( "Jane Doe" ) );
